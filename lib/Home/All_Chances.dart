@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,40 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'show.dart';
 
-class All_Chances extends StatefulWidget {
-  All_Chances({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _Chances createState() => _Chances();
-}
-
-class _Chances extends State<All_Chances> {
-  // var docid, userInfo;
+class All_Chances extends StatelessWidget {
 
   ///////////////////getdata 1
   List jobs = [];
   List ids = [];
   CollectionReference jobsref =
-  FirebaseFirestore.instance.collection("companies");
+  FirebaseFirestore.instance.collection("company");
   getdata() async {
-    print("hi");
+   // print("hi");
     QuerySnapshot respon = await jobsref.get();
     respon.docs.forEach((element) {
-      print(element.id);
+      //print(element.id);
       //gettdata(element.id);
-      setState(() {
-        jobs.add(element.data());
-        ids.add(element.id);
-
-        // gettdata();
-      });
+          jobs.add(element.data());
+          ids.add(element.id);
+          // gettdata();
     });
-    print(jobs);
+   // print(jobs);
   }
 
   //////////////////////// getdata 2
-
   List job = [];
 
   /*gettdata(String idd) async {
@@ -81,37 +70,40 @@ class _Chances extends State<All_Chances> {
     getdata();
     //gettdata();
     //setdata();
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
-      body: ListView.builder(
-        itemCount: jobs.length,
-        /////// loop
-        itemBuilder: (context, i) {
-          return GestureDetector(
-              onTap: () {
-                print("hii " + ids[i]);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => show(jobs[i])),
-                );
-              },
-              child: Card(
-                  color: Colors.purple[200],
-                  margin: EdgeInsets.all(10),
-                  child: Text(" NAME :" +
-                      " ${jobs[i]["name_job"]} \n" +
-                      " PRICE :" +
-                      " ${jobs[i]["price"]} \n" +
-                      " SKILL :" +
-                      " ${jobs[i]["skill"]} \n")));
-        },
-      ),
-    ));
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              body: ListView.builder(
+                itemCount: jobs.length,
+                /////// loop
+                itemBuilder: (context, i) {
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => show(jobs[i])),
+                        );
+                      },
+                      child: Card(
+                          color: Colors.purple[200],
+                          margin: EdgeInsets.all(10),
+                          child: Text(" NAME :" +
+                              " ${jobs[i]["name_job"]} \n" +
+                              " PRICE :" +
+                              " ${jobs[i]["price"]} \n" +
+                              " SKILL :" +
+                              " ${jobs[i]["skill"]} \n")));
+                },
+              ),
+            )
+        ));
   }
 }
+
+

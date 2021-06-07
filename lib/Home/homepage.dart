@@ -1,9 +1,13 @@
+import 'package:b/Home/My_Chances.dart';
+import 'package:b/Home/show.dart';
+import 'package:b/Home/test.dart';
+
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'All_Chances.dart';
+import 'all_chance.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -16,52 +20,40 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var docid, userInfo;
 
-  ///////////////////getdata 1
-  List jobs = [];
-  List ids=[];
-  CollectionReference jobsref = FirebaseFirestore.instance.collection("companies");
-  getdata() async {
-    print("hi");
+  ///////////////////getdata 1    all_chances
+  List All_jobs = [];
+  List My_jobs=[];
+  List ids = [];
+
+
+  CollectionReference jobsref = FirebaseFirestore.instance.collection("company");
+  get_All_data() async {
+    // print("hi");
     QuerySnapshot respon = await jobsref.get();
     respon.docs.forEach((element) {
-      print(element.id);
-      //gettdata(element.id);
       setState(() {
-        jobs.add(element.data());
+        All_jobs.add(element.data());
         ids.add(element.id);
-
-
-        // gettdata();
       });
     });
-    print(jobs);
+    print(All_jobs.length);
   }
+  /////////////////////////////end all_chances
 
-  //////////////////////// getdata 2
-
-  List job = [];
-
-
-
-  /*gettdata(String idd) async {
-    DocumentReference jobsre = FirebaseFirestore.instance.collection("informationjob").doc(idd);
-    DocumentSnapshot respo = await jobsre.get();
-      setState(() {
-        job.add(respo.data());
+  get_My_data()async {
+      await jobsref.where("degree",isEqualTo: "اعدادي").get().then((value) => {
+        value.docs.forEach((element) {
+          if (this.mounted) {
+            setState(() {
+              My_jobs.add(element.data());
+            });
+          }
+        })
       });
-    print(job);
-  }*/
+      print(My_jobs.length);
+    }
 
 
-
-  /*setdata(){
-    CollectionReference jobsre = FirebaseFirestore.instance.collection("informationjob");
-    jobsre.add({
-      "ID" : "4444",
-      "name":"rama",
-    });
-
-  }*/
   getId(){
     FirebaseFirestore.instance
         .collection('users')
@@ -72,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             userInfo = doc.data();
             docid = doc.id;
-            print(userInfo) ;
+           // print(docid);
+           // print(userInfo) ;
           });
         }
       });
@@ -81,163 +74,134 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-
-    getId();
-    getdata();
-    //gettdata();
-    //setdata();
+    get_All_data();
+    get_My_data();
+        getId();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: DefaultTabController(length:3,
             child: Scaffold(
               appBar: AppBar( backgroundColor: Colors.purple[700],
-                  bottom: TabBar(
-                    tabs: [
-                      Tab(icon : Icon(Icons.home)),
-                      Tab(icon : Icon(Icons.ac_unit_outlined)),
-                      Tab(icon : Icon(Icons.access_time_sharp)),
 
-                    ],
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(
+                      //  topRight: Radius.circular(10),
+                      //  topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(100),
+                        bottomRight: Radius.circular(70),)),
 
+                bottom: TabBar(indicatorColor:Colors.white  ,
+                  tabs: [
+                    Tab(child: Text("جميع الفرص"),),
+                    Tab(child: Text("فرصي"),),
+                    Tab(child: Text("الشركات"),)],
+                ),
+                title: TextField(
+                  autofocus: true,
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 3.0,),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.purple[700], width: 3.0,),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(30.0)),
+                      ),
+
+                      hintText: " Search...",
+                      border: InputBorder.none,
+                      suffixIcon: IconButton(icon:Icon(Icons.search), onPressed: () {
+                      },)
                   ),
-                  title:Center(
-                    child: Text(" BR jobs", style: TextStyle(fontSize: 30)),)
+                  style: TextStyle(color: Colors.white, fontSize: 14.0),
+                ),
+                iconTheme: IconThemeData(color: Colors.white),
 
+                //backgroundColor: Colors.white,
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.notifications_active,
+                      color: Colors.amberAccent,
+                    ),
+                    onPressed: (){
+                      //do some things to show notifications
+                    },
+                  ),
+                ],
               ),
 
               drawer: mydrawer(userInfo: userInfo, docid: docid,),
 
               body:TabBarView(
                 children: [
-                  All_Chances(),
-                  Icon(Icons.directions_transit),
-                  Icon(Icons.directions_bike),
+                  ///////////////////////////////////////////////
+                  // All_Chances(),
+                  all_chance(All_jobs),
+                  ListView.builder(
+                    itemCount: All_jobs.length,
+                    /////// loop
+                    itemBuilder: (context, i) {
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => show(All_jobs[i])),
+                            );
+                          },
+                          child: Card(
+                              color: Colors.purple[200],
+                              margin: EdgeInsets.all(10),
+                              child: Text(" NAME :" +
+                                  " ${All_jobs[i]["name_job"]} \n" +
+                                  " PRICE :" +
+                                  " ${All_jobs[i]["price"]} \n" +
+                                  " SKILL :" +
+                                  " ${All_jobs[i]["skill"]} \n")));
+                    },
+                  ),
+
+                  //////////////////////////////////////
+                  //My_Chances(userInfo :userInfo),
+                  ListView.builder(
+                    itemCount: My_jobs.length,
+                    /////// loop
+                    itemBuilder: (context, i) {
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => show(My_jobs[i])),
+
+                            );
+                          },
+                          child: Card(
+                              color: Colors.purple[200],
+                              margin: EdgeInsets.all(10),
+                              child: Text(" NAME :" +
+                                  " ${My_jobs[i]["name_job"]} \n" +
+                                  " PRICE :" +
+                                  " ${My_jobs[i]["price"]} \n" +
+                                  " SKILL :" +
+                                  " ${My_jobs[i]["skill"]} \n")));
+                    },
+                  ),
+
+                  ////////////////////////////////////
+                  //My_Chances(userInfo :userInfo),
+
+                  //////////////////////////////////////////
                 ],
               ),
-              /*ListView.builder(
-          itemCount: jobs.length,
-          /////// loop
-          itemBuilder: (context, i) {
-            return GestureDetector(
-                onTap: () {
-                  print ("hii "+ ids[i]);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SecondRoute(jobs[i])),
-                  );
-
-                },
-                child: Card(
-                    color: Colors.purple[200],
-                    margin: EdgeInsets.all(10),
-                    child: Text(
-                        " NAME :"+" ${jobs[i]["name_job"]} \n"
-                            +  " PRICE :"+" ${jobs[i]["price"]} \n"
-                            +  " SKILL :"+" ${jobs[i]["skill"]} \n")
-                )
-            );
-            /*Card(
-                color: Colors.purple,
-                margin: EdgeInsets.all(10),
-                child: Text(" المرتب :"+" ${jobs[i]["salary"]} ")
-            );*/
-            /*Container(
-                color: Colors.purple,
-                margin: EdgeInsets.all(10),
-                child: Text(" المرتب :"+" ${jobs[i]["salary"]} "));*/
-          },
-        ),*/
-
-/*
-body: PageView(
-    children: [
-        ListView.builder(
-          itemCount: jobs.length,
-          /////// loop
-          itemBuilder: (context, i) {
-            return GestureDetector(
-                onTap: () {
-                  print ("hii "+ ids[i]);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SecondRoute(jobs[i])),
-                  );
-
-                },
-                child: Card(
-                    color: Colors.purple[200],
-                    margin: EdgeInsets.all(10),
-                    child: Text(
-                        " NAME :"+" ${jobs[i]["name_job"]} \n"
-                            +  " PRICE :"+" ${jobs[i]["price"]} \n"
-                            +  " SKILL :"+" ${jobs[i]["skill"]} \n")
-                )
-            );
-            /*Card(
-                color: Colors.purple,
-                margin: EdgeInsets.all(10),
-                child: Text(" المرتب :"+" ${jobs[i]["salary"]} ")
-            );*/
-            /*Container(
-                color: Colors.purple,
-                margin: EdgeInsets.all(10),
-                child: Text(" المرتب :"+" ${jobs[i]["salary"]} "));*/
-          },
-        ),
-    SecondRoute(jobs[2])],)
- */
-
-              /////////////2
-              /*Container(color: Colors.purple,child: ListView.builder(
-          itemCount: jobs.length,
-          /////// loop
-          itemBuilder: (context, i) {
-            return Text(" المرتب :"+" ${jobs[i]["salary"]} ");
-          },
-        ),)*/
-              /////////////////1
-              /*ListView.builder(
-          itemCount: jobs.length,
-          /////// loop
-          itemBuilder: (context, i) {
-            return Text(" المرتب :"+" ${jobs[i]["salary"]} ");
-          },
-        )*/
             )
-        )) ;
+        ))
+    ;
   }
-}
-
-
-class SecondRoute extends StatelessWidget {
-
-  SecondRoute(job){
-    print(job["name_job"]);
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-      ),
-      body:
-      ListView(
-        children: [Text(
-            " NAME :")
-          , ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Go back!'),
-          ),
-        ],),
-    );
-  }
-
 }
