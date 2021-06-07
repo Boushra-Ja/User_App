@@ -1,4 +1,3 @@
-import 'package:b/Home/My_Chances.dart';
 import 'package:b/Home/show.dart';
 import 'package:b/Home/test.dart';
 
@@ -7,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'my_chance.dart';
 import 'all_chance.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -20,36 +20,31 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var docid, userInfo;
 
-  ///////////////////getdata 1    all_chances
   List All_jobs = [];
   List My_jobs=[];
-  List ids = [];
-
 
   CollectionReference jobsref = FirebaseFirestore.instance.collection("company");
+
+  /////////////////////////////get all data
   get_All_data() async {
-    // print("hi");
     QuerySnapshot respon = await jobsref.get();
     respon.docs.forEach((element) {
-      setState(() {
-        All_jobs.add(element.data());
-        ids.add(element.id);
-      });
-    });
+      if (this.mounted) {
+        setState(() {
+          All_jobs.add(element.data());
+        });}});
     print(All_jobs.length);
   }
-  /////////////////////////////end all_chances
 
+
+  /////////////////////////////get my chance
   get_My_data()async {
       await jobsref.where("degree",isEqualTo: "اعدادي").get().then((value) => {
         value.docs.forEach((element) {
           if (this.mounted) {
             setState(() {
               My_jobs.add(element.data());
-            });
-          }
-        })
-      });
+            });}})});
       print(My_jobs.length);
     }
 
@@ -61,16 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         if (doc['uid'] == FirebaseAuth.instance.currentUser.uid) {
+          if (this.mounted) {
           setState(() {
             userInfo = doc.data();
             docid = doc.id;
-           // print(docid);
-           // print(userInfo) ;
-          });
-        }
-      });
-    });
+          });}}});});
   }
+
 
   @override
   void initState() {
@@ -82,11 +74,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: DefaultTabController(length:3,
+        child:
+        Directionality(
+        textDirection: TextDirection.rtl,
             child: Scaffold(
-              appBar: AppBar( backgroundColor: Colors.purple[700],
+              appBar: AppBar( backgroundColor:  Colors.pink.shade800,
 
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(
                       //  topRight: Radius.circular(10),
@@ -94,11 +91,20 @@ class _MyHomePageState extends State<MyHomePage> {
                         bottomLeft: Radius.circular(100),
                         bottomRight: Radius.circular(70),)),
 
-                bottom: TabBar(indicatorColor:Colors.white  ,
+                bottom: TabBar(indicatorColor:Colors.white ,
+                  indicator: UnderlineTabIndicator(
+                    //  borderSide: BorderSide(width: 10.0),
+                      insets: EdgeInsets.symmetric(horizontal:60.0,)
+                  ),
+
                   tabs: [
-                    Tab(child: Text("جميع الفرص"),),
+                    Tab(child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("جميع الفرص"),),),
                     Tab(child: Text("فرصي"),),
-                    Tab(child: Text("الشركات"),)],
+
+                    Tab(child: Align(
+                      alignment: Alignment.centerRight,child: Text("الشركات"),),)],
                 ),
                 title: TextField(
                   autofocus: true,
@@ -109,12 +115,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderSide: BorderSide(color: Colors.white, width: 3.0,),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.purple[700], width: 3.0,),
+                        borderSide: BorderSide(color: Colors.pink.shade800, width: 3.0,),
                         borderRadius: BorderRadius.all(
                             Radius.circular(30.0)),
                       ),
 
-                      hintText: " Search...",
+                      hintText: "البحث ",
                       border: InputBorder.none,
                       suffixIcon: IconButton(icon:Icon(Icons.search), onPressed: () {
                       },)
@@ -141,67 +147,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
               body:TabBarView(
                 children: [
-                  ///////////////////////////////////////////////
-                  // All_Chances(),
                   all_chance(All_jobs),
-                  ListView.builder(
-                    itemCount: All_jobs.length,
-                    /////// loop
-                    itemBuilder: (context, i) {
-                      return GestureDetector(
-                          onTap: () {
-                            Navigator.push(context,
-                              MaterialPageRoute(
-                                  builder: (context) => show(All_jobs[i])),
-                            );
-                          },
-                          child: Card(
-                              color: Colors.purple[200],
-                              margin: EdgeInsets.all(10),
-                              child: Text(" NAME :" +
-                                  " ${All_jobs[i]["name_job"]} \n" +
-                                  " PRICE :" +
-                                  " ${All_jobs[i]["price"]} \n" +
-                                  " SKILL :" +
-                                  " ${All_jobs[i]["skill"]} \n")));
-                    },
-                  ),
-
-                  //////////////////////////////////////
-                  //My_Chances(userInfo :userInfo),
-                  ListView.builder(
-                    itemCount: My_jobs.length,
-                    /////// loop
-                    itemBuilder: (context, i) {
-                      return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => show(My_jobs[i])),
-
-                            );
-                          },
-                          child: Card(
-                              color: Colors.purple[200],
-                              margin: EdgeInsets.all(10),
-                              child: Text(" NAME :" +
-                                  " ${My_jobs[i]["name_job"]} \n" +
-                                  " PRICE :" +
-                                  " ${My_jobs[i]["price"]} \n" +
-                                  " SKILL :" +
-                                  " ${My_jobs[i]["skill"]} \n")));
-                    },
-                  ),
-
-                  ////////////////////////////////////
-                  //My_Chances(userInfo :userInfo),
-
-                  //////////////////////////////////////////
+                  my_chance(My_jobs),
+                  my_chance(My_jobs),
                 ],
               ),
             )
-        ))
-    ;
+        ))));
   }
 }

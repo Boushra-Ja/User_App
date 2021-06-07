@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               },
-              child: companyProfile() //islogin == false ? Welcom() : MyHomePage()
+              child: /*companyProfile() */islogin == false ? Welcom() : MyHomePage()
           )
       ),
     );

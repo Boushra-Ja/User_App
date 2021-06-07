@@ -18,8 +18,7 @@ class buildCard extends StatelessWidget{
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
         color: Colors.yellow.shade50,
-        child :
-        Column(
+        child : Column(
           children: [
             buildText(text , 0 ),
             SizedBox(height: 10,),
