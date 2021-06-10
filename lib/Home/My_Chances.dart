@@ -8,7 +8,7 @@ class My_Chances extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
       appBar: AppBar(
         title: Text("Second Route"),
       ),
@@ -23,6 +23,6 @@ class My_Chances extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }

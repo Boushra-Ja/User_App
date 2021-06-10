@@ -1,8 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:b/cv_page/PersonalPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:b/component/alart.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 class signUp extends StatefulWidget{
 
   @override
@@ -13,9 +16,9 @@ class signUp extends StatefulWidget{
 
 class signupState extends State<signUp>{
 
-
+  TapGestureRecognizer changesign ;
+  bool showSignIn  = true;
   var myemail , mypassword , myconfirmPassword;
-
   GlobalKey <FormState> formeState = new GlobalKey<FormState>() ;
 
   SignUp()async{
@@ -51,9 +54,6 @@ class signupState extends State<signUp>{
     }
   }
 
-  TapGestureRecognizer changesign ;
-  bool showSignIn  = true;
-
   @override
   void initState() {
 
@@ -65,6 +65,7 @@ class signupState extends State<signUp>{
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     var mdw = MediaQuery.of(context).size.width;
@@ -78,15 +79,15 @@ class signupState extends State<signUp>{
                 height: double.infinity,
                 width: double.infinity,
               ),
-              buildPosintedButtom(mdw) ,
-              buildPosintedTop(mdw) ,
+              buildPosinted(mdw , -150, 410) ,
+              buildPosinted(mdw , 0 , -220) ,
+              buildPosinted(100 , 60 , 200) ,
               buildCircularAvatar(mdw) ,
-
               Container(
                   child: SingleChildScrollView(
+
                       child: Column(
                         children: [
-
                           Center(
                             child: Container(
                               margin: EdgeInsets.all(20),
@@ -105,27 +106,21 @@ class signupState extends State<signUp>{
                           buildRaisedButton() ,
                           Container(margin: EdgeInsets.only(top : 8 ) , child: RichText(
                             text : TextSpan(children: <TextSpan>[
-                              TextSpan(text: "لتسجيل الدخول  " , style: TextStyle(fontSize :14 , color: Colors.purple[700] , fontWeight: FontWeight.w600)) ,
-                              TextSpan(recognizer: changesign , text: " اضغط هنا" , style: TextStyle(fontSize :14 , color: Colors.red[600] , fontWeight: FontWeight.w600)) ,
+                              TextSpan(text: "لتسجيل الدخول  " , style: TextStyle(fontSize :14 , color: Colors.pink.shade900 , fontWeight: FontWeight.w600)) ,
+                              TextSpan(recognizer: changesign , text: " اضغط هنا" , style: TextStyle(fontSize :14 , color: Colors.black , fontWeight: FontWeight.w600)) ,
 
                             ]
 
                             ),
                           ),)
 
-
-
                         ],
                       )
-
                   )),
-
-
             ],
           )),
     );
   }
-
 
   TextFormField buildTextFormAll(bool visible, String myHintText , valid_num ,) {
     return TextFormField(
@@ -136,7 +131,7 @@ class signupState extends State<signUp>{
           if (val.length > 50) {
             return "لا يمكن أن يكون أكثر من 50 حرف";
           }
-          if (val.length < 2) {
+          if (val.length ==0) {
             return "يجب تعبئة الحقل";
           }
         }
@@ -184,40 +179,19 @@ class signupState extends State<signUp>{
     );
   }
 
-  Positioned buildPosintedButtom(double mdw)
-  {
-    return Positioned(
-        right: 150,
-        //top: 200,
-        child: Transform.scale(
-          scale: 1.4,
-          child: Transform.translate(
-            offset: Offset(0, 420),
-            child: Container(
-              height: mdw,
-              width: mdw,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(mdw),
-                  color:Colors.deepPurple.shade600
-              ),
-            ),
-          ),
-        ));
-  }
-
-  Positioned buildPosintedTop(double mdw)
+  Positioned buildPosinted(double mdw , double offset_x , double offset_y )
   {
     return  Positioned(
         child: Transform.scale(
           scale: 1.4,
           child: Transform.translate(
-            offset: Offset(0, -220),
+            offset: Offset(offset_x , offset_y),
             child: Container(
               height: mdw,
               width: mdw,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(mdw),
-                  color:Colors.deepPurple.shade600
+                  color:Colors.pink.shade900
               ),
             ),
           ),
@@ -227,15 +201,13 @@ class signupState extends State<signUp>{
   Positioned buildCircularAvatar(double mdw)
   {
     return  Positioned(
-
       right: mdw/2 - 40,
       top : 75,
       child: Container(
         child : CircleAvatar(
-            child: Icon(Icons.person , size: 50,color: Colors.white,)
-            ,
+            child: Icon(Icons.person , size: 50,color: Colors.white,),
             maxRadius: 40,
-            backgroundColor: Colors.grey[500]
+            backgroundColor: Colors.grey.shade700
         ),
       ),
     ) ;
@@ -244,7 +216,6 @@ class signupState extends State<signUp>{
   Center buildFormSignUp(double mdw) {
     return Center(
       child: Container(
-
           height: 300,
           width: mdw / 1.2,
           decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -258,36 +229,12 @@ class signupState extends State<signUp>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                          padding: EdgeInsets.all(2),
-                          child: Text(
-                            "البريد الالكتروني ",
-                            style: TextStyle(
-                                fontSize: 20,color:Colors.deepPurple.shade600
-                            ),
-                          )),
-
+                      buildText("البريد الالكتروني ") ,
                       buildTextFormAll(false, "  ادخل هنا  " , 0 ),
-                      Container(
-                          padding: EdgeInsets.all(2),
-                          child: Text(
-                            "كلمة المرور ",
-                            style: TextStyle(
-                                fontSize: 20, color:Colors.deepPurple.shade600),
-                          )),
-
+                      buildText( "كلمة المرور ") ,
                       buildTextFormAll(true, "  ***********   " , 1),
-
-                      Container(
-                          padding: EdgeInsets.all(2),
-                          child: Text(
-                            " تأكيد كلمة المرور",
-                            style: TextStyle(
-                                fontSize: 20, color:Colors.deepPurple.shade600),
-                          )),
-
+                      buildText( " تأكيد كلمة المرور") ,
                       buildTextFormAll(true, "  ***********   " , 2),
-
                     ],
                   ),
                 ),
@@ -307,7 +254,12 @@ class signupState extends State<signUp>{
           var response =  await SignUp() ;
           if(response != null)
           {
-            Navigator.of(context).pushNamed("information") ;
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+              return personalPage();
+            })) ;
+          }
+          else{
+            print('ds');
           }
         },
         elevation: 10,
@@ -319,10 +271,20 @@ class signupState extends State<signUp>{
         ),
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)),
-        color: Colors.grey[500],
+        color: Colors.grey.shade700,
       ),
 
     );
+  }
+
+  Container buildText(text){
+    return  Container(
+        padding: EdgeInsets.all(2),
+        child: Text( text,
+          style: TextStyle(
+              fontSize: 20,color:Colors.pink.shade900
+          ),
+        ));
   }
 
 }

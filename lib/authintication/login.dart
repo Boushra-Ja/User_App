@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/component/alart.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -13,7 +15,6 @@ class Login extends StatefulWidget {
 }
 
 class loginState extends State<Login> {
-
   var myemail, mypassword;
   TapGestureRecognizer changesign;
   bool showSignIn = true;
@@ -21,7 +22,6 @@ class loginState extends State<Login> {
 
   SignIn() async {
     UserCredential userCredential;
-
     var formdata = formeState.currentState;
 
     if (formdata.validate()) {
@@ -53,6 +53,18 @@ class loginState extends State<Login> {
     }
   }
 
+  Future<UserCredential> SignInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   @override
   void initState() {
     changesign = new TapGestureRecognizer()
@@ -67,100 +79,175 @@ class loginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-
-    var mdw = MediaQuery.of(context).size.width;
-
     return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
           body: Stack(
             children: [
-              Container(
-                height: double.infinity,
-                width: double.infinity,
+              ClipPath(
+                clipper: WaveClipperOne(),
+                child: Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        Colors.pink.shade900,
+                        Colors.pink.shade900,
+                        Colors.pink.shade900,
+                        Colors.grey.shade800
+                      ])),
+                  height: 160,
+                  child: Center(
+                      child: Icon(
+                        Icons.supervised_user_circle,
+                        size: 80,
+                        color: Colors.white,
+                      )),
+                ),
               ),
-              buildPositioned(mdw),
+              Positioned(
+                  child: Transform.scale(
+                      scale: 1.4,
+                      child: Transform.translate(
+                          offset: Offset(0, 410),
+                          child: ClipPath(
+                            clipper: WaveClipperTwo(
+                              reverse: true,
+                            ),
+                            child: Container(
+                                height: 120, color: Colors.pink.shade900),
+                          )))),
+              buildPositionedShape(400.0, 50.0, 440.0, 200, 200),
               Container(
-                child: ListView(
-                  children: [
-                    Center(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: Icon(
-                              Icons.supervised_user_circle,
-                              size: 90,
-                              color: Colors.white,
-                            ))),
-                    Center(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 3),
-                          child: Text(
-                            "تسجيل الدخول ",
-                            style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600),
+                child: Form(
+                    key: formeState,
+                    child: ListView(
+                      children: [
+                        SizedBox(height: 180),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: buildTextFormAll(
+                              false, "اسم المستخدم", 0, Colors.grey.shade200),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: buildTextFormAll(
+                              true, "كلمة المرور", 1, Colors.white),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: buildRaisedButton(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Center(
+                            child: Container(
+                              child: RichText(
+                                text: TextSpan(children: <TextSpan>[
+                                  TextSpan(
+                                      text: "مستخدم جديد للتطبيق ؟ ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600)),
+                                  TextSpan(
+                                      recognizer: changesign,
+                                      text: " انضم الآن   ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.pink,
+                                          fontWeight: FontWeight.w600)),
+                                ]),
+                              ),
+                            ),
                           ),
-                        )),
-                    Form(
-                        key: formeState,
-                        child: Container(
-                          padding: EdgeInsets.all(15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
                             children: [
-                              Container(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text(
-                                    "البريد الالكتروني ",
-                                    style: TextStyle(
-                                        fontSize: 22, color: Colors.purple[700]),
+                              Expanded(
+                                  flex: 4,
+                                  child: Divider(
+                                    thickness: 1,
                                   )),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              buildTextFormAll(false, "  ادخل هنا  ", 0),
-                              Container(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text(
-                                    "كلمة المرور ",
-                                    style: TextStyle(
-                                        fontSize: 22, color: Colors.purple[700]),
+                              Expanded(flex: 1, child: Text("   أو  ")),
+                              Expanded(
+                                  flex: 4,
+                                  child: Divider(
+                                    thickness: 1,
                                   )),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              buildTextFormAll(true, "  *************   ", 1),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              buildRaisedButtom(changesign)
                             ],
                           ),
-                        ))
-                  ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Center(
+                          child: InkWell(
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey.shade200,
+                              radius: 25,
+                              backgroundImage: AssetImage(
+                                "images/google.jpg",
+                              ),
+                            ),
+                            onTap: ()async{
+                              showLoading(context) ;
+                              var response = await SignInWithGoogle() ;
+                              if (response != null) {
+                                print("***********") ;
+                                Navigator.of(context).pushNamed("homepage");
+                              }else
+                              {
+                                print('dsdssd') ;
+                              }
+                            },
+                          ) ,
+                        )
+                      ],
+                    )
                 ),
-              )
+              ),
             ],
-          )),
-    );
+          ),
+        ));
+  }
+
+  Positioned buildPositionedShape(double mdw, double offset_x, double offset_y,
+      double height_, double width_) {
+    return Positioned(
+        child: Transform.scale(
+          scale: 1.4,
+          child: Transform.translate(
+            offset: Offset(offset_x, offset_y),
+            child: Container(
+              height: height_,
+              width: width_,
+              decoration: BoxDecoration(
+                color: Colors.pink.shade900,
+                borderRadius: BorderRadius.circular(mdw / 4),
+              ),
+            ),
+          ),
+        ));
   }
 
   TextFormField buildTextFormAll(
-      bool visible,
-      String myHintText,
-      valid_num,
-      ) {
+      bool visible, String myHintText, valid_num, var color) {
     return TextFormField(
-      obscureText: visible,
+
       validator: (val) {
         if (valid_num == 0) {
           if (val.length > 50) {
-            return "Email can't to be larger than 50 letter";
+            return "الاسم طويل جدا :(";
           }
-          if (val.length < 2) {
-            return "Email can't to be less than 2 letter";
+          if (val.length == 0) {
+            return "هذا الحقل مطلوب";
           }
+        }else
+        {
+          if(val.length == 0)
+            return "هذا الحقل مطلوب";
+
         }
         return null;
       },
@@ -171,97 +258,42 @@ class loginState extends State<Login> {
           mypassword = val;
         }
       },
+      obscureText: visible,
       decoration: InputDecoration(
         hintText: myHintText,
         filled: true,
-        fillColor: Colors.grey[400].withOpacity(0.1),
+        fillColor: color,
         hintStyle: TextStyle(
-            fontSize: 20, color: Colors.black, fontWeight: FontWeight.w300),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-        contentPadding: EdgeInsets.all(8),
+          fontSize: 20,
+          color: Colors.black,
+          fontWeight: FontWeight.w300,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        contentPadding: EdgeInsets.fromLTRB(40.0, 0.01, 40.0, 0.01),
       ),
     );
   }
 
-  Container buildRaisedButtom(TapGestureRecognizer changesign) {
+  Container buildRaisedButton() {
     return Container(
-      child: Column(
-        children: [
-          InkWell(
-              onTap: () {},
-              child: Text(
-                " هل نسيت كلمة السر ؟؟",
-                style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900),
-              )),
-          SizedBox(
-            height: 10,
-          ),
-          Center(
-              child: Container(
-                height: 50,
-                width: 170,
-                child: RaisedButton(
-                  onPressed: () async {
-                    var response = await SignIn();
-                    if (response != null) {
-                      Navigator.of(context).pushNamed("homepage");
-                    }
-                  },
-                  elevation: 10,
-                  child: Text(
-                    "تسجيل الدخول",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30.0)),
-                  color: Colors.grey.shade500,
-                ),
-              )),
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            child: RichText(
-              text: TextSpan(children: <TextSpan>[
-                TextSpan(
-                    text: "مستخدم جديد ل BR_jobs ؟ ",
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.deepPurple.shade600,
-                        fontWeight: FontWeight.w600)),
-                TextSpan(
-                    recognizer: changesign,
-                    text: " انضم الآن   ",
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.red[600],
-                        fontWeight: FontWeight.w600)),
-              ]),
-            ),
-          )
-        ],
+      height: 50,
+      width: 170,
+      child: RaisedButton(
+        onPressed: () async {
+          var response = await SignIn();
+          if (response != null) {
+            Navigator.of(context).pushReplacementNamed("homepage");
+          }},
+        elevation: 10,
+        child: Text(
+          "تسجيل الدخول",
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+        ),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0)),
+        color: Colors.pink.shade900,
       ),
     );
-  }
-
-  Positioned buildPositioned(double mdw) {
-    return Positioned(
-        child: Transform.scale(
-          scale: 1.4,
-          child: Transform.translate(
-            offset: Offset(0, -190),
-            child: Container(
-              height: mdw,
-              width: mdw,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(mdw / 3),
-                  color: Colors.deepPurple.shade600),
-            ),
-          ),
-        ));
   }
 }

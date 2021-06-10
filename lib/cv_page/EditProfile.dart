@@ -10,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:b/component/alart.dart';
-
 class EditProfile extends StatefulWidget {
   final list, docid;
 
@@ -162,7 +161,7 @@ class EditProfileState extends State<EditProfile> {
             appBar: AppBar(
               title: Text("ملفي الشخصي"),
               centerTitle: true,
-              backgroundColor: Colors.deepPurple.shade600,
+              backgroundColor: Colors.pink.shade900,
               leading: InkWell(
                 child: Icon(Icons.arrow_back),
                 onTap: () {
@@ -280,7 +279,7 @@ class EditProfileState extends State<EditProfile> {
                                 ? NetworkImage(widget.list['imageurl'])
                                 : null,
                             backgroundColor: widget.list['imageurl'] == 'not'
-                                ? Colors.deepPurple
+                                ? Colors.amberAccent
                                 : null,
                             child: (widget.list['imageurl'] == 'not'&& photo == null)
                                 ? Icon(
@@ -556,7 +555,7 @@ class EditProfileState extends State<EditProfile> {
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
-              color: Colors.deepPurple.shade400.withOpacity(0.8)),
+              color: Colors.amberAccent.withOpacity(0.8)),
         ),
       ),
     );

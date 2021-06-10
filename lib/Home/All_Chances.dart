@@ -86,35 +86,32 @@ class _Chances extends State<All_Chances> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              body: ListView.builder(
-                itemCount: jobs.length,
-                /////// loop
-                itemBuilder: (context, i) {
-                  return GestureDetector(
-                      onTap: () {
-                        print("hii " + ids[i]);
+    return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
+      body: ListView.builder(
+        itemCount: jobs.length,
+        /////// loop
+        itemBuilder: (context, i) {
+          return GestureDetector(
+              onTap: () {
+                print("hii " + ids[i]);
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => show(jobs[i])),
-                        );
-                      },
-                      child: Card(
-                          color: Colors.purple[200],
-                          margin: EdgeInsets.all(10),
-                          child: Text(" NAME :" +
-                              " ${jobs[i]["name_job"]} \n" +
-                              " PRICE :" +
-                              " ${jobs[i]["price"]} \n" +
-                              " SKILL :" +
-                              " ${jobs[i]["skill"]} \n")));
-                },
-              ),
-            )));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => show(jobs[i])),
+                );
+              },
+              child: Card(
+                  color: Colors.purple[200],
+                  margin: EdgeInsets.all(10),
+                  child: Text(" NAME :" +
+                      " ${jobs[i]["name_job"]} \n" +
+                      " PRICE :" +
+                      " ${jobs[i]["price"]} \n" +
+                      " SKILL :" +
+                      " ${jobs[i]["skill"]} \n")));
+        },
+      ),
+    ));
   }
 }

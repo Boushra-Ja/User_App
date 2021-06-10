@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'All_Chances.dart';
+import 'Company_Pages/Company_Page.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -91,10 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: DefaultTabController(length:3,
-            child: Scaffold(
-              appBar: AppBar( backgroundColor: Colors.purple[700],
+            child: Directionality(textDirection: TextDirection.rtl,child: Scaffold(
+              appBar: AppBar( backgroundColor: Colors.pink.shade900,
                   bottom: TabBar(
                     tabs: [
                       Tab(icon : Icon(Icons.home)),
@@ -104,8 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
 
                   ),
-                  title:Center(
-                    child: Text(" BR jobs", style: TextStyle(fontSize: 30)),)
+                 // title:Center(
+                  //  child: Text(" BR jobs", style: TextStyle(fontSize: 30)),)
 
               ),
 
@@ -114,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
               body:TabBarView(
                 children: [
                   All_Chances(),
-                  Icon(Icons.directions_transit),
+                  companyPage(),
                   Icon(Icons.directions_bike),
                 ],
               ),
@@ -209,7 +211,7 @@ body: PageView(
             return Text(" المرتب :"+" ${jobs[i]["salary"]} ");
           },
         )*/
-            )
+            ),)
         )) ;
   }
 }
