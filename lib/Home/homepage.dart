@@ -102,7 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       Tab(icon : Icon(Icons.home)),
                       Tab(icon : Icon(Icons.ac_unit_outlined)),
                       Tab(icon : Icon(Icons.access_time_sharp)),
-
                     ],
 
                   ),
