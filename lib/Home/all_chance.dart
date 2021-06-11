@@ -4,27 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'show.dart';
 
-<<<<<<< HEAD
 
 
 class all_chance extends StatelessWidget {
   List jobs=[];
-
   all_chance(List all_jobs){
     jobs=all_jobs;
-=======
-class all_chance extends StatelessWidget {
-  List jobs = [];
 
-  all_chance(List all_jobs) {
-    jobs = all_jobs;
->>>>>>> 92f9704 (End card design)
-    //print(jobs);
   }
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
+
     return  Scaffold(
       body: ListView.builder(
         itemCount: jobs.length,
@@ -49,7 +40,7 @@ class all_chance extends StatelessWidget {
         },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-=======
+
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
@@ -102,6 +93,5 @@ class all_chance extends StatelessWidget {
             },
           ), // This trailing comma makes auto-formatting nicer for build methods.
         ));
->>>>>>> 92f9704 (End card design)
   }
 }
