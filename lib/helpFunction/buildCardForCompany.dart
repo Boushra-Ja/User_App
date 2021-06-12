@@ -20,15 +20,15 @@ class buildCardCompany extends StatelessWidget {
               padding: const EdgeInsets.only(top : 8.0),
               child: Row(
                 children: [
-                  Icon(Icons.room , size: 20,),
-                  Text("hh"),
+                  Icon(Icons.room , size: 15,),
+                  Text("${list['region']}"),
                 ],
               ),
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             leading: CircleAvatar(
-              backgroundColor: Colors.amberAccent,
               radius: 30,
+              backgroundImage: AssetImage("images/photo55.png"),
             ),
           ),
         ),

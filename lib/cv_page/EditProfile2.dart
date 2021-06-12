@@ -78,7 +78,7 @@ class Edit_State extends State<EditProfile2> {
             appBar: AppBar(
               title: Text("معلومات العمل" , style: TextStyle(fontSize: 22 , color: Colors.white),),
               centerTitle: true,
-              backgroundColor: Colors.pink.shade800,
+              backgroundColor: Colors.pink.shade900,
             ),
             body: Stack(children: [
               Container(
@@ -156,7 +156,7 @@ class Edit_State extends State<EditProfile2> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("ماذا تفضل ؟!! " , style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w600 , color: Colors.deepPurple), ),
+                                      Text("ماذا تفضل ؟!! " , style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w600 , color: Colors.pink.shade900), ),
                                     ],
                                   ),
                                   Divider( color: Colors.deepPurple,) ,
@@ -217,7 +217,7 @@ class Edit_State extends State<EditProfile2> {
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
-              color: Colors.deepPurple.shade700.withOpacity(0.8)),
+              color: Colors.pink.shade900),
         ),
       ),
     );
@@ -306,7 +306,7 @@ class Edit_State extends State<EditProfile2> {
           }
           return null ;
         },
-        /*  onSaved: (val)
+          onSaved: (val)
         {
           if(num == 1)
             user.Skills = val ;
@@ -314,7 +314,7 @@ class Edit_State extends State<EditProfile2> {
             user.workSite = val ;
           else
             user.salary = val ;
-        },*/
+        },
         decoration: InputDecoration(
           // hintText: hintText,
           hintStyle: TextStyle(

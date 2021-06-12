@@ -1,4 +1,3 @@
-import 'package:b/Home/Company_Pages/Company_Profile.dart';
 import 'package:b/authintication/Welcom_Page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -63,7 +62,7 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               },
-              child: /*companyProfile() */islogin == false ? Welcom() : MyHomePage()
+              child: islogin == false ? Welcom() : MyHomePage()
           )
       ),
     );

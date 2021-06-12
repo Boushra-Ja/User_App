@@ -345,6 +345,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  interval_tree:
+    dependency: transitive
+    description:
+      name: interval_tree
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   intl:
     dependency: transitive
     description:
@@ -352,6 +359,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.0"
+  item_selector:
+    dependency: "direct main"
+    description:
+      name: item_selector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   jiffy:
     dependency: "direct main"
     description:

@@ -61,7 +61,7 @@ class PersnalState extends State<personalPage> {
       'salary': user.salary
     }).then((value) {
       print('Sucsess');
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
         return MyHomePage();
       }));
     }).catchError((e) {

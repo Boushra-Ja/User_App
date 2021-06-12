@@ -54,6 +54,7 @@ dependencies:
   status_change: ^2.0.0
   provider: ^5.0.0
   multi_select_flutter: ^4.0.0
+  item_selector: ^0.2.0
 
 dev_dependencies:
   flutter_test:

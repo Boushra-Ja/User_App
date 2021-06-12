@@ -47,7 +47,7 @@ class SettingState extends State<settingPage>{
       appBar: AppBar(
         title: Text('الاعدادات' , style: TextStyle(fontSize: 20 , color: Colors.white),),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple.shade700,
+        backgroundColor: Colors.pink.shade900,
       ),
       drawer: mydrawer(userInfo: widget.list,docid: widget.docid,),
       body: Stack(

@@ -279,7 +279,7 @@ class EditProfileState extends State<EditProfile> {
                                 ? NetworkImage(widget.list['imageurl'])
                                 : null,
                             backgroundColor: widget.list['imageurl'] == 'not'
-                                ? Colors.amberAccent
+                                ? Colors.amber.shade100
                                 : null,
                             child: (widget.list['imageurl'] == 'not'&& photo == null)
                                 ? Icon(
@@ -555,7 +555,7 @@ class EditProfileState extends State<EditProfile> {
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
-              color: Colors.amberAccent.withOpacity(0.8)),
+              color: Colors.pink.shade900),
         ),
       ),
     );
