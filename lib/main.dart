@@ -1,4 +1,4 @@
-import 'package:b/authintication/Welcom_Page.dart';
+import 'package:b/myDrawer/UserProfilePage/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +7,7 @@ import 'package:b/Home/homepage.dart';
 import 'package:load/load.dart';
 import 'package:provider/provider.dart';
 import 'UserInfo.dart';
+import 'authintication/Welcom_Page.dart';
 import 'authintication/login.dart';
 import 'authintication/signup.dart';
 
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               },
-              child: islogin == false ? Welcom() : MyHomePage()
+              child:islogin == false ? Welcom() : MyHomePage()
           )
       ),
     );

@@ -5,7 +5,9 @@ import '../UserInfo.dart';
 class buildDropdownButton extends StatefulWidget {
   int flex_, _selected;
   String text;
-  buildDropdownButton(this.flex_, this.text, this._selected);
+  userInfo bloc ;
+
+  buildDropdownButton(this.flex_, this.text, this._selected , this.bloc);
   @override
   State<StatefulWidget> createState() {
     return DropState();
@@ -81,7 +83,6 @@ class DropState extends State<buildDropdownButton> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<userInfo>(context);
     List<String> temp = widget._selected == 1
         ? _day
         : widget._selected == 2
@@ -116,69 +117,69 @@ class DropState extends State<buildDropdownButton> {
             child: Text(widget.text),
           ),
           value: widget._selected == 1
-              ? bloc.selectedDay
+              ? widget.bloc.selectedDay
               : widget._selected == 2
-              ? bloc.selectedMonth
+              ?  widget.bloc.selectedMonth
               : widget._selected == 3
-              ? bloc.selectedYear
+              ?  widget.bloc.selectedYear
               : widget._selected == 4
-              ? bloc.selectedGender
+              ?  widget.bloc.selectedGender
               : widget._selected == 5
-              ? bloc.selectedNationality
+              ?  widget.bloc.selectedNationality
               : widget._selected == 6
-              ? bloc.selectedCountry
+              ?  widget.bloc.selectedCountry
               : widget._selected == 7
-              ? bloc.selectedCity
+              ?  widget.bloc.selectedCity
               : widget._selected == 8
-              ? bloc.selectedEdu
-              :widget._selected == 9 ?  bloc.selectedFun : widget._selected == 10 ? bloc.selectedjob : widget._selected == 11 ? bloc.selectedExpr : bloc.selectedTypeJob,
+              ?  widget.bloc.selectedEdu
+              :widget._selected == 9 ?   widget.bloc.selectedFun : widget._selected == 10 ?  widget.bloc.selectedjob : widget._selected == 11 ?  widget.bloc.selectedExpr :  widget.bloc.selectedTypeJob,
           onChanged: (newValue) {
             widget._selected == 1
-                ? bloc.set_selectedDay(newValue)
+                ?  widget.bloc.set_selectedDay(newValue)
                 : widget._selected == 2
-                ? bloc.set_selectedMonth(newValue)
+                ?  widget.bloc.set_selectedMonth(newValue)
                 : widget._selected == 3
-                ? bloc.set_selectedYearr(newValue)
+                ?  widget.bloc.set_selectedYearr(newValue)
                 : widget._selected == 4
-                ? bloc.set_selectedGender(newValue)
+                ?  widget.bloc.set_selectedGender(newValue)
                 : widget._selected == 5
-                ? bloc.set_selectedNationality(newValue)
+                ?  widget.bloc.set_selectedNationality(newValue)
                 : widget._selected == 6
-                ? bloc.set_selectedCountry(newValue)
+                ?  widget.bloc.set_selectedCountry(newValue)
                 : widget._selected == 7
-                ? bloc.set_selectedCity(newValue)
+                ?  widget.bloc.set_selectedCity(newValue)
                 : widget._selected == 8
-                ? bloc.set_selectedEdu(newValue)
-                : widget._selected == 9 ? bloc.set_selectedFun(newValue) : widget._selected == 10 ? bloc.set_selectedjob(newValue) : widget._selected == 11 ? bloc.set_selectedExpr(newValue) : bloc.set_selectedTypeJob(newValue);
+                ?  widget.bloc.set_selectedEdu(newValue)
+                : widget._selected == 9 ?  widget.bloc.set_selectedFun(newValue) : widget._selected == 10 ?  widget.bloc.set_selectedjob(newValue) : widget._selected == 11 ?  widget.bloc.set_selectedExpr(newValue) :  widget.bloc.set_selectedTypeJob(newValue);
           },
           validator: (val) {
             print("hellloo");
             if (widget._selected == 1) {
-              if (bloc.selectedDay == null) return 'مطلوب';
+              if ( widget.bloc.selectedDay == null) return 'مطلوب';
             } else if (widget._selected == 2) {
-              if (bloc.selectedMonth == null) return 'مطلوب';
+              if ( widget.bloc.selectedMonth == null) return 'مطلوب';
             } else if (widget._selected == 3) {
-              if (bloc.selectedYear == null) return 'مطلوب';
+              if ( widget.bloc.selectedYear == null) return 'مطلوب';
             } else if (widget._selected == 4) {
-              if (bloc.selectedGender == null) return 'مطلوب';
+              if ( widget.bloc.selectedGender == null) return 'مطلوب';
             } else if (widget._selected == 5) {
-              if (bloc.selectedNationality == null) return 'مطلوب';
+              if ( widget.bloc.selectedNationality == null) return 'مطلوب';
             } else if (widget._selected == 6) {
-              if (bloc.selectedCountry == null) return 'مطلوب';
+              if ( widget.bloc.selectedCountry == null) return 'مطلوب';
             } else if (widget._selected == 7) {
-              if (bloc.selectedCity == null) return 'مطلوب';
+              if ( widget.bloc.selectedCity == null) return 'مطلوب';
             } else if (widget._selected == 8) {
-              if (bloc.selectedEdu == null) return 'مطلوب';
+              if ( widget.bloc.selectedEdu == null) return 'مطلوب';
             } else if (widget._selected == 9) {
-              if (bloc.selectedFun == null) return 'مطلوب';
+              if ( widget.bloc.selectedFun == null) return 'مطلوب';
             }
             else if (widget._selected == 10) {
-              if (bloc.selectedjob == null) return 'مطلوب';
+              if ( widget.bloc.selectedjob == null) return 'مطلوب';
             }
             else if (widget._selected == 11) {
-              if (bloc.selectedExpr == null) return 'مطلوب';
+              if ( widget.bloc.selectedExpr == null) return 'مطلوب';
             }else{
-              if (bloc.selectedTypeJob == null) return 'مطلوب';
+              if ( widget.bloc.selectedTypeJob == null) return 'مطلوب';
             }
             return null;
           },

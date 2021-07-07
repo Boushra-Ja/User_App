@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:b/component/alart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import 'login.dart';
+
 class signUp extends StatefulWidget{
 
   @override
@@ -59,7 +61,9 @@ class signupState extends State<signUp>{
 
     changesign = new TapGestureRecognizer()..onTap = (){
       setState(() {
-        Navigator.of(context).pushNamed("login") ;
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+          return Login();
+        }));
       });
     };
 
@@ -92,7 +96,7 @@ class signupState extends State<signUp>{
                             child: Container(
                               margin: EdgeInsets.all(20),
                               child: Text(
-                                "انشاء حساب ",
+                                "",
                                 style: TextStyle(
                                     fontSize: 28,
                                     color: Colors.white,
@@ -100,7 +104,7 @@ class signupState extends State<signUp>{
                               ),
                             ),
                           ) ,
-                          SizedBox(height: 80,) ,
+                          SizedBox(height: 100,) ,
                           buildFormSignUp(mdw)  ,
                           SizedBox(height: 15,) ,
                           buildRaisedButton() ,

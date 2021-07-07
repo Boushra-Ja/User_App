@@ -1,3 +1,5 @@
+import 'package:b/Home/homepage.dart';
+import 'package:b/authintication/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,7 +72,9 @@ class loginState extends State<Login> {
     changesign = new TapGestureRecognizer()
       ..onTap = () {
         setState(() {
-          Navigator.of(context).pushNamed("signup");
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+            return signUp();
+          }));
         });
       };
 
@@ -282,7 +286,9 @@ class loginState extends State<Login> {
         onPressed: () async {
           var response = await SignIn();
           if (response != null) {
-            Navigator.of(context).pushReplacementNamed("homepage");
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+              return MyHomePage();
+            }));
           }},
         elevation: 10,
         child: Text(

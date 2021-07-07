@@ -6,7 +6,7 @@ class show extends StatelessWidget {
   var job;
   show(job) {
     this.job=job;
-   // print(job["name_job"]);
+    // print(job["name_job"]);
   }
 
   @override
@@ -15,12 +15,12 @@ class show extends StatelessWidget {
       appBar: AppBar(backgroundColor: Colors.pink.shade800,
         title: Text("Second Route"),
       ),
-        drawer: mydrawer(),
+      drawer: mydrawer(),
       body: ListView(
         children: [
           Text(" NAME :" +"${job["name_job"]}"),
           ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amberAccent),),
-          onPressed: () {
+            onPressed: () {
               Navigator.pop(context);
             },
             child: Text('Go back!'),

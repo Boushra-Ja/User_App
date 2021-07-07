@@ -128,6 +128,8 @@ class PersnalState extends State<personalPage> {
                     } else {
                       if (formdata5.validate()) {
                         formdata5.save();
+                        print(user.mygmail);
+                        print(user.phone);
                         await addData(user);
                       }
                     }
@@ -160,6 +162,9 @@ class PersnalState extends State<personalPage> {
                                 borderRadius: new BorderRadius.circular(30.0)),
                             color: Colors.pink.shade900.withOpacity(0.7),
                             onPressed: () {
+                              print(user.firstName);
+                              print(user.endName);
+                              print(user.salary);
                               onStepContinue();
                             },
                             child: Text(

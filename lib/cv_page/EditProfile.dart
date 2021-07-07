@@ -65,23 +65,6 @@ class EditProfileState extends State<EditProfile> {
 
   @override
   void initState() {
-    for (int i = 1980; i < 2020; i++) {
-      _year.add("$i");
-    }
-    for (int i = 1; i <= 12; i++) {
-      _month.add("$i");
-    }
-    for (int i = 1; i <= 30; i++) {
-      _day.add("$i");
-    }
-    user.selectedDay = widget.list['date']['day'];
-    user.selectedMonth = widget.list['date']['month'];
-    user.selectedYear = widget.list['date']['year'];
-    user.selectedGender = widget.list['gender'];
-    user.selectedNationality = widget.list['Nationality'];
-    user.selectedCity = widget.list['placerecident'];
-    user.selectedCountry = widget.list['originalhome'];
-    user.phone = widget.list['phone'];
 
     super.initState();
   }

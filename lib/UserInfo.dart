@@ -14,7 +14,6 @@ class userInfo with ChangeNotifier{
       selectedNationality ,
       selectedEdu ,
       selectedFun ,
-      selectedjob ,
       selectedExpr ,
       selectedTypeJob ,
       Skills = "null" ,
@@ -22,8 +21,10 @@ class userInfo with ChangeNotifier{
       salary = "null",
       imageurl = 'not',
       previous_job = " ",
-      privecy = " ",
-      notify = " ";
+      privecy ='false',
+      notify = "false";
+
+  List selectedjob = [];
 
   set_firstname(String txt){
     this.firstName = txt;
@@ -86,7 +87,7 @@ class userInfo with ChangeNotifier{
 
   }
 
-  set_selectedjob(String txt){
+  set_selectedjob(List txt){
     this.selectedjob = txt;
     notifyListeners();
 

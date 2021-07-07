@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:b/SettingPage/updatePassword.dart';
 import 'package:b/myDrawer/Drawer.dart';
 
+import '../UserInfo.dart';
+
 class settingPage extends StatefulWidget {
 
-  final list , docid ;
-  const settingPage({Key key, this.list, this.docid}) : super(key: key);
+  final  docid ;
+  final userInfo user ;
+  const settingPage({Key key, this.user, this.docid}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,8 +38,8 @@ class SettingState extends State<settingPage>{
   }
   @override
   void initState() {
-    notify = widget.list['notify'] ;
-    previcy = widget.list['privecy'] ;
+    notify = widget.user.notify as bool ;
+    previcy = widget.user.privecy as bool ;
     super.initState();
   }
   @override
@@ -49,7 +52,7 @@ class SettingState extends State<settingPage>{
         centerTitle: true,
         backgroundColor: Colors.pink.shade900,
       ),
-      drawer: mydrawer(userInfo: widget.list,docid: widget.docid,),
+      drawer: mydrawer(user: widget.user,docid: widget.docid,),
       body: Stack(
         children: [
           Container(
@@ -102,7 +105,7 @@ class SettingState extends State<settingPage>{
                 InkWell(
                   onTap: (){
                     Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                      return updatePassword(list: widget.list , docid: widget.docid,) ;
+                      return updatePassword(user: widget.user , docid: widget.docid,) ;
                     })) ;
                   },
                   child: ListTile(

@@ -1,6 +1,9 @@
 import 'package:b/helpFunction/buildDropdownButton.dart';
 import 'package:b/helpFunction/buildText.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../UserInfo.dart';
 
 class LocationInfo extends StatelessWidget{
 
@@ -8,6 +11,8 @@ class LocationInfo extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    final bloc = Provider.of<userInfo>(context) ;
+
     return Card(
       margin: EdgeInsets.only(bottom: 30 , top: 10),
       color: Colors.yellow.shade50,
@@ -21,7 +26,7 @@ class LocationInfo extends StatelessWidget{
           Row(
             children: [
               buildText( "الجنسية*" , 2),
-              buildDropdownButton(3, 'اختر', 5 ),
+              buildDropdownButton(3, 'اختر', 5 , bloc ),
               buildText( " " , 1),
             ],
           ),
@@ -31,7 +36,7 @@ class LocationInfo extends StatelessWidget{
           Row(
             children: [
               buildText("بلد الإقامة*", 2),
-              buildDropdownButton(3, "البلد", 6 ),
+              buildDropdownButton(3, "البلد", 6 ,bloc),
               buildText("", 1),
             ],
           ),
@@ -41,7 +46,7 @@ class LocationInfo extends StatelessWidget{
           Row(
             children: [
               buildText("المدينة*", 2),
-              buildDropdownButton(3, "المدينة", 7 ),
+              buildDropdownButton(3, "المدينة", 7 ,bloc),
               buildText("", 1),
             ],
           ),

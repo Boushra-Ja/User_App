@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:b/SettingPage/setting_page.dart';
 
+import '../UserInfo.dart';
+
 class updatePassword extends StatefulWidget {
-  final list, docid;
-  const updatePassword({Key key, this.list, this.docid}) : super(key: key);
+  final docid;
+  final userInfo user;
+  const updatePassword({Key key, this.user, this.docid}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return updateState();
@@ -28,7 +31,7 @@ class updateState extends State<updatePassword> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return settingPage(
-                    list: widget.list,
+                    user: widget.user,
                     docid: widget.docid,
                   );
                 }));

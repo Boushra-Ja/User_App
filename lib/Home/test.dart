@@ -38,30 +38,30 @@ class test extends StatelessWidget {
                               colors: [Colors.black26, Colors.pink.shade800])),
                       child: Padding(
                           padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                      child: Column(children: [
-                             Row(children: [
+                          child: Column(children: [
+                            Row(children: [
                               Icon(Icons.account_circle,size: 30,),
                               Text(" العنوان ",),
                             ]),
 
-                        Card(
-                            color: Colors.white70,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
+                            Card(
+                                color: Colors.white70,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
 
-                            child: Column(children: [
-                               Row(children: [Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                            child:
-                                Text(" الأسم :" +
-                                    " ${jobs[i]["name_job"]} \n" +
-                                    " الراتب :" +
-                                    " ${jobs[i]["price"]} \n" +
-                                    " المهارات :" +
-                                    " ${jobs[i]["skill"]} \n"),
-                               )]),
-              ])),
-                      ]))));
+                                child: Column(children: [
+                                  Row(children: [Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                                    child:
+                                    Text(" الأسم :" +
+                                        " ${jobs[i]["name_job"]} \n" +
+                                        " الراتب :" +
+                                        " ${jobs[i]["price"]} \n" +
+                                        " المهارات :" +
+                                        " ${jobs[i]["skill"]} \n"),
+                                  )]),
+                                ])),
+                          ]))));
             },
           ), // This trailing comma makes auto-formatting nicer for build methods.
         ));

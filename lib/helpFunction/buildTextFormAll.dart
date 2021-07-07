@@ -6,11 +6,10 @@ class buildTextFormAll extends StatelessWidget{
 
   int flex_ , valid_num ;
   String hintText;
-  buildTextFormAll(this.flex_ , this.hintText , this.valid_num);
+  userInfo bloc ;
+  buildTextFormAll(this.flex_ , this.hintText , this.valid_num , this.bloc);
   @override
   Widget build(BuildContext context) {
-
-    final bloc = Provider.of<userInfo>(context) ;
 
     return  Expanded(
       flex : flex_  ,

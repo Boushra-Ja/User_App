@@ -10,25 +10,33 @@ class buildCardCompany extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
-        height: 110,
+       // height: 110,
         padding: EdgeInsets.only(bottom: 15),
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           child: ListTile(
-            title: Text("${list['name_job']}" , style: TextStyle(fontSize: 18),),
+            contentPadding: EdgeInsets.fromLTRB(10, 15, 10, 15),
+            title: Text(" ${list['company']}" , style: TextStyle(fontSize: 18 ,
+            ),
+              maxLines: 3,
+            ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top : 8.0),
               child: Row(
                 children: [
                   Icon(Icons.room , size: 15,),
-                  Text("${list['region']}"),
+                  Text("${list['region']} ، ${list['city']}"),
                 ],
               ),
             ),
-            trailing: Icon(Icons.arrow_forward_ios),
+            trailing: Padding(
+              padding: const EdgeInsets.only(top :15.0),
+              child: Icon(Icons.arrow_forward_ios),
+            ),
             leading: CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage("images/photo55.png"),
+              radius: 40,
+              backgroundImage: list['link_image'] != 'not' ? NetworkImage(list['link_image']) : null,
+              backgroundColor: list['link_image']== 'not' ? Colors.pink.shade100 : null,
             ),
           ),
         ),

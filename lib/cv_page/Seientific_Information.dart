@@ -12,15 +12,15 @@ class seientificInformation extends StatelessWidget{
     return Column(
       children: [
         SizedBox(height: 10,),
-        buildCard( "حدد مستواك العلمي", 0 ,"المستوى العلمي" , 8 ),
+        buildCard( "حدد مستواك العلمي", 0 ,"المستوى العلمي" , 8 , bloc),
         SizedBox(height: 20,),
-        buildCard("أختر" , 0, "المستوى الوظيفي", 9 ),
+        buildCard("أختر" , 0, "المستوى الوظيفي", 9 , bloc),
         SizedBox(height: 20,),
-        buildCard("أختر" , 0, "ماهي مجالات عملك", 10 ),
+        buildCard(bloc.selectedjob.length == 0 ? "true" :"false" , 0, "ماهي مجالات عملك", 10 , bloc),
         SizedBox(height: 20,),
-        buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 ),
+        buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 , bloc),
         SizedBox(height: 20,),
-        buildCard(bloc.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0 ),
+        buildCard(bloc.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0  , bloc),
         SizedBox(height: 20,),
       ],
     );

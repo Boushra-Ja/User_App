@@ -1,51 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class aboutCompany extends StatelessWidget {
+  final list;
+
+  const aboutCompany({Key key, this.list}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10),
-      color: Colors.pink.shade50,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              buildContainer(" حجم الشركة : ", "10 - 20 موظف"),
-              buildContainer(" موقع الشركة : ", "المنطقة الفلانية"),
-              buildContainer(" التخصص : ", "تكنولوجيا المعلومات "),
-              buildContainer(" التخصص : ", "تكنولوجيا المعلومات "),
-              buildContainer(" حجم الشركة : ", "10 - 20 موظف"),
-              buildContainer(" موقع الشركة : ", "المنطقة الفلانية"),
-              buildContainer(" التخصص : ", "تكنولوجيا المعلومات "),
-              SizedBox(
-                height: 40,
-              ),
-            ],
+        color: Colors.pink.shade50,
+        height: 500,
+        child: Card(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                buildContainer(" حجم الشركة : ", "${list['size_company']}" , context),
+                buildContainer(" موقع الشركة : ", "${list['region'] } ، ${list['city']}" , context),
+                buildContainer(" التخصص : ", "${list['specialization']}" , context),
+                buildContainer(" الوصف : ", "${list['description']} " , context ),
+                buildContainer(" رقم الشركة : ", "${list['phone']}" , context),
+                SizedBox(
+                  height: 20,
+                ),
+
+              ],
+            ),
           ),
-        ),
-      ),
+        )
     );
   }
 
-  Container buildContainer(String text1, String text2) {
+  Container buildContainer(String text1, String text2 , context) {
+
     return Container(
+      width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(top: 30, right: 30),
-      child: Row(
-        children: [
-          Text(
-            text1,
+      child: AutoSizeText(
+            text1 + " : " + text2,
             style: TextStyle(fontSize: 16),
+        maxLines: 2,
           ),
-          SizedBox(
-            width: 20,
-          ),
-          Text(text2, style: TextStyle(fontSize: 16)),
-        ],
-      ),
+
+
     );
   }
 }
