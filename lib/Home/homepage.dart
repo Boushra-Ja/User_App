@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List All_jobs = [];
   List My_jobs=[];
 
-  CollectionReference jobsref = FirebaseFirestore.instance.collection("company");
+  CollectionReference jobsref = FirebaseFirestore.instance.collection("jobs");
 
   /////////////////////////////get all data
   get_All_data() async {
