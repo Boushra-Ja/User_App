@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:b/Home/homepage.dart';
 import 'package:b/SettingPage/setting_page.dart';
 import 'package:b/component/alart.dart';
-import 'package:b/cv_page/EditProfile2.dart';
 import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

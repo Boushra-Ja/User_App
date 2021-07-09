@@ -37,13 +37,13 @@ class Edit_WorkInfo extends StatelessWidget{
     child: ListView(
       children: [
         SizedBox(height: 30 ,) ,
-        buildCard(user.selectedjob.length == 0 ? "true" :"false" , 0, "ماهي مجالات عملك", 10 , user),
+        buildCard(user.selectedjob.length == 0 ? "true" :"false" , 0, "ماهي مجالات عملك", 10 , user , 'profile'),
         SizedBox(height: 20,),
-        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , user),
+        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , user , 'profile'),
         SizedBox(height: 20,),
-        buildCard(user.workSite == "null" ? "true" :"false"  , 5, "حدد موقع العمل المطلوب", 0 , user),
+        buildCard(user.workSite == "null" ? "true" :"false"  , 5, "حدد موقع العمل المطلوب", 0 , user , 'profile'),
         SizedBox(height: 20,),
-        buildCard(user.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, user ),
+        buildCard(user.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, user , 'profile' ),
         SizedBox(height: 20,),
         Container(
             height: 70,
@@ -51,7 +51,7 @@ class Edit_WorkInfo extends StatelessWidget{
             child:  Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
-                color: Colors.yellow.shade50,
+                color: Colors.grey.shade100,
                 child: Row(
                   children: [
                     Container(padding : EdgeInsets.only(right: 20 ),child: Text("هل سبق أن عملت بشركة" , style: TextStyle(fontSize: 14),)) ,

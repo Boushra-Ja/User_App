@@ -12,11 +12,11 @@ class workInformation extends StatelessWidget{
     return Column(
       children: [
         SizedBox(height: 10 ,) ,
-        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , bloc),
+        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , bloc , 'sign'),
         SizedBox(height: 20,),
-        buildCard(bloc.workSite == "null" ? "true" :"false"  , 5, "حدد موقع العمل المطلوب", 0 , bloc),
+        buildCard(bloc.workSite == "null" ? "true" :"false"  , 5, "حدد موقع العمل المطلوب", 0 , bloc , 'sign'),
         SizedBox(height: 20,),
-        buildCard(bloc.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, bloc ),
+        buildCard(bloc.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, bloc , 'sign'),
         SizedBox(height: 20,),
         Container(
             height: 70,

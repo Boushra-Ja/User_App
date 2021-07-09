@@ -14,13 +14,13 @@ class PersonalInfo extends StatelessWidget{
         SizedBox(
           height: 10,
         ),
-        buildCard( bloc.firstName == "null" ? "true" :"false" , 1 ," الاسم الاول*" , 0 , bloc),
+        buildCard( bloc.firstName == "null" ? "true" :"false" , 1 ," الاسم الاول*" , 0 , bloc , 'sign'),
         SizedBox(height: 20,),
-        buildCard(bloc.endName == "null" ? "true" :"false",  2 ," الاسم الأخير*" , 0  , bloc),
+        buildCard(bloc.endName == "null" ? "true" :"false",  2 ," الاسم الأخير*" , 0  , bloc , 'sign'),
         SizedBox(height: 20,),
-        buildCard( "اختر", 0 , "الجنس*" , 4  , bloc),
+        buildCard( "اختر", 0 , "الجنس*" , 4  , bloc , 'sign'),
         SizedBox(height: 20,),
-        buildCard('اختر', 0, 'تاريخ الميلاد', 5 , bloc),
+        buildCard('اختر', 0, 'تاريخ الميلاد', 5 , bloc , 'sign'),
         SizedBox(height: 20,)
       ],
     );

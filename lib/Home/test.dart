@@ -24,8 +24,8 @@ class test extends StatelessWidget {
               return GestureDetector(
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => show(jobs[i])),
+                      context,null
+                      //MaterialPageRoute(builder: (context) => show(jobs[i])),
                     );
                   },
 

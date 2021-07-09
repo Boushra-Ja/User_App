@@ -1,4 +1,5 @@
 import 'package:b/Home/show.dart';
+import 'package:b/UserInfo.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,13 @@ import 'show.dart';
 
 class my_chance extends StatelessWidget {
   List m_jobs=[];
+  userInfo user ;
+  var docid;
 
-  my_chance(List my_jobs){
+  my_chance(List my_jobs , userInfo user , docid){
     m_jobs=my_jobs;
+    this.user = user;
+    this.docid = docid;
     //print(jobs);
   }
 
@@ -27,7 +32,7 @@ class my_chance extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => show(m_jobs[i])),
+                      MaterialPageRoute(builder: (context) => show(m_jobs[i] , user , docid)),
                     );
                   },
 

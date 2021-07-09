@@ -39,13 +39,13 @@ class Edit_SeientificInfo extends StatelessWidget{
 
               children: [
                 SizedBox(height: 30,),
-                buildCard( "حدد مستواك العلمي", 0 ,"المستوى العلمي" , 8 , user),
+                buildCard( "حدد مستواك العلمي", 0 ,"المستوى العلمي" , 8 , user , 'profile'),
                 SizedBox(height: 20,),
-                buildCard("أختر" , 0, "المستوى الوظيفي", 9 , user),
+                buildCard("أختر" , 0, "المستوى الوظيفي", 9 , user , 'profile'),
                 SizedBox(height: 20,),
-                buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 , user),
+                buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 , user , 'profile'),
                 SizedBox(height: 20,),
-                buildCard(user.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0  , user),
+                buildCard(user.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0  , user , 'profile'),
                 SizedBox(height: 20,),
                 Center(
                   child: Container(

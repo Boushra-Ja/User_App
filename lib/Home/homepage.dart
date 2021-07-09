@@ -177,8 +177,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
               body:TabBarView(
                 children: [
-                  all_chance(All_jobs),
-                  my_chance(My_jobs),
+                  all_chance(All_jobs , user , docid),
+                  my_chance(My_jobs , user , docid),
                   companyPage()
 
 

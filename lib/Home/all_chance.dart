@@ -1,16 +1,21 @@
 import 'package:b/Home/show.dart';
+import 'package:b/UserInfo.dart';
 import 'package:b/myDrawer/Drawer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'show.dart';
 
 
 
 class all_chance extends StatelessWidget {
-  List jobs=[];
-  all_chance(List all_jobs){
-    jobs=all_jobs;
 
+   userInfo user;
+   var docid;
+
+  List jobs=[];
+  all_chance(List all_jobs , userInfo user , docid){
+    jobs=all_jobs;
+    this.user = user;
+    this.docid = docid;
   }
 
   @override
@@ -19,6 +24,7 @@ class all_chance extends StatelessWidget {
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
+          drawer: mydrawer(user: user, docid: docid,),
           body: ListView.builder(
             itemCount: jobs.length,
             /////// loop
@@ -27,7 +33,7 @@ class all_chance extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => show(jobs[i])),
+                      MaterialPageRoute(builder: (context) => show(jobs[i] , user , docid)),
                     );
                   },
 

@@ -41,17 +41,17 @@ class Edit_PersonalInfo extends StatelessWidget{
                   SizedBox(
                     height: 40,
                   ),
-                  buildCard( 'false', 1 ," الاسم الاول*" , 0 , user),
+                  buildCard( 'false', 1 ," الاسم الاول*" , 0 , user , 'profile'),
                   SizedBox(height: 20,),
-                  buildCard('false',  2 ," الاسم الأخير*" , 0  , user),
+                  buildCard('false',  2 ," الاسم الأخير*" , 0  , user , 'profile'),
                   SizedBox(height: 20,),
-                  buildCard( "اختر", 0 , "الجنس*" , 4 , user ),
+                  buildCard( "اختر", 0 , "الجنس*" , 4 , user , 'profile'),
                   SizedBox(height: 20,),
-                  buildCard('اختر', 0, 'تاريخ الميلاد', 5 , user ),
+                  buildCard('اختر', 0, 'تاريخ الميلاد', 5 , user , 'profile'),
                   SizedBox(height: 30,),
                   Card(
                     margin: EdgeInsets.only(bottom: 30 , top: 10),
-                    color: Colors.yellow.shade50,
+                    color: Colors.grey.shade100,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     child: Column(

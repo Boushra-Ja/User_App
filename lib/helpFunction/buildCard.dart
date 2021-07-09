@@ -8,10 +8,10 @@ import 'buildMulti_SelectForm.dart';
 
 class buildCard extends StatelessWidget{
 
-  String hinttext , text ;
+  String hinttext , text , color;
   int num , _selected;
   userInfo user;
-  buildCard(this.hinttext , this.num , this.text , this._selected , this.user) ;
+  buildCard(this.hinttext , this.num , this.text , this._selected , this.user , this.color) ;
   @override
   Widget build(BuildContext context) {
 
@@ -21,7 +21,7 @@ class buildCard extends StatelessWidget{
       child: Card(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
-        color: Colors.yellow.shade50,
+        color: color == 'sign' ?  Colors.yellow.shade50 : Colors.grey.shade100 ,
         child : Column(
           children: [
             buildText(text , 0 ),
