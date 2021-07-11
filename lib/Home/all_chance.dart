@@ -7,7 +7,6 @@ import 'show.dart';
 
 
 class all_chance extends StatelessWidget {
-
    userInfo user;
    var docid;
 

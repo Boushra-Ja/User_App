@@ -65,7 +65,6 @@ class EditProfileState extends State<EditProfile> {
 
   @override
   void initState() {
-
     super.initState();
   }
 
