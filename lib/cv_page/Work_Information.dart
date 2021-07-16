@@ -24,7 +24,7 @@ class workInformation extends StatelessWidget{
             child:  Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
-                color: Colors.yellow.shade50,
+                color: Colors.grey.shade100,
                 child: Row(
                   children: [
                     Container(padding : EdgeInsets.only(right: 20 ),child: Text("هل سبق أن عملت بشركة" , style: TextStyle(fontSize: 14),)) ,

@@ -29,7 +29,6 @@ class build_MultiSelectState extends State<build_MultiSelect>{
   }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     print(widget.text);
     print(widget._selected);
@@ -39,12 +38,9 @@ class build_MultiSelectState extends State<build_MultiSelect>{
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<userInfo>(context) ;
-    print(bloc.selectedjob.length);
-    print(bloc.selectedjob);
     return Expanded(
       flex: widget.flex_,
       child: Container(
-
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -82,10 +78,7 @@ class build_MultiSelectState extends State<build_MultiSelect>{
               "display": 'ترجمة ',
               "value": 'ترجمة ',
             },
-            {
-              "display": 'تصيم غرافيكي وتحريك',
-              "value": 'تصيم غرافيكي وتحريك',
-            },
+
             {
               "display": "سكرتاريا",
               "value": "سكرتاريا",
@@ -143,7 +136,6 @@ class build_MultiSelectState extends State<build_MultiSelect>{
             if (value == null) return ;
             setState(() {
               bloc.set_selectedjob(value)  ;
-              print(bloc.selectedjob);
             });
           },
         ),

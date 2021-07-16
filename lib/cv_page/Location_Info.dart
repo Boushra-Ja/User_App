@@ -15,7 +15,7 @@ class LocationInfo extends StatelessWidget{
 
     return Card(
       margin: EdgeInsets.only(bottom: 30 , top: 10),
-      color: Colors.yellow.shade50,
+      color: Colors.grey.shade100,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20)),
       child: Column(

@@ -2,7 +2,6 @@ import 'package:b/helpFunction/buildDropdownButton.dart';
 import 'package:b/helpFunction/buildText.dart';
 import 'package:b/helpFunction/buildTextFormAll.dart';
 import 'package:flutter/material.dart';
-
 import '../UserInfo.dart';
 import 'buildMulti_SelectForm.dart';
 
@@ -16,12 +15,11 @@ class buildCard extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return Container(
- //     height: _selected == 10 ? 300 : 150,
       width: 440,
       child: Card(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
-        color: color == 'sign' ?  Colors.yellow.shade50 : Colors.grey.shade100 ,
+        color: color == 'sign' ?  Colors.grey.shade100 : Colors.grey.shade100 ,
         child : Column(
           children: [
             buildText(text , 0 ),

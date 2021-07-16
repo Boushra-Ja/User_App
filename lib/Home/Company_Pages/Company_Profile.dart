@@ -1,11 +1,22 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:b/Home/Leatest_New/Company_Publication.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'AboutCompany.dart';
 
 class companyProfile extends StatefulWidget {
-  final list;
-  const companyProfile({Key key, this.list}) : super(key: key);
+  var list, company_Id, user_id, check_followers, list_post, num_followers;
+  companyProfile(
+      {Key key,
+      this.list,
+      this.company_Id,
+      this.user_id,
+      this.check_followers,
+      this.list_post,
+      this.num_followers})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return profileState();
@@ -15,8 +26,22 @@ class companyProfile extends StatefulWidget {
 class profileState extends State<companyProfile> {
   bool check1 = true, check2 = false, check3 = false, check4 = false;
 
+  var num_companies_follow;
+  CollectionReference company =
+      FirebaseFirestore.instance.collection("companies");
+
+  CollectionReference user = FirebaseFirestore.instance.collection("users");
+
+
+  @override
+  void initState() {
+    print(widget.num_followers);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var temp = widget.num_followers;
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
@@ -32,7 +57,14 @@ class profileState extends State<companyProfile> {
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height / 2,
-                        color: Colors.pink.shade900,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: <Color>[
+                              Colors.pink.shade900,
+                              Colors.grey.shade800
+                            ])),
                         child: Column(
                           children: [
                             Row(
@@ -42,8 +74,17 @@ class profileState extends State<companyProfile> {
                                       top: 20.0, right: 30),
                                   child: CircleAvatar(
                                     radius: 50,
-                                    backgroundImage: widget.list['link_image'] != 'not' ? NetworkImage(widget.list['link_image']) : null,
-                                    backgroundColor: widget.list['link_image']== 'not' ? Colors.amber.shade50 : null,
+                                    backgroundImage:
+                                        widget.list['link_image'] !=
+                                                "link of image"
+                                            ? NetworkImage(
+                                                widget.list['link_image'])
+                                            : null,
+                                    backgroundColor:
+                                        widget.list['link_image'] ==
+                                                "link of image"
+                                            ? Colors.amber.shade50
+                                            : null,
                                   ),
                                 ),
                                 Padding(
@@ -53,8 +94,7 @@ class profileState extends State<companyProfile> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 15),
-                                        child:
-                                        AutoSizeText(
+                                        child: AutoSizeText(
                                           "${widget.list['company']}",
                                           style: TextStyle(
                                               fontSize: 18,
@@ -62,7 +102,6 @@ class profileState extends State<companyProfile> {
                                               fontWeight: FontWeight.w600),
                                           maxLines: 2,
                                         ),
-
                                       ),
                                       Padding(
                                         padding:
@@ -123,7 +162,7 @@ class profileState extends State<companyProfile> {
                                                   fontSize: 16,
                                                   color: Colors.white)),
                                           Text(
-                                            "1000",
+                                            "${widget.num_followers}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w900,
                                                 color: Colors.white),
@@ -171,14 +210,140 @@ class profileState extends State<companyProfile> {
                                                       new BorderRadius.circular(
                                                           30.0)),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () async {
+                                              //////////////Add User to Company
+                                              if (widget.check_followers ==
+                                                  false) {
+                                                setState(() {
+                                                  widget.check_followers = true;
+                                                  widget.num_followers =
+                                                      widget.num_followers + 1;
+                                                });
+                                                await company
+                                                    .doc(widget.company_Id)
+                                                    .update({
+                                                  "followers":
+                                                      FieldValue.arrayUnion(
+                                                          [widget.user_id])
+                                                }).then((value) {
+                                                  print('Sucsess');
+                                                }).catchError((e) {
+                                                  AwesomeDialog(
+                                                      context: context,
+                                                      title: "Error",
+                                                      body: Text('Error'))
+                                                    ..show();
+                                                });
+                                                ///////////////Add Company To user
+                                                await user
+                                                    .doc(widget.user_id)
+                                                    .update({
+                                                  "companies_follow":
+                                                      FieldValue.arrayUnion(
+                                                          [widget.company_Id])
+                                                }).then((value) {
+                                                  print('Sucsess');
+                                                }).catchError((e) {
+                                                  AwesomeDialog(
+                                                      context: context,
+                                                      title: "Error",
+                                                      body: Text('Error'))
+                                                    ..show();
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  widget.check_followers =
+                                                      false;
+                                                  widget.num_followers =
+                                                      widget.num_followers - 1;
+                                                });
+                                                //////////////////////Delete User From Company
+                                                await company
+                                                    .doc(widget.company_Id)
+                                                    .get()
+                                                    .then((value) async {
+                                                  print(widget.num_followers);
+                                                  for (int i = 0;
+                                                      i < widget.num_followers;
+                                                      i++) {
+                                                    if (value.data()[
+                                                            'followers'][i] ==
+                                                        widget.user_id) {
+                                                      var val =
+                                                          []; //blank list for add elements which you want to delete
+                                                      val.add(
+                                                          '${value.data()['followers'][i]}');
+                                                      company
+                                                          .doc(
+                                                              widget.company_Id)
+                                                          .update({
+                                                        "followers": FieldValue
+                                                            .arrayRemove(val)
+                                                      }).then((value) {
+                                                        print('Sucsess');
+                                                      }).catchError((e) {
+                                                        AwesomeDialog(
+                                                            context: context,
+                                                            title: "Error",
+                                                            body: Text('Error'))
+                                                          ..show();
+                                                      });
+                                                    }
+                                                  }
+                                                });
+                                                ///////////////Delete Company From User
+                                                await user
+                                                    .doc(widget.user_id)
+                                                    .get()
+                                                    .then((value) async {
+                                                  num_companies_follow = value
+                                                      .data()[
+                                                          'companies_follow']
+                                                      .length;
+                                                  print(num_companies_follow);
+                                                  for (int i = 0;
+                                                      i < num_companies_follow;
+                                                      i++) {
+                                                    if (value.data()[
+                                                                'companies_follow']
+                                                            [i] ==
+                                                        widget.company_Id) {
+                                                      var val =
+                                                          []; //blank list for add elements which you want to delete
+                                                      val.add(
+                                                          '${value.data()['companies_follow'][i]}');
+                                                      user
+                                                          .doc(widget.user_id)
+                                                          .update({
+                                                        "companies_follow":
+                                                            FieldValue
+                                                                .arrayRemove(
+                                                                    val)
+                                                      }).then((value) {
+                                                        print('Sucsess');
+                                                      }).catchError((e) {
+                                                        AwesomeDialog(
+                                                            context: context,
+                                                            title: "Error",
+                                                            body: Text('Error'))
+                                                          ..show();
+                                                      });
+                                                    }
+                                                  }
+                                                });
+                                              }
+                                            },
                                             icon: Icon(
-                                              Icons.plus_one,
+                                              widget.check_followers == false
+                                                  ? Icons.plus_one
+                                                  : Icons.minimize,
                                               color: Colors.black,
                                               size: 16,
                                             ),
                                             label: Text(
-                                              "متابعة",
+                                              widget.check_followers == false
+                                                  ? "متابعة"
+                                                  : "الغاء المتابعة",
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 12),
@@ -202,7 +367,7 @@ class profileState extends State<companyProfile> {
                                                           30.0)),
                                             ),
                                             onPressed: () {},
-                                            child: PopupOptionMenu(),
+                                            child: PopupOptionMenu(user_Id: widget.user_id , company_Id: widget.company_Id),
                                           ),
                                         ),
                                       ],
@@ -296,7 +461,20 @@ class profileState extends State<companyProfile> {
                     ],
                   ),
                 ),
-                check1 == true ? aboutCompany(list: widget.list,) : Text('dsfd'),
+                SizedBox(
+                  height: 10,
+                ),
+                check1 == true
+                    ? aboutCompany(
+                        list: widget.list,
+                      )
+                    : check2 == true
+                        ? company_Publication(
+                            post: widget.list_post,
+                            company_name: widget.list['company'],
+                            num_follwers: widget.num_followers,
+                          )
+                        : Text('ds'),
               ],
             ),
           ),
@@ -338,8 +516,17 @@ class profileState extends State<companyProfile> {
 enum MenuOption { save, share, report }
 
 class PopupOptionMenu extends StatelessWidget {
+  final user_Id , company_Id;
+  const PopupOptionMenu({Key key, this.user_Id , this.company_Id}) : super(key: key);
+
+
   @override
   Widget build(BuildContext context) {
+
+    CollectionReference saved_Item = FirebaseFirestore.instance.collection("users").doc(user_Id).collection("saved_Item");
+
+    CollectionReference user = FirebaseFirestore.instance.collection("users");
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: PopupMenuButton<MenuOption>(
@@ -352,7 +539,9 @@ class PopupOptionMenu extends StatelessWidget {
             return <PopupMenuEntry<MenuOption>>[
               PopupMenuItem(
                 child: ListTile(
-                  onTap: () {},
+                  onTap: () async{
+                    Navigator.of(context).pop();
+                  },
                   trailing: Icon(
                     Icons.save,
                     color: Colors.black,

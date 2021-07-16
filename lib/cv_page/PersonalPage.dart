@@ -58,7 +58,10 @@ class PersnalState extends State<personalPage> {
       'skill': user.Skills,
       'type_work': user.selectedTypeJob,
       'worksite': user.workSite,
-      'salary': user.salary
+      'salary': user.salary,
+      'saved_Item' : {},
+      'companies_follow' : []
+
     }).then((value) {
       print('Sucsess');
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
@@ -130,8 +133,9 @@ class PersnalState extends State<personalPage> {
                         formdata5.save();
                         print(user.mygmail);
                         print(user.phone);
-                        await addData(user);
+                          await addData(user);
                       }
+
                     }
                   },
                   onStepCancel: () {
@@ -143,7 +147,7 @@ class PersnalState extends State<personalPage> {
                       }
                     });
                   },
-                  stepNumberColor: Colors.amberAccent,
+                  stepNumberColor: Colors.pink.shade800,
                   titleIconArrange: FAStepperTitleIconArrange.row,
                   controlsBuilder: (BuildContext context,
                       {VoidCallback onStepContinue,
@@ -184,7 +188,7 @@ class PersnalState extends State<personalPage> {
                             elevation: 10,
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0)),
-                            color: Colors.amberAccent.shade100,
+                            color: Colors.amber.shade100,
                             onPressed: onStepCancel,
                             child: const Text('Cancel',
                                 style: TextStyle(
@@ -283,8 +287,14 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     return ClipPath(
       clipper: MyClipper(),
       child: Container(
-        color: Colors.pink.shade900,
-      ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.pink.shade900, Colors.grey.shade800]),
+        )
+        ),
+
     );
   }
 }
@@ -309,8 +319,6 @@ class MyClipper extends CustomClipper<Path> {
     path.lineTo(size.width, size.height - 40);
     path.lineTo(size.width, 0.0);
     path.close();
-
-    //path.conicTo(30, 10, 70, 100, 10);
     return path;
   }
 

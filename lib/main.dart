@@ -1,4 +1,3 @@
-import 'package:b/myDrawer/UserProfilePage/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,8 +7,7 @@ import 'package:load/load.dart';
 import 'package:provider/provider.dart';
 import 'UserInfo.dart';
 import 'authintication/Welcom_Page.dart';
-import 'authintication/login.dart';
-import 'authintication/signup.dart';
+import 'myDrawer/Saved items/saved_Item.dart';
 
 bool islogin ;
 void main() async{
@@ -43,11 +41,6 @@ class MyApp extends StatelessWidget {
           title: 'Jobs',
           debugShowCheckedModeBanner: false,
 
-          routes:{
-            "login": (context) => Login(),
-            "homepage" : (context) => MyHomePage() ,
-            "signup" : (context) => signUp() ,
-          } ,
           home:// islogin == false ? Login() : MyHomePage() ,
           LoadingProvider(
               themeData: LoadingThemeData(),
@@ -63,7 +56,7 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               },
-              child:islogin == false ? Welcom() : MyHomePage()
+              child: islogin == false ? Welcom() : MyHomePage()
           )
       ),
     );

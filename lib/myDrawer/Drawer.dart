@@ -15,6 +15,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../UserInfo.dart';
+import 'Saved items/saved_Item.dart';
 
 class mydrawer extends StatefulWidget {
   final userInfo user;
@@ -91,33 +92,9 @@ class drawerState extends State<mydrawer> {
                   color: Colors.white,
                   fontWeight: FontWeight.w600),
             ),
-            currentAccountPicture: InkWell(
-              onTap: () async {
-                showDialog(
-                    context: context,
-                    builder: (ctxt) => new AlertDialog(
-                        title: showDialog_Photo(),
+            currentAccountPicture: showDialog_Photo(user: widget.user, docid: widget.docid, num : 1),
 
-                    ));
-                //  await UploadImages();
-              },
-              child: CircleAvatar(
-                  radius: 45,
-                  backgroundImage: widget.user.imageurl!= 'not'
-                      ? NetworkImage(widget.user.imageurl)
-                      : null,
-                  backgroundColor: widget.user.imageurl == 'not'
-                      ? Colors.pink.shade800
-                      : null,
-                  child: widget.user.imageurl == 'not'
-                      ? Icon(
-                    Icons.person,
-                    size: 40,
-                    color: Colors.white,
-                  )
-                      : null),
-            ),
-            decoration: BoxDecoration(
+        decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('images/photo8.jpg'), fit: BoxFit.fill)),
           ),
@@ -172,11 +149,25 @@ class drawerState extends State<mydrawer> {
               onTap: () {}),
           ListTile(
               title: Text(
-                "تصنيف الفرص",
+                "العناصر المحفوظة",
                 style: TextStyle(fontSize: 16),
               ),
               leading: IconButton(
-                icon: Icon(Icons.filter, color: Colors.grey.shade600),
+                icon: Icon(Icons.save, color: Colors.grey.shade600),
+                iconSize: 22,
+              ),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                  return saved_Item();
+                }));
+              }),
+          ListTile(
+              title: Text(
+                " المميزة بنجمة",
+                style: TextStyle(fontSize: 16),
+              ),
+              leading: IconButton(
+                icon: Icon(Icons.star, color: Colors.grey.shade600),
                 iconSize: 22,
               ),
               onTap: () {}),

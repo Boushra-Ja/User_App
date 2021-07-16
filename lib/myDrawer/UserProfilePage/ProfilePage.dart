@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../UserInfo.dart';
 import 'Edit_ContactInfo.dart';
 import 'Edit_PersonalInfo.dart';
+import 'dart:ui' as ui;
 
 class userProfile extends StatefulWidget {
   final docid;
@@ -63,7 +64,12 @@ class userProfileState extends State<userProfile> {
                         ],
                       )
                   ),
-                  showDialog_Photo(user: widget.user, docid: widget.docid,)
+                Positioned(
+                  top: 100,
+                  right: MediaQuery.of(context).size.width/2 - 70 ,
+                  child: showDialog_Photo(user: widget.user, docid: widget.docid , num : 0)
+                  ,
+                )
                 ],
               )
             ),
@@ -78,7 +84,7 @@ class userProfileState extends State<userProfile> {
             ),
             SizedBox(height: 20,),
             Container(
-              height: 100,
+              height: 150,
               child: Card(
                 color: Colors.grey.shade100,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
@@ -92,17 +98,19 @@ class userProfileState extends State<userProfile> {
                     child: ListTile(
                       title: Padding(
                         padding: const EdgeInsets.only(right :15.0 ,  top : 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("جاهز للعمل في مجال :" ),
-                         SizedBox(height: 5,),
-                         Text("${widget.user.selectedjob}")
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("جاهز للعمل في مجال :" ),
+                           Divider(),
+                           SizedBox(height: 5,),
+                           Flexible(child: Text("${widget.user.selectedjob}" , overflow: TextOverflow.fade))
                        ],
-                        ),
+                          ),
+
                       ),
                       trailing: Padding(
-                        padding: const EdgeInsets.only(top : 15),
+                        padding: const EdgeInsets.only(top : 50),
                         child: Icon(Icons.arrow_forward_ios)
 
                       ),
@@ -249,7 +257,14 @@ class userProfileState extends State<userProfile> {
 class HeaderCurvedContainer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Colors.pink.shade900;
+    Paint paint = Paint().. shader = ui.Gradient.linear(
+      Offset(10 , 100),
+      Offset(450 , 100),
+      [
+        Colors.pink.shade900 ,Colors.grey.shade900
+      ],
+    )
+    ;
     Path path = Path()
       ..relativeLineTo(0, 150)
       ..quadraticBezierTo(size.width / 2, 250, size.width  , 150)

@@ -13,9 +13,10 @@ import 'package:b/component/alart.dart';
 import '../UserInfo.dart';
 
 class showDialog_Photo extends StatefulWidget {
-  final docid ;
+  final docid , num ;
   final userInfo user;
-  const showDialog_Photo({Key key,  this.user , this.docid}) : super(key: key);
+
+  const showDialog_Photo({Key key,  this.user , this.docid , this.num}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -33,10 +34,7 @@ class showDialogeState extends State<showDialog_Photo>{
   @override
   Widget build(BuildContext context) {
 
-    return Positioned(
-        top: 100,
-        right: MediaQuery.of(context).size.width/2 - 70 ,
-        child:  Center(
+    return Center(
           child: InkWell(
             onTap: (){
               showDialog(
@@ -113,25 +111,35 @@ class showDialogeState extends State<showDialog_Photo>{
               );
 
             },
-            child: CircleAvatar(
-                radius: 70,
-                backgroundImage: photo != null
-                    ? FileImage(photo)
-                    : widget.user.imageurl != 'not'
-                    ? NetworkImage(widget.user.imageurl)
-                    : null,
-                backgroundColor: widget.user.imageurl == 'not'
-                    ? Colors.grey.shade700
-                    : null,
-                child: (widget.user.imageurl == 'not'&& photo == null)
-                    ? Icon(
-                  Icons.person,
-                  size: 70,
-                  color: Colors.white,
-                )
-                    : null)
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [ widget.num == 0 ? Colors.grey.shade500 : Colors.pink.shade800 , Colors.grey.shade800 ]),
+                shape: BoxShape.circle,
+              ),
+              child: CircleAvatar(
+                  radius: 70,
+                  backgroundImage: photo != null
+                      ? FileImage(photo)
+                      : widget.user.imageurl != 'not'
+                      ? NetworkImage(widget.user.imageurl)
+                      : null,
+                  backgroundColor: widget.user.imageurl == 'not'
+                      ?        Colors.transparent
+
+                  : null,
+                  child: (widget.user.imageurl == 'not'&& photo == null)
+                      ? Icon(
+                    Icons.person,
+                    size: widget.num == 0 ? 70 : 40,
+                    color: Colors.white,
+                  )
+                      : null),
+            )
           ),
-        ));
+        );
   }
 
   UploadImages(BuildContext context, int num) async {

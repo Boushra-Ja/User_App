@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/component/alart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -31,7 +32,6 @@ class loginState extends State<Login> {
 
       try {
         showLoading(context);
-        print("***************");
         userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: myemail, password: mypassword);
         return userCredential;
@@ -58,7 +58,8 @@ class loginState extends State<Login> {
   Future<UserCredential> SignInWithGoogle() async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -69,10 +70,12 @@ class loginState extends State<Login> {
 
   @override
   void initState() {
+
     changesign = new TapGestureRecognizer()
       ..onTap = () {
         setState(() {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
             return signUp();
           }));
         });
@@ -92,19 +95,20 @@ class loginState extends State<Login> {
                 clipper: WaveClipperOne(),
                 child: Container(
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        Colors.pink.shade900,
-                        Colors.pink.shade900,
-                        Colors.pink.shade900,
-                        Colors.grey.shade800
+                      gradient: LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.topLeft,
+                          colors: [
+                        Colors.grey.shade900,
+                        Colors.pink.shade900
                       ])),
                   height: 160,
                   child: Center(
                       child: Icon(
-                        Icons.supervised_user_circle,
-                        size: 80,
-                        color: Colors.white,
-                      )),
+                    Icons.supervised_user_circle,
+                    size: 80,
+                    color: Colors.white,
+                  )),
                 ),
               ),
               Positioned(
@@ -117,7 +121,16 @@ class loginState extends State<Login> {
                               reverse: true,
                             ),
                             child: Container(
-                                height: 120, color: Colors.pink.shade900),
+                              height: 120,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.center,
+                                      colors: [
+                                        Colors.grey.shade900,
+                                        Colors.pink.shade900
+                                  ])),
+                            ),
                           )))),
               buildPositionedShape(400.0, 50.0, 440.0, 200, 200),
               Container(
@@ -129,12 +142,12 @@ class loginState extends State<Login> {
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: buildTextFormAll(
-                              false, "اسم المستخدم", 0, Colors.grey.shade200),
+                              false, "اسم المستخدم", 0, Colors.grey.shade100),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: buildTextFormAll(
-                              true, "كلمة المرور", 1, Colors.white),
+                              true, "كلمة المرور", 1, Colors.grey.shade100),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -194,22 +207,20 @@ class loginState extends State<Login> {
                                 "images/google.jpg",
                               ),
                             ),
-                            onTap: ()async{
-                              showLoading(context) ;
-                              var response = await SignInWithGoogle() ;
+                            onTap: () async {
+                              showLoading(context);
+                              var response = await SignInWithGoogle();
                               if (response != null) {
-                                print("***********") ;
+                                print("***********");
                                 Navigator.of(context).pushNamed("homepage");
-                              }else
-                              {
-                                print('dsdssd') ;
+                              } else {
+                                print('dsdssd');
                               }
                             },
-                          ) ,
+                          ),
                         )
                       ],
-                    )
-                ),
+                    )),
               ),
             ],
           ),
@@ -220,25 +231,28 @@ class loginState extends State<Login> {
       double height_, double width_) {
     return Positioned(
         child: Transform.scale(
-          scale: 1.4,
-          child: Transform.translate(
-            offset: Offset(offset_x, offset_y),
-            child: Container(
-              height: height_,
-              width: width_,
-              decoration: BoxDecoration(
-                color: Colors.pink.shade900,
-                borderRadius: BorderRadius.circular(mdw / 4),
-              ),
-            ),
+      scale: 1.4,
+      child: Transform.translate(
+        offset: Offset(offset_x, offset_y),
+        child: Container(
+          height: height_,
+          width: width_,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topCenter,
+                colors: [
+                  Colors.pink.shade900 , Colors.grey.shade900]),
+            borderRadius: BorderRadius.circular(mdw / 4),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 
   TextFormField buildTextFormAll(
       bool visible, String myHintText, valid_num, var color) {
     return TextFormField(
-
       validator: (val) {
         if (valid_num == 0) {
           if (val.length > 50) {
@@ -247,11 +261,8 @@ class loginState extends State<Login> {
           if (val.length == 0) {
             return "هذا الحقل مطلوب";
           }
-        }else
-        {
-          if(val.length == 0)
-            return "هذا الحقل مطلوب";
-
+        } else {
+          if (val.length == 0) return "هذا الحقل مطلوب";
         }
         return null;
       },
@@ -268,8 +279,8 @@ class loginState extends State<Login> {
         filled: true,
         fillColor: color,
         hintStyle: TextStyle(
-          fontSize: 20,
-          color: Colors.black,
+          fontSize: 18,
+          color: Colors.grey.shade800,
           fontWeight: FontWeight.w300,
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
@@ -278,28 +289,34 @@ class loginState extends State<Login> {
     );
   }
 
-  Container buildRaisedButton() {
-    return Container(
-      height: 50,
-      width: 170,
-      child: RaisedButton(
-        onPressed: () async {
-          var response = await SignIn();
-          if (response != null) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
-              return MyHomePage();
-            }));
-          }},
-        elevation: 10,
-        child: Text(
-          "تسجيل الدخول",
-          style: TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-        shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(30.0)),
-        color: Colors.pink.shade900,
+  GradientButton buildRaisedButton() {
+    return GradientButton(
+      increaseWidthBy: 240,
+      increaseHeightBy: 12,
+      elevation: 10,
+      child: Text(
+        "تسجيل الدخول",
+        style: TextStyle(
+            color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
       ),
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(30.0),
+      ),
+      callback: ()async {
+        var response = await SignIn();
+        if (response != null) {
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
+            return MyHomePage();
+          }));
+        }
+      },
+      gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.pink.shade900, Colors.grey.shade800]),
     );
+
   }
+
 }

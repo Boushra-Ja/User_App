@@ -1,8 +1,10 @@
-import 'package:b/helpFunction/buildCardForCompany.dart';
+import 'package:b/Home/Company_Pages/buildCardForCompany.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class companyPage extends StatefulWidget {
+  final user_id;
+  const companyPage({Key key, this.user_id}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return companyState();
@@ -12,6 +14,7 @@ class companyPage extends StatefulWidget {
 class companyState extends State<companyPage> {
   CollectionReference company_Info =
       FirebaseFirestore.instance.collection("companies");
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -40,7 +43,7 @@ class companyState extends State<companyPage> {
                           itemCount: snapshot.data.docs.length,
                           itemBuilder: (context, i) {
                             return buildCardCompany(
-                              list: snapshot.data.docs[i],
+                                list: snapshot.data.docs[i],company_Id: snapshot.data.docs[i].id,user_id : widget.user_id
                             );
                           });
                     }
@@ -51,3 +54,4 @@ class companyState extends State<companyPage> {
         )));
   }
 }
+/**/
