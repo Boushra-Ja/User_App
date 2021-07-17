@@ -1,4 +1,5 @@
 import 'package:b/UserInfo.dart';
+import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../UserInfo.dart';
 import 'Company_Pages/Company_Page.dart';
-import 'Leatest_New/Company_Publication.dart';
+import 'Leatest_New/Refrech_Posts.dart';
 import 'my_chance.dart';
 import 'all_chance.dart';
 
@@ -20,15 +21,9 @@ class _MyHomePageState extends State<MyHomePage> {
   userInfo user = new userInfo();
   List All_jobs = [];
   List My_jobs = [];
-  List companies_follow_Id = [],
-      companies_post = [],
-      company_name = [],
-      num_follwers = [];
+  bool loading = true;
 
   CollectionReference jobsref = FirebaseFirestore.instance.collection("jobs");
-
-  CollectionReference company =
-      FirebaseFirestore.instance.collection('companies');
 
   /////////////////////////////get all data
   get_All_data() async {
@@ -55,6 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
           })
         });
     print(My_jobs.length);
+    setState(() {
+      loading = false;
+    });
   }
 
   ///////////////////////user Info
@@ -100,51 +98,14 @@ class _MyHomePageState extends State<MyHomePage> {
     print(user.firstName);
   }
 
-  get_Post() async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if (doc['uid'] == FirebaseAuth.instance.currentUser.uid) {
-          companies_follow_Id = doc.data()['companies_follow'];
-        }
-      });
-    });
-    print(companies_follow_Id);
-    for (int i = 0; i < companies_follow_Id.length; i++) {
-      await FirebaseFirestore.instance
-          .collection('companies')
-          .doc(companies_follow_Id[i])
-          .collection('Post')
-          .get()
-          .then((value) async {
-        if (value.docs.isNotEmpty) {
-          for (int j = 0; j < value.docs.length; j++) {
-            companies_post.add(value.docs[j].data());
-
-            await company.doc(companies_follow_Id[i]).get().then((value) {
-              company_name.add(value.data()['company']);
-              num_follwers.add(value.data()['followers'].length);
-            });
-          }
-        }
-      });
-    }
-
-    print(companies_post);
-    print(company_name);
-    print(num_follwers);
-  }
-
   @override
   void initState() {
-
     setState(() {
-      getId();
-      get_All_data();
-      get_My_data();
-      get_Post();
+      () async {
+        await getId();
+        await get_All_data();
+        await get_My_data();
+      }();
     });
 
     print("&&&&&&&&&&&");
@@ -270,19 +231,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         user: user,
                         docid: docid,
                       ),
-                      body: TabBarView(
-                        children: [
-                          all_chance(All_jobs, user, docid),
-                          my_chance(My_jobs, user, docid),
-                          companyPage(user_id: docid),
-                          company_Publication(
-                              post: companies_post,
-                              company_name: company_name,
-                              num_follwers: num_follwers),
-                          ////////////// Rama add roadmaps ^_^
-                          my_chance(My_jobs, user, docid),
-                        ],
-                      ),
+                      body: loading
+                          ? Loading()
+                          : TabBarView(
+                              children: [
+                                all_chance(All_jobs, user, docid),
+                                my_chance(My_jobs, user, docid),
+                                companyPage(user_id: docid),
+                                Refrech_Posts(docid: docid),
+                                ////////////// Rama add roadmaps ^_^
+                                my_chance(My_jobs, user, docid),
+                              ],
+                            ),
                     )))));
   }
 }

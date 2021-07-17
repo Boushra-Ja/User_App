@@ -7,59 +7,49 @@ import 'package:load/load.dart';
 import 'package:provider/provider.dart';
 import 'UserInfo.dart';
 import 'authintication/Welcom_Page.dart';
-import 'myDrawer/Saved items/saved_Item.dart';
 
-bool islogin ;
-void main() async{
+bool islogin;
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
 
-  var user = FirebaseAuth.instance.currentUser ;
-  if(user == null)
-  {
+  var user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
     islogin = false;
-  }else
-  {
-    islogin = true ;
+  } else {
+    islogin = true;
   }
-  runApp(
-      new Directionality(textDirection: TextDirection.rtl, child: MyApp())
-  );}
+  runApp(new Directionality(textDirection: TextDirection.rtl, child: MyApp()));
+}
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_)=> userInfo()),
-
+        ChangeNotifierProvider(create: (_) => userInfo()),
       ],
       child: MaterialApp(
-          theme: ThemeData(fontFamily: 'Lato' ),
+          theme: ThemeData(fontFamily: 'Lato'),
           title: 'Jobs',
           debugShowCheckedModeBanner: false,
-
-          home:// islogin == false ? Login() : MyHomePage() ,
-          LoadingProvider(
-              themeData: LoadingThemeData(),
-              loadingWidgetBuilder: (ctx, data) {
-                return Center(
-                  child: SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Container(
-                      child: CupertinoActivityIndicator(),
-                      color: Colors.pink,
-                    ),
-                  ),
-                );
-              },
-              child: islogin == false ? Welcom() : MyHomePage()
-          )
-      ),
+          home: // islogin == false ? Login() : MyHomePage() ,
+              LoadingProvider(
+                  themeData: LoadingThemeData(),
+                  loadingWidgetBuilder: (ctx, data) {
+                    return Center(
+                      child: SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Container(
+                          child: CupertinoActivityIndicator(),
+                          color: Colors.pink,
+                        ),
+                      ),
+                    );
+                  },
+                  child: islogin == false ? Welcom() : MyHomePage())),
     );
   }
 }
-

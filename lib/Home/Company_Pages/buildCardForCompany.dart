@@ -18,12 +18,12 @@ class buildCardCompanyState extends State<buildCardCompany> {
   bool check_followers = true;
   CollectionReference company =
       FirebaseFirestore.instance.collection("companies");
-  var posts = [];
+  List<temp> posts = [];
+  temp t = new temp();
 
   check_follower() async {
     await company.doc(widget.company_Id).get().then((value) async {
-      num_followers = value.data()['followers'].length - 1;
-      print(num_followers);
+      num_followers = value.data()['followers'].length;
       if (num_followers == 0) {
         setState(() {
           check_followers = false;
@@ -52,13 +52,48 @@ class buildCardCompanyState extends State<buildCardCompany> {
         .doc(widget.company_Id)
         .collection('Post')
         .get()
-        .then((docs) {
+        .then((docs) async {
       if (docs.docs.isNotEmpty) {
+        /////for to post for company
         for (int i = 0; i < docs.docs.length; i++) {
-          posts.add(docs.docs[i].data());
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.user_id)
+              .collection('posts_saved')
+              .get()
+              .then((value) {
+            if (value.docs.isNotEmpty) {
+              ///////for to post_saved in user
+              for (int j = 0; j < value.docs.length; j++) {
+                if (value.docs[j].data()['post_Id'] ==
+                    docs.docs[i].data()['post_Id']) {
+                  t.check_save = true;
+                  print("&&&&&true");
+                } else {
+                  t.check_save = false;
+                  print("&&&&&false");
+                }
+                t.post_Id = docs.docs[i].data()['post_Id'];
+                t.my_post = docs.docs[i].data()['myPost'];
+
+                posts.add(t);
+              }
+            } else {
+              t = new temp();
+              t.post_Id = docs.docs[i].data()['post_Id'];
+              t.my_post = docs.docs[i].data()['myPost'];
+              t.check_save = false;
+              posts.add(t);
+            }
+          });
         }
       }
     });
+    if (posts.isNotEmpty) {
+      print(posts.elementAt(0).my_post);
+      print(posts.elementAt(0).check_save);
+      print(posts.elementAt(0).post_Id);
+    }
   }
 
   @override
@@ -104,11 +139,15 @@ class buildCardCompanyState extends State<buildCardCompany> {
               child: Icon(Icons.arrow_forward_ios),
             ),
             leading: CircleAvatar(
+              child: Icon(
+                Icons.business,
+                color: Colors.black,
+              ),
               radius: 40,
-              backgroundImage: widget.list['link_image'] != "link of image"
+              backgroundImage: widget.list['link_image'] != "not"
                   ? NetworkImage(widget.list['link_image'])
                   : null,
-              backgroundColor: widget.list['link_image'] == "link of image"
+              backgroundColor: widget.list['link_image'] == "not"
                   ? Colors.pink.shade100
                   : null,
             ),
@@ -130,4 +169,8 @@ class buildCardCompanyState extends State<buildCardCompany> {
       },
     );
   }
+}
+
+class temp {
+  var post_Id, check_save, my_post;
 }

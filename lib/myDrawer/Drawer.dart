@@ -158,7 +158,7 @@ class drawerState extends State<mydrawer> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                  return saved_Item();
+                  return saved_Item(user_Id: widget.docid);
                 }));
               }),
           ListTile(

@@ -1,6 +1,7 @@
 import 'package:b/Home/Company_Pages/buildCardForCompany.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class companyPage extends StatefulWidget {
   final user_id;
@@ -36,14 +37,17 @@ class companyState extends State<companyPage> {
                       return Text("Error");
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
+                      return Center(child: SpinKitCircle(
+                        color: Colors.pink.shade300,
+                        size: 50,
+                      ),);
                     }
                     if (snapshot.hasData) {
                       return ListView.builder(
                           itemCount: snapshot.data.docs.length,
                           itemBuilder: (context, i) {
                             return buildCardCompany(
-                                list: snapshot.data.docs[i],company_Id: snapshot.data.docs[i].id,user_id : widget.user_id
+                                list: snapshot.data.docs[i], company_Id: snapshot.data.docs[i].id, user_id : widget.user_id
                             );
                           });
                     }

@@ -59,7 +59,6 @@ class PersnalState extends State<personalPage> {
       'type_work': user.selectedTypeJob,
       'worksite': user.workSite,
       'salary': user.salary,
-      'saved_Item' : {},
       'companies_follow' : []
 
     }).then((value) {

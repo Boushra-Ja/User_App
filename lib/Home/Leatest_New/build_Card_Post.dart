@@ -1,13 +1,26 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class build_post extends StatelessWidget {
-  final post, company_name, num_follwers;
-  const build_post({Key key, this.post, this.company_name, this.num_follwers})
-      : super(key: key);
+class build_post extends StatefulWidget {
+  var post, company_name, num_follwers, user_Id;
+  build_post({this.post, this.company_name, this.num_follwers, this.user_Id});
 
   @override
+  State<StatefulWidget> createState() {
+    return build_postState();
+  }
+}
+
+class build_postState extends State<build_post> {
+  @override
   Widget build(BuildContext context) {
+    bool check_sav = true;
+    CollectionReference saved_Item = FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.user_Id)
+        .collection("posts_saved");
+
     return Container(
         color: Colors.pink.shade50,
         width: MediaQuery.of(context).size.width,
@@ -40,13 +53,13 @@ class build_post extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AutoSizeText(
-                              "$company_name",
+                              "${widget.company_name}",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600, fontSize: 16),
                               maxLines: 2,
                             ),
                             Text(
-                              "$num_follwers" + " متابع",
+                              "${widget.num_follwers}" + " متابع",
                               style: TextStyle(color: Colors.grey.shade700),
                             ),
                             Row(
@@ -70,7 +83,7 @@ class build_post extends StatelessWidget {
                 Container(
                   // margin: EdgeInsets.symmetric(horizontal: 15),
                   child: AutoSizeText(
-                    "${post['myPost']}",
+                    "${widget.post.my_post}",
                     style: TextStyle(fontSize: 16),
                     maxLines: 10,
                     textAlign: TextAlign.right,
@@ -113,8 +126,63 @@ class build_post extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Column(
-                          children: [Icon(Icons.save), Text("حفظ")],
+                        child: InkWell(
+                          onTap: () async {
+                            if (widget.post.check_save == false) {
+                              setState(() {
+                                widget.post.check_save = true;
+                              });
+                              print("########${widget.user_Id}");
+                              await saved_Item.add({
+                                'myPost': widget.post.my_post,
+                                'company_name': widget.company_name,
+                                'num_followers': widget.num_follwers,
+                                'post_Id': widget.post.post_Id
+                              }).then((value) {
+                                print("success");
+                              }).catchError((onError) {
+                                print(onError);
+                              });
+                            } else {
+                              setState(() {
+                                widget.post.check_save = false;
+                              });
+                              await saved_Item.get().then((value) async {
+                                if (value.docs.isNotEmpty) {
+                                  for (int j = 0; j < value.docs.length; j++) {
+                                    if (value.docs[j].data()['post_Id'] ==
+                                        widget.post.post_Id) {
+                                      print("_________________");
+                                      print(
+                                          "**(( ${value.docs[j].data()['post_Id']}");
+                                      saved_Item
+                                          .where("post_Id",
+                                              isEqualTo: widget.post.post_Id)
+                                          .get()
+                                          .then((value) {
+                                        value.docs.forEach((element) {
+                                          saved_Item
+                                              .doc(element.id)
+                                              .delete()
+                                              .then((value) {
+                                            print("Success!");
+                                          });
+                                        });
+                                      });
+                                    }
+                                  }
+                                }
+                              });
+                            }
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.save),
+                              Text(widget.post.check_save == false
+                                  ? "حفظ"
+                                  : "الغاء الحفظ")
+                            ],
+                          ),
                         ),
                       ),
                     ],
