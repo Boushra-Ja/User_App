@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/Home/Leatest_New/Company_Publication.dart';
-import 'package:b/component/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -311,17 +310,10 @@ class profileState extends State<companyProfile> {
                                                                       'followers']
                                                                   .length;
                                                           i++) {
-                                                        print(
-                                                            "lkl${value.data()['followers'][i]}");
-                                                        print(
-                                                            "____________${widget.user_id}");
-
                                                         if (value.data()[
                                                                     'followers']
                                                                 [i] ==
                                                             widget.user_id) {
-                                                          print(
-                                                              "____________${widget.user_id}");
 
                                                           var val =
                                                               []; //blank list for add elements which you want to delete
@@ -358,8 +350,6 @@ class profileState extends State<companyProfile> {
                                                           .data()[
                                                               'companies_follow']
                                                           .length;
-                                                      print(
-                                                          "user company ${num_companies_follow}");
                                                       for (int i = 0;
                                                           i < num_companies_follow;
                                                           i++) {
@@ -590,7 +580,6 @@ class PopupOptionMenu extends StatefulWidget {
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return PopupOptionMenuState();
   }
 }
@@ -636,9 +625,6 @@ class PopupOptionMenuState extends State<PopupOptionMenu> {
                           for (int j = 0; j < value.docs.length; j++) {
                             if (value.docs[j].data()['company_Id'] ==
                                 widget.company_Id) {
-                              print("_________________");
-                              print(
-                                  "**(( ${value.docs[j].data()['company_Id']}");
                               saved_Item
                                   .where("company_Id",
                                       isEqualTo: widget.company_Id)

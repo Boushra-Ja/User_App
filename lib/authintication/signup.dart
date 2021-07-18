@@ -1,5 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:b/component/Loading.dart';
 import 'package:b/cv_page/PersonalPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +18,21 @@ class signUp extends StatefulWidget {
 
 class signupState extends State<signUp> {
   TapGestureRecognizer changesign;
-  bool showSignIn = true;
+  bool showSignIn = true , loading = true;
   var myemail, mypassword, myconfirmPassword;
   GlobalKey<FormState> formeState = new GlobalKey<FormState>();
+  var city = {} , country = [];
+
+  get_LocationList()async{
+    await FirebaseFirestore.instance.collection("location").doc("Pju9ofIYjWDZF86czL75").get().then((value) {
+      country = value.data()['array'];
+      print(country);
+    });
+    await FirebaseFirestore.instance.collection("location").doc("zgmM6DkhtzXh1S4F4Atd").get().then((value) {
+      city = value.data()['map'];
+      print(city);
+    });
+  }
 
   SignUp() async {
     UserCredential userCredential;
@@ -28,12 +42,10 @@ class signupState extends State<signUp> {
     if (formdata.validate()) {
       formdata.save();
       try {
-        showLoading(context);
 
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: myemail, password: mypassword);
-
         return userCredential;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -54,6 +66,9 @@ class signupState extends State<signUp> {
       } catch (e) {
         print(e);
       }
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -68,7 +83,9 @@ class signupState extends State<signUp> {
           }));
         });
       };
-
+    ()async{
+      await get_LocationList();
+    }();
     super.initState();
   }
 
@@ -78,7 +95,7 @@ class signupState extends State<signUp> {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
+      child:  Scaffold(
           body: Stack(
         children: [
           Container(
@@ -267,9 +284,9 @@ class signupState extends State<signUp> {
         callback: ()async {
           var response = await SignUp();
           if (response != null) {
-            Navigator.of(context)
+             Navigator.of(context)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
-              return personalPage();
+              return personalPage(country : country , city : city);
             }));
           }
         },

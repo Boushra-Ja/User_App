@@ -15,6 +15,7 @@ class company_Publication extends StatefulWidget {
 class company_PublicationState extends State<company_Publication> {
   @override
   void initState() {
+
     super.initState();
   }
 

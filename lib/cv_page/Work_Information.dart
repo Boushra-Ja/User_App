@@ -1,9 +1,13 @@
 import 'package:b/helpFunction/buildCard.dart';
+import 'package:b/helpFunction/buildDropdownButton.dart';
+import 'package:b/helpFunction/buildText.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../UserInfo.dart';
 
 class workInformation extends StatelessWidget{
+  var country , city ;
+  workInformation({this.country , this.city});
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +16,33 @@ class workInformation extends StatelessWidget{
     return Column(
       children: [
         SizedBox(height: 10 ,) ,
-        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , bloc , 'sign'),
+        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , bloc ),
         SizedBox(height: 20,),
-        buildCard(bloc.workSite == "null" ? "true" :"false"  , 5, "حدد موقع العمل المطلوب", 0 , bloc , 'sign'),
+        Center(
+          child: Container(
+          width: MediaQuery.of(context).size.width - 50 ,
+          child: Card(
+          shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)),
+          color: Colors.grey.shade100 ,
+          child : Column(
+            children: [
+              buildText("حدد موقع العمل المطلوب" , 0 ),
+              SizedBox(height: 10,),
+              Row(
+                children: [
+                  Expanded(flex : 1 , child: buildText("" , 0)),
+                  buildDropdownButton(5, "اختر" , 13 , bloc , country , []),
+                  Expanded(flex : 1 , child: buildText("" , 0)),
+                ],
+              ),
+              SizedBox(height: 40,)
+            ],
+          ))),
+        ),
+
         SizedBox(height: 20,),
-        buildCard(bloc.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, bloc , 'sign'),
+        buildCard(bloc.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, bloc ),
         SizedBox(height: 20,),
         Container(
             height: 70,

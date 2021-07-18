@@ -43,7 +43,6 @@ class buildCardCompanyState extends State<buildCardCompany> {
         }
       }
     });
-    print("******" + "$num_followers");
   }
 
   get_Post() async {
@@ -56,6 +55,7 @@ class buildCardCompanyState extends State<buildCardCompany> {
       if (docs.docs.isNotEmpty) {
         /////for to post for company
         for (int i = 0; i < docs.docs.length; i++) {
+          t = new temp();
           await FirebaseFirestore.instance
               .collection('users')
               .doc(widget.user_id)
@@ -68,32 +68,22 @@ class buildCardCompanyState extends State<buildCardCompany> {
                 if (value.docs[j].data()['post_Id'] ==
                     docs.docs[i].data()['post_Id']) {
                   t.check_save = true;
-                  print("&&&&&true");
+                  break;
                 } else {
                   t.check_save = false;
-                  print("&&&&&false");
                 }
-                t.post_Id = docs.docs[i].data()['post_Id'];
-                t.my_post = docs.docs[i].data()['myPost'];
 
-                posts.add(t);
               }
             } else {
-              t = new temp();
-              t.post_Id = docs.docs[i].data()['post_Id'];
-              t.my_post = docs.docs[i].data()['myPost'];
               t.check_save = false;
-              posts.add(t);
             }
+            t.post_Id = docs.docs[i].data()['post_Id'];
+            t.my_post = docs.docs[i].data()['myPost'];
+            posts.add(t);
           });
         }
       }
     });
-    if (posts.isNotEmpty) {
-      print(posts.elementAt(0).my_post);
-      print(posts.elementAt(0).check_save);
-      print(posts.elementAt(0).post_Id);
-    }
   }
 
   @override

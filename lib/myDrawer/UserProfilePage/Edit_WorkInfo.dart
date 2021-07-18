@@ -1,6 +1,8 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/component/alart.dart';
 import 'package:b/helpFunction/buildCard.dart';
+import 'package:b/helpFunction/buildDropdownButton.dart';
+import 'package:b/helpFunction/buildText.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'ProfilePage.dart';
@@ -9,8 +11,8 @@ class Edit_WorkInfo extends StatelessWidget{
 
   CollectionReference userRef = FirebaseFirestore.instance.collection("users");
   GlobalKey<FormState>formstate = new GlobalKey<FormState>();
-  var user , docid ;
-  Edit_WorkInfo({this.user , this.docid});
+  var user , docid , country;
+  Edit_WorkInfo({this.user , this.docid , this.country});
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +39,39 @@ class Edit_WorkInfo extends StatelessWidget{
     child: ListView(
       children: [
         SizedBox(height: 30 ,) ,
-        buildCard(user.selectedjob.length == 0 ? "true" :"false" , 0, "ماهي مجالات عملك", 10 , user , 'profile'),
+        buildCard(user.selectedjob.length == 0 ? "true" :"false" , 1 , "ماهي مجالات عملك", 10 , user ),
         SizedBox(height: 20,),
-        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , user , 'profile'),
+        buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , user ),
         SizedBox(height: 20,),
-        buildCard(user.workSite == "null" ? "true" :"false"  , 5, "حدد موقع العمل المطلوب", 0 , user , 'profile'),
+        Center(
+          child: Container(
+              width: MediaQuery.of(context).size.width - 50 ,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  color: Colors.grey.shade100 ,
+                  child : Column(
+                    children: [
+                      buildText("حدد موقع العمل المطلوب" , 0 ),
+                      SizedBox(height: 10,),
+                      Row(
+                        children: [
+                          Expanded(flex : 1 , child: buildText("" , 0)),
+                          buildDropdownButton(5, "المدينة"  , 13 , user , country , []),
+                          Expanded(flex : 1 , child: buildText("" , 0)),
+                        ],
+                      ),
+                      SizedBox(height: 40,)
+                    ],
+                  ))),
+        ),
+       // buildCard( , 5, "حدد موقع العمل المطلوب", 13 , user ),
         SizedBox(height: 20,),
-        buildCard(user.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, user , 'profile' ),
+        buildCard(user.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, user  ),
         SizedBox(height: 20,),
         Container(
             height: 70,
-            width: 400,
+            width: MediaQuery.of(context).size.width - 50 ,
             child:  Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

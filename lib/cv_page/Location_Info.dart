@@ -7,10 +7,12 @@ import '../UserInfo.dart';
 
 class LocationInfo extends StatelessWidget{
 
-  GlobalKey<FormState>formState = new GlobalKey<FormState>();
+  final country , city ;
+  const LocationInfo({Key key, this.country, this.city}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     final bloc = Provider.of<userInfo>(context) ;
 
     return Card(
@@ -26,7 +28,7 @@ class LocationInfo extends StatelessWidget{
           Row(
             children: [
               buildText( "الجنسية*" , 2),
-              buildDropdownButton(3, 'اختر', 5 , bloc ),
+              buildDropdownButton(3, 'اختر', 5 , bloc , country , city),
               buildText( " " , 1),
             ],
           ),
@@ -36,7 +38,7 @@ class LocationInfo extends StatelessWidget{
           Row(
             children: [
               buildText("بلد الإقامة*", 2),
-              buildDropdownButton(3, "البلد", 6 ,bloc),
+              buildDropdownButton(3, "البلد", 6 ,bloc , country ,city),
               buildText("", 1),
             ],
           ),
@@ -46,7 +48,7 @@ class LocationInfo extends StatelessWidget{
           Row(
             children: [
               buildText("المدينة*", 2),
-              buildDropdownButton(3, "المدينة", 7 ,bloc),
+              buildDropdownButton(3, "المدينة", 7 ,bloc , country , city ),
               buildText("", 1),
             ],
           ),

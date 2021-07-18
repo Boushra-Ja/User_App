@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 
 class Edit_PersonalInfo extends StatelessWidget{
 
-  var user , docid ;
-  Edit_PersonalInfo({this.user , this.docid});
+  var user , docid , country , city ;
+  Edit_PersonalInfo({this.user , this.docid ,this.country ,this.city});
   CollectionReference userRef = FirebaseFirestore.instance.collection("users");
 
   GlobalKey<FormState>formstate = new GlobalKey<FormState>();
@@ -41,13 +41,13 @@ class Edit_PersonalInfo extends StatelessWidget{
                   SizedBox(
                     height: 40,
                   ),
-                  buildCard( 'false', 1 ," الاسم الاول*" , 0 , user , 'profile'),
+                  buildCard( 'false', 1 ," الاسم الاول*" , 0 , user ),
                   SizedBox(height: 20,),
-                  buildCard('false',  2 ," الاسم الأخير*" , 0  , user , 'profile'),
+                  buildCard('false',  2 ," الاسم الأخير*" , 0  , user ),
                   SizedBox(height: 20,),
-                  buildCard( "اختر", 0 , "الجنس*" , 4 , user , 'profile'),
+                  buildCard( "اختر", 0 , "الجنس*" , 4 , user ),
                   SizedBox(height: 20,),
-                  buildCard('اختر', 0, 'تاريخ الميلاد', 5 , user , 'profile'),
+                  buildCard('اختر', 0, 'تاريخ الميلاد', 5 , user ),
                   SizedBox(height: 30,),
                   Card(
                     margin: EdgeInsets.only(bottom: 30 , top: 10),
@@ -62,7 +62,7 @@ class Edit_PersonalInfo extends StatelessWidget{
                         Row(
                           children: [
                             buildText( "الجنسية*" , 2),
-                            buildDropdownButton(3, 'اختر', 5 , user ),
+                            buildDropdownButton(3, 'اختر', 5 , user , country , city),
                             buildText( " " , 1),
                           ],
                         ),
@@ -72,7 +72,7 @@ class Edit_PersonalInfo extends StatelessWidget{
                         Row(
                           children: [
                             buildText("بلد الإقامة*", 2),
-                            buildDropdownButton(3, "البلد", 6 ,user),
+                            buildDropdownButton(3, "البلد", 6 ,user , country , city),
                             buildText("", 1),
                           ],
                         ),
@@ -82,7 +82,7 @@ class Edit_PersonalInfo extends StatelessWidget{
                         Row(
                           children: [
                             buildText("المدينة*", 2),
-                            buildDropdownButton(3, "المدينة", 7 ,user),
+                            buildDropdownButton(3, "المدينة", 7 ,user , country , city),
                             buildText("", 1),
                           ],
                         ),

@@ -132,7 +132,6 @@ class build_postState extends State<build_post> {
                               setState(() {
                                 widget.post.check_save = true;
                               });
-                              print("########${widget.user_Id}");
                               await saved_Item.add({
                                 'myPost': widget.post.my_post,
                                 'company_name': widget.company_name,
@@ -152,9 +151,6 @@ class build_postState extends State<build_post> {
                                   for (int j = 0; j < value.docs.length; j++) {
                                     if (value.docs[j].data()['post_Id'] ==
                                         widget.post.post_Id) {
-                                      print("_________________");
-                                      print(
-                                          "**(( ${value.docs[j].data()['post_Id']}");
                                       saved_Item
                                           .where("post_Id",
                                               isEqualTo: widget.post.post_Id)

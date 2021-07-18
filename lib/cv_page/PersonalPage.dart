@@ -15,6 +15,9 @@ import 'Contact_Information.dart';
 import 'Work_Information.dart';
 
 class personalPage extends StatefulWidget {
+  final country , city ;
+  const personalPage({Key key, this.country, this.city}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return PersnalState();
@@ -59,8 +62,8 @@ class PersnalState extends State<personalPage> {
       'type_work': user.selectedTypeJob,
       'worksite': user.workSite,
       'salary': user.salary,
-      'companies_follow' : []
-
+      'companies_follow' : [],
+      'language' : user.language
     }).then((value) {
       print('Sucsess');
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
@@ -228,7 +231,7 @@ class PersnalState extends State<personalPage> {
             margin: EdgeInsets.only(bottom: 30, top: 10),
             child: Form(
               key: formState2,
-              child: LocationInfo(),
+              child: LocationInfo(country : widget.country , city : widget.city),
             )),
         isActive: _currentStep >= 1,
       ),
@@ -254,7 +257,7 @@ class PersnalState extends State<personalPage> {
             margin: EdgeInsets.only(bottom: 30, top: 10),
             child: Form(
               key: formState4,
-              child: workInformation(),
+              child: workInformation(country : widget.country , city : widget.city),
             )),
         isActive: _currentStep >= 3,
       ),

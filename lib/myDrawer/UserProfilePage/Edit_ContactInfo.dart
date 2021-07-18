@@ -39,9 +39,9 @@ class Edit_ContactInfo extends StatelessWidget{
 
               children: [
                 SizedBox(height: 10,),
-                buildCard('false',  3 , "البريد الالكتروني*" , 0  ,user , 'profile'),
+                buildCard('false',  3 , "البريد الالكتروني*" , 0  ,user ),
                 SizedBox(height: 20,),
-                buildCard(user.phone == "null" ? "true" :"false",  7 , "رقم الهاتف (اختياري) " , 0 ,user , 'profile'),
+                buildCard(user.phone == "null" ? "true" :"false",  7 , "رقم الهاتف (اختياري) " , 0 ,user ),
                 SizedBox(height: 20,),
                 Center(
                   child: Container(

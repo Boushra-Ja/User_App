@@ -37,7 +37,6 @@ class savedItemState extends State<saved_Item> {
         }
       }
     });
-    print("****" + companies_list.toString());
   }
 
   get_posts() async {
@@ -60,7 +59,6 @@ class savedItemState extends State<saved_Item> {
       }
     });
 
-    if (posts_list.isNotEmpty) print("****" + posts_list.elementAt(0).my_post);
     setState(() {
       loading = false;
     });

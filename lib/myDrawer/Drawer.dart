@@ -35,10 +35,23 @@ class drawerState extends State<mydrawer> {
   var imagepicker = ImagePicker();
 
   CollectionReference userref = FirebaseFirestore.instance.collection("users");
+  var city = {}, country = [];
+  get_LocationList()async{
+    await FirebaseFirestore.instance.collection("location").doc("Pju9ofIYjWDZF86czL75").get().then((value) {
+      country = value.data()['array'];
+    });
+    await FirebaseFirestore.instance.collection("location").doc("zgmM6DkhtzXh1S4F4Atd").get().then((value) {
+      city = value.data()['map'];
+    });
+  }
+
 
   @override
   void initState() {
     print(widget.user);
+    ()async{
+      await get_LocationList();
+    }();
     super.initState();
   }
 
@@ -133,7 +146,7 @@ class drawerState extends State<mydrawer> {
                   print("**************************");
                   print(widget.user);
                   print("**************************");
-                  return userProfile(user : widget.user , docid : widget.docid);
+                  return userProfile(user : widget.user , docid : widget.docid , country : country , city : city);
                 }));
               }),
           ListTile(

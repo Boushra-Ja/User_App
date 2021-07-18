@@ -22,7 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List All_jobs = [];
   List My_jobs = [];
   bool loading = true;
-
   CollectionReference jobsref = FirebaseFirestore.instance.collection("jobs");
 
   /////////////////////////////get all data
@@ -97,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     print(user.firstName);
   }
+
 
   @override
   void initState() {

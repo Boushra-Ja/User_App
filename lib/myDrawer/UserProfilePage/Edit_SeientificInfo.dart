@@ -39,13 +39,15 @@ class Edit_SeientificInfo extends StatelessWidget{
 
               children: [
                 SizedBox(height: 30,),
-                buildCard( "حدد مستواك العلمي", 0 ,"المستوى العلمي" , 8 , user , 'profile'),
+                buildCard( "حدد مستواك العلمي", 0 ,"المستوى العلمي" , 8 , user ),
                 SizedBox(height: 20,),
-                buildCard("أختر" , 0, "المستوى الوظيفي", 9 , user , 'profile'),
+                buildCard("أختر" , 0, "المستوى الوظيفي", 9 , user),
                 SizedBox(height: 20,),
-                buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 , user , 'profile'),
+                buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 , user ),
                 SizedBox(height: 20,),
-                buildCard(user.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0  , user , 'profile'),
+                buildCard(user.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0  , user ),
+                SizedBox(height: 20,),
+                buildCard(user.language.length == 0 ? "true" :"false"  , 2 , "اللغات ", 10  , user ),
                 SizedBox(height: 20,),
                 Center(
                   child: Container(
@@ -82,6 +84,7 @@ class Edit_SeientificInfo extends StatelessWidget{
         'carrer_level' : user.selectedFun ,
         'experience_year' : user.selectedExpr ,
         'skill' : user.Skills ,
+        'language' : user.language
       }).then((value) {
         print('Sucsess');
         Navigator.of(context).pop();

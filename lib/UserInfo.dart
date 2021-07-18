@@ -17,14 +17,14 @@ class userInfo with ChangeNotifier{
       selectedExpr ,
       selectedTypeJob ,
       Skills = "null" ,
-      workSite= "null",
+      workSite ,
       salary = "null",
       imageurl = 'not',
       previous_job = " ",
       privecy ='false',
       notify = "false";
 
-  List selectedjob = [];
+  List selectedjob = [] , language = [];
 
   set_firstname(String txt){
     this.firstName = txt;
@@ -88,7 +88,7 @@ class userInfo with ChangeNotifier{
   }
 
   set_selectedjob(List txt){
-    this.selectedjob = txt;
+    this.selectedjob = txt ;
     notifyListeners();
 
   }
@@ -139,6 +139,10 @@ class userInfo with ChangeNotifier{
   }
   set_phone(String txt){
     this.phone = txt;
+    notifyListeners();
+  }
+  set_language(txt){
+    this.language = txt ;
     notifyListeners();
   }
 }

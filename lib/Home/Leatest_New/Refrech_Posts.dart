@@ -34,7 +34,6 @@ class RefrechPostsState extends State<Refrech_Posts> {
         }
       });
     });
-    print("^%^^^%%%^^$companies_follow_Id");
     for (int i = 0; i < companies_follow_Id.length; i++) {
       await FirebaseFirestore.instance
           .collection('companies')
@@ -57,41 +56,30 @@ class RefrechPostsState extends State<Refrech_Posts> {
                 .then((doc) {
               if (doc.docs.isNotEmpty) {
                 for (int k = 0; k < doc.docs.length; k++) {
-                  print("JJJJJJ${doc.docs[k].data()['post_Id']}");
-                  print("JJJJJJJJJ${value.docs[j].data()['post_Id']}");
                   if (doc.docs[k].data()['post_Id'] ==
                       value.docs[j].data()['post_Id']) {
                     setState(() {
                       t.check_save = true;
                     });
-                    t.post_Id = value.docs[j].data()['post_Id'];
-                    t.my_post = value.docs[j].data()['myPost'];
-                    companies_post.add(t);
                     break;
                   } else {
                     setState(() {
                       t.check_save = false;
-                      t.post_Id = value.docs[j].data()['post_Id'];
-                      t.my_post = value.docs[j].data()['myPost'];
-                      companies_post.add(t);
                     });
                   }
                 }
               } else {
-                t.post_Id = value.docs[j].data()['post_Id'];
-                t.my_post = value.docs[j].data()['myPost'];
                 t.check_save = false;
-                companies_post.add(t);
               }
+              t.post_Id = value.docs[j].data()['post_Id'];
+              t.my_post = value.docs[j].data()['myPost'];
+              companies_post.add(t);
             });
           }
         }
       });
     }
 
-    print("^^$company_name");
-    print("^^$num_follwers");
-    print("^^${widget.docid}");
     setState(() {
       loading = false;
     });

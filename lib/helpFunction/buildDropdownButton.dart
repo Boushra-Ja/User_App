@@ -5,9 +5,10 @@ import '../UserInfo.dart';
 class buildDropdownButton extends StatefulWidget {
   int flex_, _selected;
   String text;
-  userInfo bloc ;
+  userInfo bloc  ;
+  var country , city ;
+  buildDropdownButton(this.flex_, this.text, this._selected , this.bloc , this.country , this.city);
 
-  buildDropdownButton(this.flex_, this.text, this._selected , this.bloc);
   @override
   State<StatefulWidget> createState() {
     return DropState();
@@ -15,13 +16,13 @@ class buildDropdownButton extends StatefulWidget {
 }
 
 class DropState extends State<buildDropdownButton> {
-  List<String> _gender = ['ذكر', 'أنثى'];
-  List<String> _day = [];
-  List<String> _month = [];
-  List<String> _year = [];
-  List<String> _country = ["سوريا", "العراق", "مصر", "السعودية", "الأردن"];
-  List<String> _city = ["دمشق", "حمص", "درعا", "حلب", "حماة", "غير ذلك"];
-  List<String> eductionlist = [
+  List _gender = ['ذكر', 'أنثى'];
+  List  _day = [];
+  List  _month = [];
+  List _year = [];
+  List _country ;
+  List _city ;
+  List  eductionlist = [
     'تعليم ابتدائي',
     'تعليم اعدادي',
     'تعليم ثانوي',
@@ -31,14 +32,14 @@ class DropState extends State<buildDropdownButton> {
     'شهادة دكتوراه',
     'لم أحصل على تعليم'
   ];
-  List<String> functionalist = [
+  List functionalist = [
     'مبتدئ',
     'فترة تدريب',
     'مساعد',
     'مدير اداري',
     'مدير تنفيذي'
   ];
-  List<String> joblist = [
+  List joblist = [
     'تكنولوجيا المعلومات',
     'علوم طبيعية',
     'تدريس',
@@ -53,7 +54,7 @@ class DropState extends State<buildDropdownButton> {
     "صيدلة وأدوية",
     "غير ذلك"
   ];
-  List<String> experiencelist = [
+  List experiencelist = [
     '1',
     '2',
     '3',
@@ -64,7 +65,7 @@ class DropState extends State<buildDropdownButton> {
     '8',
     'اكثر من ذلك'
   ];
-  List<String> typeworkList = ['دوام كامل ', 'دوام جزئي', 'تدريب', 'تطوع'];
+  List typeworkList = ['دوام كامل ', 'دوام جزئي', 'تدريب', 'تطوع'];
 
   @override
   void initState() {
@@ -77,13 +78,14 @@ class DropState extends State<buildDropdownButton> {
     for (int i = 1; i <= 30; i++) {
       _day.add("$i");
     }
-
+    _country = widget.country;
+    print("*****$_country");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> temp = widget._selected == 1
+    List  temp = widget._selected == 1
         ? _day
         : widget._selected == 2
         ? _month
@@ -94,10 +96,10 @@ class DropState extends State<buildDropdownButton> {
         : widget._selected == 5 || widget._selected == 6
         ? _country
         : widget._selected == 7
-        ? _city
+        ? widget.bloc.selectedCountry == null ? [] : widget.city['${widget.bloc.selectedCountry}']
         : widget._selected == 8
         ? eductionlist
-        : widget._selected == 9 ? functionalist : widget._selected == 10 ? joblist : widget._selected == 11 ? experiencelist : typeworkList;
+        : widget._selected == 9 ? functionalist : widget._selected == 10 ? joblist : widget._selected == 11 ? experiencelist : widget._selected == 12 ?  typeworkList : widget.country;
     return Expanded(
       flex: widget.flex_,
       child: Container(
@@ -114,7 +116,7 @@ class DropState extends State<buildDropdownButton> {
           isExpanded: true,
           hint: Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: Text(widget.text),
+            child: Text(widget.text , style: TextStyle(fontSize: 14),),
           ),
           value: widget._selected == 1
               ? widget.bloc.selectedDay
@@ -132,7 +134,7 @@ class DropState extends State<buildDropdownButton> {
               ?  widget.bloc.selectedCity
               : widget._selected == 8
               ?  widget.bloc.selectedEdu
-              :widget._selected == 9 ?   widget.bloc.selectedFun : widget._selected == 10 ?  widget.bloc.selectedjob : widget._selected == 11 ?  widget.bloc.selectedExpr :  widget.bloc.selectedTypeJob,
+              :widget._selected == 9 ?   widget.bloc.selectedFun : widget._selected == 10 ?  widget.bloc.selectedjob : widget._selected == 11 ?  widget.bloc.selectedExpr :  widget._selected == 12 ? widget.bloc.selectedTypeJob : widget.bloc.workSite,
           onChanged: (newValue) {
             widget._selected == 1
                 ?  widget.bloc.set_selectedDay(newValue)
@@ -150,10 +152,11 @@ class DropState extends State<buildDropdownButton> {
                 ?  widget.bloc.set_selectedCity(newValue)
                 : widget._selected == 8
                 ?  widget.bloc.set_selectedEdu(newValue)
-                : widget._selected == 9 ?  widget.bloc.set_selectedFun(newValue) : widget._selected == 10 ?  widget.bloc.set_selectedjob(newValue) : widget._selected == 11 ?  widget.bloc.set_selectedExpr(newValue) :  widget.bloc.set_selectedTypeJob(newValue);
+                : widget._selected == 9 ?  widget.bloc.set_selectedFun(newValue) : widget._selected == 10 ?  widget.bloc.set_selectedjob(newValue) : widget._selected == 11 ?  widget.bloc.set_selectedExpr(newValue) :  widget._selected == 12 ? widget.bloc.set_selectedTypeJob(newValue) :widget.bloc.set_workSite(newValue) ;
           },
           validator: (val) {
             print("hellloo");
+            print("^^${widget.bloc.workSite}");
             if (widget._selected == 1) {
               if ( widget.bloc.selectedDay == null) return 'مطلوب';
             } else if (widget._selected == 2) {
@@ -178,8 +181,10 @@ class DropState extends State<buildDropdownButton> {
             }
             else if (widget._selected == 11) {
               if ( widget.bloc.selectedExpr == null) return 'مطلوب';
-            }else{
+            }else if(widget._selected == 12){
               if ( widget.bloc.selectedTypeJob == null) return 'مطلوب';
+            }else{
+              if ( widget.bloc.workSite == null) return 'مطلوب';
             }
             return null;
           },
@@ -189,7 +194,7 @@ class DropState extends State<buildDropdownButton> {
                   child: Text(
                     item,
                     textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.start,
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
                       color: Colors.black,

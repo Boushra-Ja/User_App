@@ -8,10 +8,10 @@ import 'Edit_PersonalInfo.dart';
 import 'dart:ui' as ui;
 
 class userProfile extends StatefulWidget {
-  final docid;
+  final docid , country , city;
   final userInfo user ;
 
-  const userProfile({Key key, this.user ,this.docid}) : super(key: key);
+  const userProfile({Key key, this.user ,this.docid ,this.country , this.city}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return userProfileState();
@@ -56,7 +56,7 @@ class userProfileState extends State<userProfile> {
                           IconButton(icon : Icon(Icons.edit , size: 25) , color: Colors.white, onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (context){
-                                return Edit_PersonalInfo(user : widget.user , docid : widget.docid);
+                                return Edit_PersonalInfo(user : widget.user , docid : widget.docid , country : widget.country , city : widget.city);
                               })
                             );
                           },),
@@ -92,7 +92,7 @@ class userProfileState extends State<userProfile> {
                   child: InkWell(
                     onTap: (){
                       Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                        return Edit_WorkInfo(user : widget.user , docid: widget.docid);
+                        return Edit_WorkInfo(user : widget.user , docid: widget.docid , country : widget.country);
                       }));
                     },
                     child: ListTile(
