@@ -1,3 +1,4 @@
+import 'package:b/Home/roadmaps.dart';
 import 'package:b/UserInfo.dart';
 import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
@@ -22,6 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   userInfo user = new userInfo();
   List All_jobs = [];
   List My_jobs = [];
+  List all_map=[];
   bool loading = true;
   CollectionReference jobsref = FirebaseFirestore.instance.collection("companies");
 
@@ -53,6 +55,23 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       loading = false;
     });
+  }
+
+  //////////////////////////get maps
+
+  CollectionReference mapref = FirebaseFirestore.instance.collection("roadmaps");
+
+  /////////////////////////////get all data
+  get_All_maps() async {
+    QuerySnapshot respon_map = await mapref.get();
+    respon_map.docs.forEach((element) {
+      if (this.mounted) {
+        setState(() {
+          all_map.add(element.data());
+        });
+      }
+    });
+    print(all_map.length);
   }
 
   ///////////////////////user Info
@@ -105,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         await getId();
         await get_All_data();
         await get_My_data();
+        await get_All_maps();
       }();
     });
 
@@ -141,9 +161,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                 companyPage(user_id: docid),
                                 Refrech_Posts(docid: docid),
                                 ////////////// Rama add roadmaps ^_^
-                                my_chance(My_jobs, user, docid),
+                               roadmaps(all_map, user, docid),
                               ],
                             ),
                     )))));
   }
 }
+
+
+/*
+    onTap: () {
+                      GestureDetector(onTap:() async  =>{
+                      await canLaunch(url) ? await launch(url) : throw 'noooo'
+                  },);
+                }
+
+                var url = 'https://flutter.io';
+
+                      },*/
