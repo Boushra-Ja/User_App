@@ -3,19 +3,18 @@ import 'package:b/Home/show.dart';
 import 'package:b/UserInfo.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'show.dart';
 
-class roadmaps extends StatelessWidget {
-  userInfo user;
-  var docid;
-  var url = 'https://flutter.io';
 
+
+
+class roadmaps extends StatelessWidget {
   List roadm = [];
-  roadmaps(List all_map, userInfo user, docid) {
+  roadmaps(List all_map,) {
     roadm = all_map;
-    this.user = user;
-    this.docid = docid;
   }
 
   @override
@@ -23,8 +22,8 @@ class roadmaps extends StatelessWidget {
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          //drawer: mydrawer(user: user, docid: docid,),
-          body: ListView.builder(
+          body: GridView.builder(
+            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemCount: roadm.length,
             /////// loop
             itemBuilder: (context, i) {
@@ -33,15 +32,30 @@ class roadmaps extends StatelessWidget {
                     {await canLaunch(roadm[i]["web_name"]) ? await launch(roadm[i]["web_name"]) : throw 'noooo'},
                 child: Container(
                   height: 400,
-                  child: GridView(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2),
-                    children: [
+                  child:
                       GridTile(
-                        child: Image.asset("images/google.jpg"),
+                        footer: new Text(roadm[i]['road_name'],textAlign: TextAlign.center,
+                            style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
+                       child :Card(
+                           margin: EdgeInsets.all(25),
+                         shadowColor: Colors.transparent,
+                         color: Colors.transparent,
+                         child:Column(children: [
+                           CircleAvatar(
+                             radius: 100,
+                             backgroundImage:
+                             roadm[i]['ima'] != "not"
+                                 ? NetworkImage(
+                                 roadm[i]['ima']
+                             ) : null,
+                             backgroundColor:
+                             roadm[i]['ima'] == "not"
+                                 ? Colors.amber.shade100 : Colors.black12,
+                           ),
+                         ],)
+                       )
                       ),
-                    ],
-                  ),
+
                 ),
               );
             },
@@ -50,9 +64,10 @@ class roadmaps extends StatelessWidget {
   }
 }
 
-/*
-   *  GestureDetector(onTap:() async  =>{
-                             await canLaunch(_u) ? await launch(_u) : throw 'noooo'
-                      },*/
+
+
 
 //  ramayag@gmail.com
+
+//   flutter run -d chrome --web-renderer html
+

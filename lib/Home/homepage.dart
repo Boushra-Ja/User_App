@@ -3,6 +3,7 @@ import 'package:b/UserInfo.dart';
 import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -119,14 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    setState(() {
+
       () async {
         await getId();
         await get_All_data();
         await get_My_data();
         await get_All_maps();
       }();
-    });
+
 
     print("&&&&&&&&&&&");
     print(user.selectedjob);
@@ -160,8 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                 my_chance(My_jobs, user, docid),
                                 companyPage(user_id: docid),
                                 Refrech_Posts(docid: docid),
-                                ////////////// Rama add roadmaps ^_^
-                               roadmaps(all_map, user, docid),
+                                ////////////// Rama add roadmaps ^_^      //////  done  😍
+                               roadmaps(all_map),
                               ],
                             ),
                     )))));
