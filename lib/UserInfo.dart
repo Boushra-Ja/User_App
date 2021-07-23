@@ -20,9 +20,10 @@ class userInfo with ChangeNotifier{
       workSite ,
       salary = "null",
       imageurl = 'not',
-      previous_job = " ",
-      privecy ='false',
-      notify = "false";
+      previous_job = " ";
+  bool  privecy ,
+      notify ;
+
 
   List selectedjob = [] , language = [];
 
@@ -127,16 +128,7 @@ class userInfo with ChangeNotifier{
     notifyListeners();
 
   }
-  set_privecy(String txt){
-    this.privecy = txt;
-    notifyListeners();
 
-  }
-  set_notify(String txt){
-    this.notify = txt;
-    notifyListeners();
-
-  }
   set_phone(String txt){
     this.phone = txt;
     notifyListeners();
@@ -146,3 +138,7 @@ class userInfo with ChangeNotifier{
     notifyListeners();
   }
 }
+
+
+
+

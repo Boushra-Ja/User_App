@@ -64,7 +64,8 @@ class signupState extends State<signUp> {
             ..show();
         }
       } catch (e) {
-        print(e);
+        AwesomeDialog(context: context, title: "Error", body: Text('Error'))
+          ..show();
       }
       setState(() {
         loading = false;

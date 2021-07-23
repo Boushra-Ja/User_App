@@ -18,6 +18,8 @@ class workInformation extends StatelessWidget{
         SizedBox(height: 10 ,) ,
         buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , bloc ),
         SizedBox(height: 20,),
+        buildCard(bloc.selectedjob.length == 0 ? "true" :"false" , 1, "ماهي مجالات عملك", 10 , bloc ),
+        SizedBox(height: 20,),
         Center(
           child: Container(
           width: MediaQuery.of(context).size.width - 50 ,

@@ -1,14 +1,11 @@
 import 'package:b/Home/homepage.dart';
-import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Saved%20items/saved_Companies.dart';
 import 'package:b/myDrawer/Saved%20items/saved_Posts.dart';
 import 'package:b/myDrawer/Saved%20items/saved_jobs.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class saved_Item extends StatefulWidget {
   final user_Id;
-
   const saved_Item({Key key, this.user_Id}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -18,60 +15,8 @@ class saved_Item extends StatefulWidget {
 
 class savedItemState extends State<saved_Item> {
   int _selectedIndex = 0;
-  var companies_list = [], posts_list = [];
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  bool loading = true;
-  temp_ t = new temp_();
-
-  get_companies() async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.user_Id)
-        .collection("companies_saved")
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        for (int i = 0; i < value.docs.length; i++) {
-          companies_list.add(value.docs[i].data());
-        }
-      }
-    });
-  }
-
-  get_posts() async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.user_Id)
-        .collection("posts_saved")
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        for (int i = 0; i < value.docs.length; i++) {
-          t = new temp_();
-          t.check_save = true;
-          t.my_post = value.docs[i].data()['myPost'];
-          t.post_Id = value.docs[i].data()['post_Id'];
-          t.company_name = value.docs[i].data()['company_name'];
-          t.num_followers = value.docs[i].data()['num_followers'];
-          posts_list.add(t);
-        }
-      }
-    });
-
-    setState(() {
-      loading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    () async {
-      await get_companies();
-      await get_posts();
-    }();
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -82,9 +27,9 @@ class savedItemState extends State<saved_Item> {
   @override
   Widget build(BuildContext context) {
     final tabs = <Widget>[
-      savedCompanies(companies_list: companies_list, user_Id: widget.user_Id),
-      savedJobs(),
-      savedPosts(posts_list: posts_list, user_Id: widget.user_Id)
+      savedCompanies(user_Id: widget.user_Id),
+      savedJobs(user_Id: widget.user_Id),
+      savedPosts(user_Id: widget.user_Id)
     ];
 
     return Directionality(
@@ -115,11 +60,9 @@ class savedItemState extends State<saved_Item> {
                 },
               ),
             ),
-            body: loading
-                ? Loading()
-                : Center(
-                    child: tabs.elementAt(_selectedIndex),
-                  ),
+            body: Center(
+              child: tabs.elementAt(_selectedIndex),
+            ),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -142,8 +85,4 @@ class savedItemState extends State<saved_Item> {
               unselectedItemColor: Colors.black,
             )));
   }
-}
-
-class temp_ {
-  var post_Id, check_save, my_post, company_name, num_followers;
 }

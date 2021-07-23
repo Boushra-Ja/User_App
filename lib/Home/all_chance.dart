@@ -1,29 +1,19 @@
 import 'package:b/Home/show.dart';
-import 'package:b/UserInfo.dart';
-import 'package:b/myDrawer/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'show.dart';
 
-
-
 class all_chance extends StatelessWidget {
-   userInfo user;
-   var docid;
-
-  List jobs=[];
-  all_chance(List all_jobs , userInfo user , docid){
-    jobs=all_jobs;
-    this.user = user;
-    this.docid = docid;
+  var jobs = [] , user_Id;
+  all_chance(var all_jobs , docid) {
+    jobs = all_jobs;
+    user_Id = docid ;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          drawer: mydrawer(user: user, docid: docid,),
           body: ListView.builder(
             itemCount: jobs.length,
             /////// loop
@@ -32,10 +22,9 @@ class all_chance extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => show(jobs[i] , user , docid)),
+                      MaterialPageRoute(builder: (context) => show(jobs[i] , user_Id)),
                     );
                   },
-
                   child: Container(
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -48,26 +37,31 @@ class all_chance extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                           child: Column(children: [
                             Row(children: [
-                              Icon(Icons.account_circle,size: 30,),
-                              Text(" العنوان ",),
+                              Icon(
+                                Icons.account_circle,
+                                size: 30,
+                              ),
+                              Text(
+                                " العنوان ",
+                              ),
                             ]),
-
                             Card(
                                 color: Colors.white70,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
-
                                 child: Column(children: [
-                                  Row(children: [Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                                    child:
-                                    Text(" الأسم :" +
-                                        " ${jobs[i]["name_job"]} \n" +
-                                        " الراتب :" +
-                                        " ${jobs[i]["price"]} \n" +
-                                        " المهارات :" +
-                                        " ${jobs[i]["skill"]} \n"),
-                                  )]),
+                                  Row(children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 10, 20, 5),
+                                      child: Text(" الأسم :" +
+                                          "${jobs[i].job_Info['title']} \n" +
+                                          " الراتب :" +
+                                          " ${jobs[i].job_Info['salary']} \n" +
+                                          " المهارات :" +
+                                          " ${jobs[i].job_Info['skillNum']} \n"),
+                                    )
+                                  ]),
                                 ])),
                           ]))));
             },

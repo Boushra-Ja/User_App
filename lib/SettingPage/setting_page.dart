@@ -1,10 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:b/authintication/Welcom_Page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:b/SettingPage/updatePassword.dart';
 import 'package:b/myDrawer/Drawer.dart';
-
 import '../UserInfo.dart';
 
 class settingPage extends StatefulWidget {
@@ -38,8 +39,8 @@ class SettingState extends State<settingPage>{
   }
   @override
   void initState() {
-    notify = widget.user.notify as bool ;
-    previcy = widget.user.privecy as bool ;
+    notify = widget.user.notify;
+    previcy = widget.user.privecy ;
     super.initState();
   }
   @override
@@ -144,7 +145,60 @@ class SettingState extends State<settingPage>{
                 ),
                 SizedBox(height: 10,) ,
                 Divider(thickness: 1,) ,
-                SizedBox(height: 40,),
+                InkWell(
+                  onTap: ()async {
+                    AwesomeDialog(
+                        useRootNavigator: true,
+                      context: context,
+                      dialogType: DialogType.QUESTION,
+                      animType: AnimType.BOTTOMSLIDE,
+                      title: "تأكيد الحذف",
+                      desc: "هل أنت متأكد من حذف الحساب ؟ ",
+                      btnCancelOnPress: (){
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+                          return settingPage(user: widget.user,docid: widget.docid);
+                        }));
+                      },
+                        btnCancelColor: Colors.amber.shade200,
+                        btnOkColor: Colors.pink.shade800,
+                        btnOkText:"تأكيد" ,
+                        btnCancelText: "تراجع",
+                        buttonsTextStyle: TextStyle(color: Colors.black),
+
+                      btnOkOnPress: ()async{
+                        FirebaseFirestore.instance.collection('users').doc(widget.docid).collection('posts_saved').get().then((snapshot) {
+                          for (DocumentSnapshot ds in snapshot.docs){
+                            ds.reference.delete();
+                          }
+                        });
+                        FirebaseFirestore.instance.collection('users').doc(widget.docid).collection('companies_saved').get().then((snapshot) {
+                          for (DocumentSnapshot ds in snapshot.docs){
+                            ds.reference.delete();
+                          }
+                        });
+                        await FirebaseFirestore.instance.collection("users").doc(
+                            widget.docid).delete();
+                        await FirebaseAuth.instance.currentUser.delete();
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.of(context)
+                            .pushReplacement(MaterialPageRoute(builder: (context) {
+                          return Welcom();
+                        }));
+                      }
+                    )..show();
+
+
+                  },
+                  child: Container(child: ListTile(
+                      title : Text("حذف الحساب"),
+                    trailing: Icon(Icons.arrow_forward),
+                  ), padding : EdgeInsets.only(right : 10)),
+                ),
+                Divider(thickness: 1,) ,
+                SizedBox(height: 10,),
+                Center(child: Text("^_^ BR_Jobs" , style: TextStyle(fontSize: 16 , color: Colors.pink.shade900),),),
+                SizedBox(height: 10,),
+
 
               ],
             ),

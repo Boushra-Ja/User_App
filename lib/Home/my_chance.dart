@@ -32,7 +32,7 @@ class my_chance extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => show(m_jobs[i] , user , docid)),
+                      MaterialPageRoute(builder: (context) => show(m_jobs[i] , docid )),
                     );
                   },
 

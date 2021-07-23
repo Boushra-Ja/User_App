@@ -35,14 +35,14 @@ class roadmaps extends StatelessWidget {
                   child:
                       GridTile(
                         footer: new Text(roadm[i]['road_name'],textAlign: TextAlign.center,
-                            style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
+                            style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 22)),
                        child :Card(
                            margin: EdgeInsets.all(25),
                          shadowColor: Colors.transparent,
                          color: Colors.transparent,
                          child:Column(children: [
                            CircleAvatar(
-                             radius: 100,
+                             radius: 45,
                              backgroundImage:
                              roadm[i]['ima'] != "not"
                                  ? NetworkImage(

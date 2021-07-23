@@ -16,8 +16,6 @@ class seientificInformation extends StatelessWidget{
         SizedBox(height: 20,),
         buildCard("أختر" , 0, "المستوى الوظيفي", 9 , bloc ),
         SizedBox(height: 20,),
-        buildCard(bloc.selectedjob.length == 0 ? "true" :"false" , 1, "ماهي مجالات عملك", 10 , bloc ),
-        SizedBox(height: 20,),
         buildCard("أختر" , 0, "عدد سنوات خبرتك", 11 , bloc ),
         SizedBox(height: 20,),
         buildCard(bloc.Skills == "null" ? "true" :"false"  , 4, "المهارات (اختياري) ", 0  , bloc ),

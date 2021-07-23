@@ -176,16 +176,6 @@ class drawerState extends State<mydrawer> {
               }),
           ListTile(
               title: Text(
-                " المميزة بنجمة",
-                style: TextStyle(fontSize: 16),
-              ),
-              leading: IconButton(
-                icon: Icon(Icons.star, color: Colors.grey.shade600),
-                iconSize: 22,
-              ),
-              onTap: () {}),
-          ListTile(
-              title: Text(
                 " الاعدادات",
                 style: TextStyle(fontSize: 16),
               ),

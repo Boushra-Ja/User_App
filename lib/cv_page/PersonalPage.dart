@@ -76,8 +76,12 @@ class PersnalState extends State<personalPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    final user = Provider.of<userInfo>(context);
+    var user = Provider.of<userInfo>(context);
 
     return Directionality(
         textDirection: TextDirection.rtl,
@@ -135,7 +139,14 @@ class PersnalState extends State<personalPage> {
                         formdata5.save();
                         print(user.mygmail);
                         print(user.phone);
-                          await addData(user);
+                        var res =await addData(user);
+                        if(res != null){
+                          print("***&&&&&&");
+                         setState(() {
+                           user = null;
+                         });
+                          print(user);
+                        }
                       }
 
                     }
