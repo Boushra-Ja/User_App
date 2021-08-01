@@ -18,8 +18,9 @@ class userInfo with ChangeNotifier{
       selectedTypeJob ,
       Skills = "null" ,
       workSite ,
-      salary = "null",
+      salary ,
       imageurl = 'not',
+      typechance,
       previous_job = " ";
   bool  privecy ,
       notify ;
@@ -133,8 +134,12 @@ class userInfo with ChangeNotifier{
     this.phone = txt;
     notifyListeners();
   }
-  set_language(txt){
+  set_language(List txt){
     this.language = txt ;
+    notifyListeners();
+  }
+  set_typeChance(txt){
+    this.typechance = txt;
     notifyListeners();
   }
 }

@@ -1,6 +1,9 @@
 import 'package:b/Home/Company_Pages/Company_Profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../Info_Job.dart';
+import '../../postInformation.dart';
+import '../../temp_ForPost.dart';
 
 class buildCardCompany extends StatefulWidget {
   final list;
@@ -16,10 +19,44 @@ class buildCardCompany extends StatefulWidget {
 class buildCardCompanyState extends State<buildCardCompany> {
   int num_followers;
   bool check_followers = true;
+  temp_ForPost tem = new temp_ForPost();
   CollectionReference company =
       FirebaseFirestore.instance.collection("companies");
-  List<temp> posts = [];
-  temp t = new temp();
+  var posts = [];
+  Info_Job IJ = new Info_Job();
+  List All_jobs = [];
+  var com_Info;
+  bool loading = true ;
+
+  get_employe()async{
+
+  }
+
+  get_chance()async{
+    await company.doc(widget.company_Id).get().then((value) {
+      com_Info = value.data();
+    });
+    company.doc(widget.company_Id).collection("chance").get().then((value) async {
+      if(value.docs.isNotEmpty) {
+        /////////for chance
+        for(int k = 0 ; k <value.docs.length ; k++) {
+          IJ = new Info_Job();
+
+          IJ.job_Info = value.docs[k].data();
+          IJ.company_Id = widget.company_Id ;
+          IJ.company_Info = com_Info;
+
+          if (this.mounted) {
+            setState(() {
+              All_jobs.add(IJ);
+            });
+          }
+        }
+      }
+
+    });
+
+  }
 
   check_follower() async {
     await company.doc(widget.company_Id).get().then((value) async {
@@ -55,31 +92,39 @@ class buildCardCompanyState extends State<buildCardCompany> {
       if (docs.docs.isNotEmpty) {
         /////for to post for company
         for (int i = 0; i < docs.docs.length; i++) {
-          t = new temp();
+          tem = new temp_ForPost();
           await FirebaseFirestore.instance
               .collection('users')
               .doc(widget.user_id)
               .collection('posts_saved')
               .get()
-              .then((value) {
+              .then((value) async {
             if (value.docs.isNotEmpty) {
               ///////for to post_saved in user
               for (int j = 0; j < value.docs.length; j++) {
                 if (value.docs[j].data()['post_Id'] ==
-                    docs.docs[i].data()['post_Id']) {
-                  t.check_save = true;
+                    docs.docs[i].data()['id']) {
+                  tem.check_save = true;
                   break;
                 } else {
-                  t.check_save = false;
+                  tem.check_save = false;
                 }
 
               }
             } else {
-              t.check_save = false;
+              tem.check_save = false;
             }
-            t.post_Id = docs.docs[i].data()['post_Id'];
-            t.my_post = docs.docs[i].data()['myPost'];
-            posts.add(t);
+            tem.companies_post = new postInformation();
+            tem.companies_post.post_Id = docs.docs[i].data()['id'];
+            tem.companies_post.my_post = docs.docs[i].data()['myPost'];
+            tem.companies_post.title = docs.docs[i].data()['title'];
+            tem.companies_post.date = docs.docs[i].data()['dateOfPublication'];
+            tem.company_Id = widget.company_Id;
+            tem.company_name = widget.list['company'];
+            await company.doc(widget.company_Id).get().then((v) {
+              tem.num_follwers = v.data()['followers'].length;
+            });
+            posts.add(tem);
           });
         }
       }
@@ -88,10 +133,11 @@ class buildCardCompanyState extends State<buildCardCompany> {
 
   @override
   void initState() {
-    super.initState();
-    () async {
+    ()async{
       await get_Post();
+      await get_chance();
     }();
+    super.initState();
   }
 
   @override
@@ -146,21 +192,120 @@ class buildCardCompanyState extends State<buildCardCompany> {
       ),
       onTap: () async {
         await check_follower();
-        print("&&&&&&&&" + "$num_followers");
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return companyProfile(
               list: widget.list,
-              company_Id: widget.company_Id,
               user_id: widget.user_id,
               check_followers: check_followers,
+              company_Id : widget.company_Id,
+              num_followers : num_followers,
               list_post: posts,
-              num_followers: num_followers);
+          chance_list: All_jobs);
         }));
       },
     );
   }
 }
 
-class temp {
-  var post_Id, check_save, my_post;
+/*
+import 'package:b/stand.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+class datasearch extends SearchDelegate<String> {
+
+
+  var batol;
+  List<dynamic> list=new List();
+  List<String> data_save;
+  datasearch(this.list);
+  String u;
+  date(context) async {
+    CollectionReference ref =FirebaseFirestore.instance.collection("companies").doc(Provider.of<MyProvider>(context, listen: false).company_id).collection("chance");
+
+    String u;
+    await ref.where("title", isEqualTo: query).get().then((value) {
+      value.docs.forEach((element) {
+        u = element.id;
+        batol=element.data();
+
+      });
+    });
+    DocumentReference d =FirebaseFirestore.instance.collection("companies").doc(Provider.of<MyProvider>(context, listen: false).company_id).collection("chance").doc(u);
+
+    await d.get().then((value) {
+      String k1 = value.data()['title'];
+      String k2 = value.data()['age'];
+
+      data_save = new List();
+      data_save.add(k1);
+      data_save.add(k2);
+
+    });
+  }
+
+
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: Icon(
+            Icons.clear,
+          ),
+          onPressed: () {
+            query = "";
+          }),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: Icon(
+          Icons.arrow_back,
+        ),
+        onPressed: () {
+          close(context, null);
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+
+    return Container(child:Column(children:<Widget> [
+
+      Text(data_save[0]),
+      SizedBox(height: 20,),
+
+      Text(data_save[1]),
+      SizedBox(height: 20,),
+    ],));
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    var sl = query.isEmpty
+        ? list
+        : list.where((element) => element.startsWith(query)).toList();
+    return ListView.builder(
+        itemCount: sl.length,
+        itemBuilder: (context, i) {
+          return ListTile(
+              leading: Icon(Icons.nature_people),
+              title: Text(sl[i]),
+              onTap: () {
+                query = sl[i];
+
+                bbbb(context);
+              });
+        });
+  }
+  bbbb(context)async{
+    await date(context);
+    showResults(context);
+  }
 }
+ */
+
+

@@ -1,21 +1,26 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/Home/Leatest_New/Company_Publication.dart';
+import 'package:b/Home/all_chance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../Info_Job.dart';
 import 'AboutCompany.dart';
+import 'Employe_Page.dart';
 
 class companyProfile extends StatefulWidget {
-  var list, company_Id, user_id, check_followers, list_post, num_followers;
+  var list, user_id, check_followers, list_post , company_Id ,num_followers , chance_list;
   companyProfile(
       {Key key,
       this.list,
-      this.company_Id,
       this.user_id,
       this.check_followers,
+        this.company_Id,
+        this.num_followers,
       this.list_post,
-      this.num_followers})
+        this.chance_list
+      })
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -33,8 +38,9 @@ class profileState extends State<companyProfile> {
   var num_companies_follow, num_follow;
   CollectionReference company =
       FirebaseFirestore.instance.collection("companies");
-
   CollectionReference user = FirebaseFirestore.instance.collection("users");
+  Info_Job IJ = new Info_Job();
+  bool loading = true ;
 
   checkSaved() async {
     await FirebaseFirestore.instance
@@ -58,7 +64,7 @@ class profileState extends State<companyProfile> {
         }
       } else {
         setState(() {
-          check_saved = false;
+              check_saved = false;
         });
       }
     });
@@ -527,14 +533,11 @@ class profileState extends State<companyProfile> {
                             list: widget.list,
                           )
                         : check2 == true
-                            ? company_Publication(
-                                post: widget.list_post,
-                                company_name: widget.list['company'],
-                                num_follwers: widget.num_followers,
-                                user_Id: widget.user_id,
-                              )
-                            : Text('ds'),
+                            ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id)
+                            : check3 == true ?  all_chance(widget.chance_list, widget.user_id):employePage()
+
                   ],
+
                 ),
               ),
             ));

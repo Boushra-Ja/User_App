@@ -63,7 +63,8 @@ class PersnalState extends State<personalPage> {
       'worksite': user.workSite,
       'salary': user.salary,
       'companies_follow' : [],
-      'language' : user.language
+      'language' : user.language,
+      'typechance' : user.typechance
     }).then((value) {
       print('Sucsess');
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {

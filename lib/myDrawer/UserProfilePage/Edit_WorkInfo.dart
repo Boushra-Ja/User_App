@@ -5,7 +5,6 @@ import 'package:b/helpFunction/buildDropdownButton.dart';
 import 'package:b/helpFunction/buildText.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'ProfilePage.dart';
 
 class Edit_WorkInfo extends StatelessWidget{
 
@@ -42,6 +41,8 @@ class Edit_WorkInfo extends StatelessWidget{
         buildCard(user.selectedjob.length == 0 ? "true" :"false" , 1 , "ماهي مجالات عملك", 10 , user ),
         SizedBox(height: 20,),
         buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , user ),
+        SizedBox(height: 20,),
+        buildCard("اختر", 0, "نوع الفرص التي تبحث عنها", 15, user),
         SizedBox(height: 20,),
         Center(
           child: Container(
@@ -128,6 +129,7 @@ class Edit_WorkInfo extends StatelessWidget{
         'salary' : user.salary,
         'work_field' : user.selectedjob ,
         'previous_job' : user.previous_job ,
+        'typechance' : user.typechance
 
       }).then((value) {
         print('Sucsess');

@@ -29,11 +29,11 @@ class savedJobsState extends State<savedJobs> {
         .get()
         .then((value) async {
       if (value.docs.isNotEmpty) {
-        IJ = new Info_Job();
         for (int i = 0; i < value.docs.length; i++) {
+          IJ = new Info_Job();
           //////////////get company_Info
           await company
-            ..doc(value.docs[i].data()['company_Id']).get().then((doc) async {
+            .doc(value.docs[i].data()['company_Id']).get().then((doc) async {
               IJ.company_Info = doc.data();
               ////////////////get chance Info
               await company

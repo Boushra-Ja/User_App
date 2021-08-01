@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../UserInfo.dart';
 
 class buildDropdownButton extends StatefulWidget {
@@ -34,10 +33,8 @@ class DropState extends State<buildDropdownButton> {
   ];
   List functionalist = [
     'مبتدئ',
-    'فترة تدريب',
-    'مساعد',
-    'مدير اداري',
-    'مدير تنفيذي'
+    'متمرس',
+    'خبير'
   ];
   List joblist = [
     'تكنولوجيا المعلومات',
@@ -47,7 +44,7 @@ class DropState extends State<buildDropdownButton> {
     'تصيم غرافيكي وتحريك',
     "سكرتاريا",
     "صحافة",
-    "مديرمشاريع",
+    "مدير مشاريع"
     "محاسبة",
     "كيمياء ومخابر",
     "طبيب",
@@ -65,8 +62,9 @@ class DropState extends State<buildDropdownButton> {
     '8',
     'اكثر من ذلك'
   ];
-  List typeworkList = ['دوام كامل ', 'دوام جزئي', 'تدريب', 'تطوع'];
-
+  List typeworkList = ['دوام كامل ', 'دوام جزئي'];
+  List salary = ["أقل من 100000", "100000 - 300000", "300000 - 500000", "500000 - 700000", "700000 - 1000000", "1000000 - 1500000", "1500000 - 2000000", "أكبر من ذلك"];
+  List type_chance = ['فرص عادية' , "فرص تدريب"  , "فرص تطوعية"];
   @override
   void initState() {
     for (int i = 1980; i < 2020; i++) {
@@ -79,7 +77,6 @@ class DropState extends State<buildDropdownButton> {
       _day.add("$i");
     }
     _country = widget.country;
-    print("*****$_country");
     super.initState();
   }
 
@@ -99,7 +96,7 @@ class DropState extends State<buildDropdownButton> {
         ? widget.bloc.selectedCountry == null ? [] : widget.city['${widget.bloc.selectedCountry}']
         : widget._selected == 8
         ? eductionlist
-        : widget._selected == 9 ? functionalist : widget._selected == 10 ? joblist : widget._selected == 11 ? experiencelist : widget._selected == 12 ?  typeworkList : widget.country;
+        : widget._selected == 9 ? functionalist : widget._selected == 10 ? joblist : widget._selected == 11 ? experiencelist : widget._selected == 12 ? typeworkList  :  widget._selected == 13 ?  widget.country : widget._selected == 14 ?  salary : type_chance;
     return Expanded(
       flex: widget.flex_,
       child: Container(
@@ -134,7 +131,7 @@ class DropState extends State<buildDropdownButton> {
               ?  widget.bloc.selectedCity
               : widget._selected == 8
               ?  widget.bloc.selectedEdu
-              :widget._selected == 9 ?   widget.bloc.selectedFun : widget._selected == 10 ?  widget.bloc.selectedjob : widget._selected == 11 ?  widget.bloc.selectedExpr :  widget._selected == 12 ? widget.bloc.selectedTypeJob : widget.bloc.workSite,
+              :widget._selected == 9 ?   widget.bloc.selectedFun : widget._selected == 10 ?  widget.bloc.selectedjob : widget._selected == 11 ?  widget.bloc.selectedExpr :  widget._selected == 12 ? widget.bloc.selectedTypeJob : widget._selected == 13 ?  widget.bloc.workSite : widget._selected == 14 ? widget.bloc.salary : widget.bloc.typechance,
           onChanged: (newValue) {
             widget._selected == 1
                 ?  widget.bloc.set_selectedDay(newValue)
@@ -152,11 +149,10 @@ class DropState extends State<buildDropdownButton> {
                 ?  widget.bloc.set_selectedCity(newValue)
                 : widget._selected == 8
                 ?  widget.bloc.set_selectedEdu(newValue)
-                : widget._selected == 9 ?  widget.bloc.set_selectedFun(newValue) : widget._selected == 10 ?  widget.bloc.set_selectedjob(newValue) : widget._selected == 11 ?  widget.bloc.set_selectedExpr(newValue) :  widget._selected == 12 ? widget.bloc.set_selectedTypeJob(newValue) :widget.bloc.set_workSite(newValue) ;
+                : widget._selected == 9 ?  widget.bloc.set_selectedFun(newValue) : widget._selected == 10 ?  widget.bloc.set_selectedjob(newValue) : widget._selected == 11 ?  widget.bloc.set_selectedExpr(newValue) :  widget._selected == 12 ? widget.bloc.set_selectedTypeJob(newValue) : widget._selected == 13 ? widget.bloc.set_workSite(newValue) :  widget._selected == 14 ? widget.bloc.set_salary(newValue) : widget.bloc.set_typeChance(newValue);
+
           },
           validator: (val) {
-            print("hellloo");
-            print("^^${widget.bloc.workSite}");
             if (widget._selected == 1) {
               if ( widget.bloc.selectedDay == null) return 'مطلوب';
             } else if (widget._selected == 2) {
@@ -183,8 +179,14 @@ class DropState extends State<buildDropdownButton> {
               if ( widget.bloc.selectedExpr == null) return 'مطلوب';
             }else if(widget._selected == 12){
               if ( widget.bloc.selectedTypeJob == null) return 'مطلوب';
-            }else{
+            }else if(widget._selected == 13){
               if ( widget.bloc.workSite == null) return 'مطلوب';
+            }
+            else if(widget._selected == 14){
+              if ( widget.bloc.salary == null) return 'مطلوب';
+            }
+            else{
+              if ( widget.bloc.typechance == null) return 'مطلوب';
             }
             return null;
           },

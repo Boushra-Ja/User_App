@@ -1,7 +1,10 @@
 import 'package:b/Home/Leatest_New/build_Card_Post.dart';
 import 'package:b/component/Loading.dart';
+import 'package:b/postInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../../temp_ForPost.dart';
 
 class savedPosts extends StatefulWidget {
   final user_Id;
@@ -13,7 +16,7 @@ class savedPosts extends StatefulWidget {
 }
 
 class savedPostState extends State<savedPosts> {
-  temp_ t = new temp_();
+  temp_ForPost tem = new temp_ForPost();
   var posts_list = [];
   bool loading = true;
 
@@ -23,16 +26,37 @@ class savedPostState extends State<savedPosts> {
         .doc(widget.user_Id)
         .collection("posts_saved")
         .get()
-        .then((value) {
+        .then((value) async {
       if (value.docs.isNotEmpty) {
         for (int i = 0; i < value.docs.length; i++) {
-          t = new temp_();
-          t.check_save = true;
-          t.my_post = value.docs[i].data()['myPost'];
-          t.post_Id = value.docs[i].data()['post_Id'];
-          t.company_name = value.docs[i].data()['company_name'];
-          t.num_followers = value.docs[i].data()['num_followers'];
-          posts_list.add(t);
+          await FirebaseFirestore.instance
+              .collection("companies").doc(value.docs[i].data()['company_Id']).collection("Post").get().then((val) async {
+                if(val.docs.isNotEmpty){
+                  for(int k = 0; k < val.docs.length ; k++)
+                    {
+                      if(value.docs[i].data()['post_Id'] == val.docs[k].id)
+                        {
+                          print(val.docs[k].id);
+                          print(value.docs[i].data()['post_Id'] );
+                          tem = new temp_ForPost();
+                          tem.companies_post = new postInformation();
+                          tem.check_save = true;
+                          tem.companies_post.my_post = val.docs[k].data()['myPost'];
+                          tem.companies_post.post_Id = value.docs[i].data()['post_Id'];
+                          tem.companies_post.title = val.docs[k].data()['title'];
+                          tem.companies_post.date = val.docs[k].data()['dateOfPublication'];
+
+                          await FirebaseFirestore.instance
+                              .collection("companies").doc(value.docs[i].data()['company_Id']).get().then((comp){
+                                tem.company_name = comp.data()['company'];
+                                tem.num_follwers = comp.data()['followers'].length;
+
+                          });
+                          posts_list.add(tem);
+                        }
+                    }
+                }
+          });
         }
       }
     });
@@ -69,17 +93,14 @@ class savedPostState extends State<savedPosts> {
                   itemCount: posts_list.length,
                   itemBuilder: (context, index) {
                     return build_post(
-                        post: posts_list[index],
-                        company_name: posts_list[index].company_name,
-                        num_follwers: posts_list[index].num_followers,
-                        user_Id: widget.user_Id);
+                      // post: posts_list[index],
+                        //company_name: posts_list[index].company_name,
+                        //num_follwers: posts_list[index].num_followers,
+                        //user_Id: widget.user_Id
+                        post_Info: posts_list[index] , user_Id: widget.user_Id);
                   },
                 )
               ],
             )));
   }
-}
-
-class temp_ {
-  var post_Id, check_save, my_post, company_name, num_followers;
 }

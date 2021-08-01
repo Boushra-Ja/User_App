@@ -146,7 +146,7 @@ class build_MultiSelectState extends State<build_MultiSelect>{
               if (value == null || value.length == 0) {
                 return 'يمكنك اختيار أكثر من مجال';
               }
-            }else {
+            }else if(widget._selected == 2){
               if (value == null || value.length == 0) {
                 return 'يمكنك اختيار أكثر من مجال';
               }
@@ -165,19 +165,15 @@ class build_MultiSelectState extends State<build_MultiSelect>{
             if(widget._selected == 1) {
               if (value == null) return;
               setState(() {
-                print( widget.user.selectedjob);
                 widget.user.set_selectedjob(value)  ;
               });
-            }else {
+            }else if(widget._selected == 2) {
               if (value == null) return;
               setState(() {
-                print( widget.user.selectedjob);
                 widget.user.set_language(value)  ;
-                print(widget.user.language);
-                print("________________");
+                print( widget.user.language);
               });
             }
-
           },
         ),
       ),

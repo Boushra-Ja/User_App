@@ -18,6 +18,8 @@ class workInformation extends StatelessWidget{
         SizedBox(height: 10 ,) ,
         buildCard("أختر" , 0, "ما نوع العمل الذي ترغب فيه", 12 , bloc ),
         SizedBox(height: 20,),
+        buildCard("اختر", 0, "نوع الفرص التي تبحث عنها", 15, bloc),
+        SizedBox(height: 20,),
         buildCard(bloc.selectedjob.length == 0 ? "true" :"false" , 1, "ماهي مجالات عملك", 10 , bloc ),
         SizedBox(height: 20,),
         Center(
@@ -42,9 +44,8 @@ class workInformation extends StatelessWidget{
             ],
           ))),
         ),
-
         SizedBox(height: 20,),
-        buildCard(bloc.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, bloc ),
+        buildCard("اختر" , 0, "حدد الراتب الذي ترغب فيه", 14, bloc ),
         SizedBox(height: 20,),
         Container(
             height: 70,

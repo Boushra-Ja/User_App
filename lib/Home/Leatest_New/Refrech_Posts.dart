@@ -1,4 +1,6 @@
 import 'package:b/component/Loading.dart';
+import 'package:b/postInformation.dart';
+import 'package:b/temp_ForPost.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +17,9 @@ class Refrech_Posts extends StatefulWidget {
 
 class RefrechPostsState extends State<Refrech_Posts> {
   bool loading = true;
-  List companies_follow_Id = [], company_name = [], num_follwers = [];
-  var companies_post = [];
-  temp t = new temp();
+  List companies_follow_Id = [];
+  temp_ForPost tem = new temp_ForPost() ;
+  var post_Info = [] ;
 
   CollectionReference company =
       FirebaseFirestore.instance.collection('companies');
@@ -34,6 +36,7 @@ class RefrechPostsState extends State<Refrech_Posts> {
         }
       });
     });
+
     for (int i = 0; i < companies_follow_Id.length; i++) {
       await FirebaseFirestore.instance
           .collection('companies')
@@ -43,46 +46,44 @@ class RefrechPostsState extends State<Refrech_Posts> {
           .then((value) async {
         if (value.docs.isNotEmpty) {
           for (int j = 0; j < value.docs.length; j++) {
-            await company.doc(companies_follow_Id[i]).get().then((value) {
-              company_name.add(value.data()['company']);
-              num_follwers.add(value.data()['followers'].length);
+            tem = new temp_ForPost();
+            //////////////get company Info
+            await company.doc(companies_follow_Id[i]).get().then((val) {
+              tem.company_Id = val.id ;
+              tem.company_name = val.data()['company'];
+              tem.num_follwers = val.data()['followers'].length;
             });
-            t = new temp();
+            ///////////////check about save
             await FirebaseFirestore.instance
                 .collection('users')
                 .doc(widget.docid)
-                .collection('posts_saved')
-                .get()
-                .then((doc) {
-              if (doc.docs.isNotEmpty) {
-                for (int k = 0; k < doc.docs.length; k++) {
-                  if (doc.docs[k].data()['post_Id'] ==
-                      value.docs[j].data()['post_Id']) {
+                .collection('posts_saved').where("post_Id" , isEqualTo: value.docs[j].id).get().then((v) {
+                  if(v.docs.isNotEmpty)
+                    {
+                      setState(() {
+                        tem.check_save = true;
+                      });
+                    }
+                  else{
                     setState(() {
-                      t.check_save = true;
-                    });
-                    break;
-                  } else {
-                    setState(() {
-                      t.check_save = false;
+                      tem.check_save = false;
                     });
                   }
-                }
-              } else {
-                t.check_save = false;
-              }
-              t.post_Id = value.docs[j].data()['post_Id'];
-              t.my_post = value.docs[j].data()['myPost'];
-              companies_post.add(t);
             });
+            tem.companies_post = new postInformation();
+            tem.companies_post.post_Id = value.docs[j].data()['id'];
+            tem.companies_post.my_post = value.docs[j].data()['myPost'];
+            tem.companies_post.title = value.docs[j].data()['title'];
+            tem.companies_post.date = value.docs[j].data()['dateOfPublication'];
+            post_Info.add(tem);
           }
         }
       });
     }
-
     setState(() {
       loading = false;
     });
+
   }
 
   @override
@@ -98,13 +99,6 @@ class RefrechPostsState extends State<Refrech_Posts> {
     return loading
         ? Loading()
         : company_Publication(
-            post: companies_post,
-            company_name: company_name,
-            num_follwers: num_follwers,
-            user_Id: widget.docid);
+            post_Info : post_Info , user_Id: widget.docid,);
   }
-}
-
-class temp {
-  var post_Id, check_save, my_post;
 }

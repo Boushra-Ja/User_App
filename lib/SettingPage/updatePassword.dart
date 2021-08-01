@@ -21,7 +21,7 @@ class updateState extends State<updatePassword> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.deepPurple.shade700,
+            backgroundColor: Colors.pink.shade900,
             leading: InkWell(
               child: Icon(
                 Icons.arrow_back_ios,
@@ -68,7 +68,7 @@ class updateState extends State<updatePassword> {
                         ),
                         shape: RoundedRectangleBorder(
                             borderRadius: new BorderRadius.circular(10.0)),
-                        color: Colors.deepPurple.shade700.withOpacity(0.8)),
+                        color: Colors.pink.shade900.withOpacity(0.8)),
                   )
                 ],
               )),

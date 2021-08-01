@@ -1,8 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/Home/Company_Pages/buildCardForCompany.dart';
+import 'package:b/component/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'Quiz_Page/quizPage.dart';
+import 'package:http/http.dart' as http;
+
 
 class show extends StatefulWidget{
   var job , docid;
@@ -16,7 +22,98 @@ class show extends StatefulWidget{
     return showState();
   }
 }
+
 class showState extends State<show> {
+  bool check_P = false, loading = true ;
+
+  sendNotify()async {
+
+    var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
+    await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverToken',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'body': ("تم التقدم على فرصة " + "${widget.job.job_Info['title']}"+ " من قبل المستخدم " + " ${widget.job.user_name}"),
+            'title': 'تقديم طلب'
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'status': 'done'
+          },
+          'to': await FirebaseMessaging.instance.getToken(),
+        },
+      ),
+    );
+
+
+  }
+
+  getMessage()async{
+    FirebaseMessaging.onMessage.listen((event) {
+      print("++++++++++++++++++++++++++++++");
+      print(event.notification.title);
+      print(event.notification.body);
+    });
+  }
+
+  check_Presentation()async{
+    await FirebaseFirestore.instance.collection("companies").doc(widget.job.company_Id).collection('chance').doc(widget.job.job_Info['id']).get().then((value) async {
+      for(int i=0; i < value.data()['Presenting_A_Job'].length ; i++)
+        {
+          if(value.data()['Presenting_A_Job'][i] == widget.docid)
+            {
+              setState(() {
+                check_P = true ;
+              });
+              break;
+            }
+          else{
+            setState(() {
+              check_P = false ;
+            });
+          }
+        }
+      await FirebaseFirestore.instance.collection('users').doc(widget.docid).collection('chance_saved').get().then((doc) {
+        if(doc.docs.isNotEmpty){
+          for(int j =0 ; j < doc.docs.length ; j++){
+            if(doc.docs[j].data()['chance_Id'] == value.data()['id'])
+            {
+              setState(() {
+                widget.job.check_save = true ;
+              });
+              break;
+            }
+            else{
+              setState(() {
+                widget.job.check_save = false ;
+              });
+            }
+          }
+        }else{
+          setState(() {
+            widget.job.check_save = false ;
+          });
+        }
+      });
+    });
+    setState(() {
+      loading = false ;
+    });
+    }
+  @override
+  void initState() {
+    ()async{
+      await check_Presentation();
+    }();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +121,9 @@ class showState extends State<show> {
         .collection("users")
         .doc(widget.docid)
         .collection('chance_saved');
+    DocumentReference chance = FirebaseFirestore.instance.collection('companies').doc(widget.job.company_Id).collection('chance').doc(widget.job.job_Info['id']);
 
-    return Directionality(
+    return loading ? Loading() : Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
           backgroundColor: Colors.white,
@@ -144,25 +242,18 @@ class showState extends State<show> {
                                       setState(() {
                                         widget.job.check_save = false ;
                                       });
-
+                                      ////////
                                       await chance_saved.get().then((value) async {
                                         if (value.docs.isNotEmpty) {
                                           for (int j = 0; j < value.docs.length; j++) {
+
                                             if (value.docs[j].data()['chance_Id'] ==
                                                 widget.job.job_Info['id']) {
-                                              chance_saved
-                                                  .where("chance_Id",
-                                                  isEqualTo: widget.job.job_Info['id'])
-                                                  .get()
+                                              await chance_saved
+                                                  .doc( value.docs[j].id)
+                                                  .delete()
                                                   .then((value) {
-                                                value.docs.forEach((element) {
-                                                  chance_saved
-                                                      .doc(element.id)
-                                                      .delete()
-                                                      .then((value) {
-                                                    print("Success!");
-                                                  });
-                                                });
+                                                print("Success!");
                                               });
                                             }
                                           }
@@ -294,8 +385,93 @@ class showState extends State<show> {
               SizedBox(height: 40,),
               Center(
                 child:  ElevatedButton(
-                      onPressed: () {},
-                      child: Text('تقديم' , style: TextStyle(fontSize: 18 , color: Colors.white , fontWeight: FontWeight.w600),),
+                      onPressed: () async{
+                        if(check_P == false){
+
+                          await chance.get().then((value) async {
+                            if(value.data()['quiz'] == 0 )
+                            {
+                              setState(() {
+                                check_P = true ;
+                              });
+                             await sendNotify();
+                             await getMessage();
+                             chance.update({
+                                'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
+                              }).then((value) {
+                                print('Sucsess');
+                              }).catchError((e) {
+                                AwesomeDialog(
+                                    context: context,
+                                    title: "Error",
+                                    body: Text('Error'))
+                                  ..show();
+                              });
+                            }
+                            else {
+                              if(value.data()['quiz_result'].containsKey('${widget.docid}'))
+                              {
+                                setState(() {
+                                  check_P = true ;
+                                });
+                                await sendNotify();
+                                await getMessage();
+                                chance.update({
+                                  'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
+                                }).then((value) {
+                                  print('Sucsess');
+                                }).catchError((e) {
+                                  AwesomeDialog(
+                                      context: context,
+                                      title: "Error",
+                                      body: Text('Error'))
+                                    ..show();
+                                });
+
+
+                              }else{
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                  return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid );
+                                }));
+
+                              }
+
+                            }
+                          });
+                        }
+                        else{
+                          setState(() {
+                            check_P = false ;
+                          });
+                          await chance.get().then((value) {
+                            for(int i=0; i < value.data()['Presenting_A_Job'].length ; i++){
+                              if(value.data()['Presenting_A_Job'][i] == widget.docid)
+                                {
+                                  var val = []; //blank list for add elements which you want to delete
+                                  val.add('${value.data()['Presenting_A_Job'][i]}');
+                                  chance.update({
+                                    "Presenting_A_Job":
+                                    FieldValue
+                                        .arrayRemove(
+                                        val)
+                                  }).then((value) {
+                                    print('Sucsess');
+                                  }).catchError((e) {
+                                    AwesomeDialog(
+                                        context:
+                                        context,
+                                        title: "Error",
+                                        body: Text(
+                                            'Error'))
+                                      ..show();
+                                  });
+                                }
+
+                            }
+                          });
+                        }
+                      },
+                      child: Text(check_P == false ? 'تقديم' : "الغاء التقديم" , style: TextStyle(fontSize: 18 , color: Colors.white , fontWeight: FontWeight.w600),),
                       style: ElevatedButton.styleFrom(
                         elevation: 4,
                         minimumSize: Size(150.0, 50.0),
