@@ -11,10 +11,9 @@ class all_chance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-          body: ListView.builder(
+    return  jobs.length==0 ? Center(child: Text("لا يوجد فرص")) : ListView.builder(
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
             itemCount: jobs.length,
             /////// loop
             itemBuilder: (context, i) {
@@ -42,7 +41,7 @@ class all_chance extends StatelessWidget {
                                 size: 30,
                               ),
                               Text(
-                                " العنوان ",
+                                "${jobs[i].company_Info['region']}",
                               ),
                             ]),
                             Card(
@@ -65,7 +64,6 @@ class all_chance extends StatelessWidget {
                                 ])),
                           ]))));
             },
-          ), // This trailing comma makes auto-formatting nicer for build methods.
-        ));
+          );// This trailing comma makes auto-formatting nicer for build methods.
   }
 }
