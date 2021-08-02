@@ -1,12 +1,6 @@
-import 'package:b/Home/show.dart';
-import 'package:b/Home/show.dart';
-import 'package:b/UserInfo.dart';
-import 'package:b/myDrawer/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'show.dart';
 
 
 
@@ -67,7 +61,4 @@ class roadmaps extends StatelessWidget {
 
 
 
-//  ramayag@gmail.com
-
-//   flutter run -d chrome --web-renderer html
 

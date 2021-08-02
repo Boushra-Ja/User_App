@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../../Info_Job.dart';
 
 class savedJobs extends StatefulWidget {
-  var user_Id;
-  savedJobs({this.user_Id});
+  var user_Id,temp_list;
+  savedJobs({this.user_Id,this.temp_list});
 
   @override
   State<StatefulWidget> createState() {
@@ -73,6 +73,6 @@ class savedJobsState extends State<savedJobs> {
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : all_chance(chance_list , widget.user_Id);
+    return loading ? Loading() : all_chance(chance_list ,widget.temp_list, widget.user_Id);
   }
 }

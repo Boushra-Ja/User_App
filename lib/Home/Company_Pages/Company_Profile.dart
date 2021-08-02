@@ -10,7 +10,7 @@ import 'AboutCompany.dart';
 import 'Employe_Page.dart';
 
 class companyProfile extends StatefulWidget {
-  var list, user_id, check_followers, list_post , company_Id ,num_followers , chance_list;
+  var list, user_id, check_followers, list_post , company_Id ,num_followers , chance_list,temp_List;
   companyProfile(
       {Key key,
       this.list,
@@ -19,7 +19,8 @@ class companyProfile extends StatefulWidget {
         this.company_Id,
         this.num_followers,
       this.list_post,
-        this.chance_list
+        this.chance_list,
+        this.temp_List,
       })
       : super(key: key);
   @override
@@ -534,7 +535,7 @@ class profileState extends State<companyProfile> {
                           )
                         : check2 == true
                             ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id)
-                            : check3 == true ?  all_chance(widget.chance_list, widget.user_id):employePage()
+                            : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id):employePage()
 
                   ],
 

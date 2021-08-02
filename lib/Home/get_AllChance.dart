@@ -7,8 +7,8 @@ import '../Info_Job.dart';
 
 class get_All_chance extends StatefulWidget{
   final user_Id ;
-
-  const get_All_chance({Key key, this.user_Id}) : super(key: key);
+  var temp_list;
+   get_All_chance({Key key,this.temp_list,this.user_Id}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return get_All_chanceState();
@@ -67,6 +67,6 @@ class get_All_chanceState extends State<get_All_chance>
   }
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : all_chance(All_jobs, widget.user_Id);
+    return loading ? Loading() : all_chance(All_jobs,widget.temp_list, widget.user_Id);
   }
 }

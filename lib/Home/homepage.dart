@@ -1,19 +1,18 @@
 import 'package:b/Home/roadmaps.dart';
 import 'package:b/UserInfo.dart';
+import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../Info_Job.dart';
 import '../UserInfo.dart';
 import 'Company_Pages/Company_Page.dart';
 import 'Leatest_New/Refrech_Posts.dart';
-import 'get_AllChance.dart';
 import 'my_chance.dart';
+import 'all_chance.dart';
 import 'package:b/Home/appbar.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -23,61 +22,50 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var docid;
   userInfo user = new userInfo();
+  List All_jobs = [];
   List My_jobs = [];
   List all_map=[];
+  List aaa=[];
   bool loading = true;
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
   CollectionReference jobsref = FirebaseFirestore.instance.collection("companies");
-  CollectionReference mapref = FirebaseFirestore.instance.collection("roadmaps");
-  Info_Job IJ = new Info_Job();
-  var All_jobs = [] ;
-  List<dynamic> temp=
-  [
-    'تكنولوجيا المعلومات',
-    'علوم طبيعية',
-    'تدريس',
-    'ترجمة ',
-    'تصيم غرافيكي وتحريك',
-    "سكرتاريا",
-    "صحافة",
-    "مدير مشاريع",
-        "محاسبة",
-    "كيمياء ومخابر",
-    "طبيب",
-    "صيدلة وأدوية",
-    "غير ذلك"
-  ];
-
+  CollectionReference jobsre ;
+  /////////////////////////////get all data
   get_All_data() async {
-    await jobsref.get().then((v) async {
-      if(v.docs.isNotEmpty){
-        ///////for companies
-        for(int p =0 ; p <v.docs.length ; p++)
-        {
-          await jobsref.doc(v.docs[p].id).collection("chance").get().then((value) async {
-            if(value.docs.isNotEmpty) {
-              /////////for chance
-              for(int k = 0 ; k <value.docs.length ; k++) {
-                IJ = new Info_Job();
+    QuerySnapshot respon = await jobsref.get();
+    respon.docs.forEach((element) async {
+      if (this.mounted) {
+        setState(() async {
+          // get_over(element.id);
+          jobsre =FirebaseFirestore.instance.collection('companies').doc(element.id).collection('chance');
+          QuerySnapshot respo = await jobsre.get();
+          respo.docs.forEach((element) {
+            setState(() {
+              if (this.mounted) {
+                aaa.add(element.data());
+                All_jobs.add(element.data());
+                print("all tt "+"${All_jobs.length}");
 
-                IJ.company_Info = v.docs[p].data();
-                IJ.job_Info = value.docs[k].data();
-                IJ.company_Id = v.docs[p].id ;
-                if (this.mounted) {
-                  setState(() {
-                    print("________________");
-                    All_jobs.add(IJ);
-                  });
-                }
               }
-            }});
+            });
+          }
+
+          );
+          print("all data "+"${aaa.length}");
+
+          //  print ("oo//////////////////////ooooo");
+          //  print(aaa);
+
+
 
         }
+        );
+
       }
+
+
     });
-    for(int i = 0 ; i< All_jobs.length ; i++){
-      print(All_jobs[i].job_Info['specialties'].runtimeType);
-    }
+
+    //print(All_jobs.length);
   }
 
   /////////////////////////////get my chance
@@ -92,10 +80,16 @@ class _MyHomePageState extends State<MyHomePage> {
           })
         });
     print(My_jobs.length);
-
+    setState(() {
+      loading = false;
+    });
   }
 
   //////////////////////////get maps
+
+  CollectionReference mapref = FirebaseFirestore.instance.collection("roadmaps");
+
+  /////////////////////////////get all data
   get_All_maps() async {
     QuerySnapshot respon_map = await mapref.get();
     respon_map.docs.forEach((element) {
@@ -106,14 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
     print(all_map.length);
-    setState(() {
-      loading = false;
-    });
   }
 
   ///////////////////////user Info
   getId() async {
-    await users
+    await FirebaseFirestore.instance
+        .collection('users')
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
@@ -131,8 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
             user.selectedCountry = doc.data()['originalhome'];
             user.selectedCity = doc.data()['placerecident'];
             user.imageurl = doc.data()['imageurl'];
-            user.privecy = doc.data()['privecy'];
-            user.notify = doc.data()['notify'];
+            //  user.privecy = doc.data()['privecy'];
+            //   user.notify = doc.data()['notify'];
             user.selectedEdu = doc.data()['scientific_level'];
             user.selectedFun = doc.data()['carrer_level'];
             user.selectedjob = doc.data()['work_field'];
@@ -145,44 +137,36 @@ class _MyHomePageState extends State<MyHomePage> {
             user.mygmail = doc.data()['gmail'];
             user.phone = doc.data()['phone'];
             docid = doc.id;
-            user.language = doc.data()['language'];
-            user.typechance = doc.data()['typechance'];
           });
         }
       });
     });
-  }
 
-  token_storage()async{
-    var token ;
-    await FirebaseMessaging.instance.getToken().then((value) {
-      token = value;
-    });
-
-    await users.doc(docid).update({
-      'token' : token
-    }).then((value) {
-      print("sucess");
-    }).catchError((e){
-      print("errror");
-    });
+    print(user.firstName);
   }
 
   @override
   void initState() {
+
       () async {
         await getId();
-        await token_storage();
         await get_All_data();
-        //await get_My_data();
+        await get_My_data();
         await get_All_maps();
       }();
+
+
+    print("&&&&&&&&&&&");
+    print(user.selectedjob);
+    print(user.mygmail);
+    print(user.phone);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return loading ?loading_page(): Directionality(
+    return Directionality(
         textDirection: TextDirection.rtl,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -191,18 +175,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Directionality(
                     textDirection: TextDirection.rtl,
                     child: Scaffold(
-                      appBar: myappbar(chance_List : All_jobs , user_Id: docid , specialization_list : temp ),
+                      appBar: myappbar(),
                       drawer: mydrawer(
                         user: user,
                         docid: docid,
                       ),
-                      body:  TabBarView(
+                      body: loading
+                          ? Loading()
+                          : TabBarView(
                               children: [
-                                get_All_chance(user_Id:  docid),
+                                all_chance(aaa,All_jobs,docid),
                                 my_chance(My_jobs, user, docid),
                                 companyPage(user_id: docid),
                                 Refrech_Posts(docid: docid),
-                                ////////////// Rama add roadmaps ^_^      //////  done  😍
                                roadmaps(all_map),
                               ],
                             ),
@@ -210,32 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class loading_page extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          color: Colors.grey.shade100,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
 
-        ),
-        Center(
-          child: SpinKitFadingCircle(
-            itemBuilder: (BuildContext context, int index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index.isEven ? Colors.pink : Colors.grey,
-                ),
-              );
-            },
-          ),
-        )
-      ],
-    );
-  }
-}
 /*
     onTap: () {
                       GestureDetector(onTap:() async  =>{

@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class myappbar extends StatelessWidget  implements PreferredSize{
-  var chance_List , user_Id ;
+  var chance_List ,temp_list, user_Id ;
   List<dynamic>specialization_list ;
-  myappbar({this.chance_List , this.user_Id ,this.specialization_list});
+  myappbar({this.chance_List ,this.temp_list, this.user_Id ,this.specialization_list});
   @override
   Widget build(BuildContext context) {
     return  AppBar(
@@ -189,8 +189,8 @@ class dataSearch extends SearchDelegate<String>{
 
 
 class show_temp extends StatelessWidget{
-  var chance_list ,  user_Id;
-  show_temp({this.chance_list , this.user_Id});
+  var chance_list ,temp_list,  user_Id;
+  show_temp({this.chance_list ,this.temp_list, this.user_Id});
   @override
   Widget build(BuildContext context) {
     return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
@@ -203,7 +203,7 @@ class show_temp extends StatelessWidget{
               bottomRight: Radius.circular(70),
             )),
       ),
-       body: all_chance(chance_list , user_Id),
+       body: all_chance(chance_list ,temp_list, user_Id),
 
     ));
   }
