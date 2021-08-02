@@ -35,6 +35,7 @@ class savedJobsState extends State<savedJobs> {
           await company
             .doc(value.docs[i].data()['company_Id']).get().then((doc) async {
               IJ.company_Info = doc.data();
+              IJ.company_Id = value.docs[i].data()['company_Id'];
               ////////////////get chance Info
               await company
                   .doc(value.docs[i].data()['company_Id'])

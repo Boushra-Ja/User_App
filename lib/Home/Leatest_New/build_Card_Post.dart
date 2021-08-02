@@ -6,7 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:convert';
 
 class build_post extends StatefulWidget {
-  //var post, company_name, num_follwers, user_Id;
   var post_Info , user_Id;
   build_post({this.post_Info , this.user_Id});
 
@@ -46,11 +45,27 @@ class build_postState extends State<build_post> {
 
 
   }
+
   getMessage()async{
     FirebaseMessaging.onMessage.listen((event) {
       print("++++++++++++++++++++++++++++++");
       print(event.notification.title);
       print(event.notification.body);
+    });
+  }
+
+  storage_interaction(String txt)async{
+    print("${widget.post_Info.companies_post.post_Id}");
+    await FirebaseFirestore.instance.collection("users").doc(widget.user_Id).update({
+      "Interaction_log.${widget.post_Info.companies_post.post_Id}" : txt
+    }).then((value) {
+      print("success");
+    });
+  }
+  delete_interacton()async{
+    await FirebaseFirestore.instance.collection("users").doc(widget.user_Id).update({
+    'Interaction_log': FieldValue.arrayRemove([{}.remove("${widget.post_Info.companies_post.post_Id}")])
+
     });
   }
 
@@ -161,6 +176,7 @@ class build_postState extends State<build_post> {
                         child: InkWell(
                           onTap: ()async{
                             if(widget.post_Info.check_like == false){
+                              storage_interaction("like");
                               setState(() {
                                 widget.post_Info.check_like = true;
                                 widget.post_Info.check_dislike = false;
@@ -169,6 +185,7 @@ class build_postState extends State<build_post> {
                               await sendNotify(true);
                               await getMessage();
                             }else{
+                              delete_interacton();
                               setState(() {
                                 widget.post_Info.check_like = false;
                               });
@@ -187,6 +204,7 @@ class build_postState extends State<build_post> {
                         child: InkWell(
                           onTap: ()async{
                             if(widget.post_Info.check_dislike == false){
+                              storage_interaction("dislike");
                               setState(() {
                                 widget.post_Info.check_dislike = true;
                                 widget.post_Info.check_like = false;
@@ -196,6 +214,7 @@ class build_postState extends State<build_post> {
                               await getMessage();
 
                             }else{
+                              delete_interacton();
                               setState(() {
                                 widget.post_Info.check_dislike = false;
                               });

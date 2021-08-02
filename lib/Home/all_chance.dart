@@ -30,14 +30,14 @@ class chance extends State<all_chance> {
           Container(
             //margin: EdgeInsets.all(5),
             color: Colors.black26,
-            height: 50,
+            height: 60,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 textDirection: TextDirection.rtl,
                 children: [
                   Container( margin: EdgeInsets.all(5),
-                    width: 140,
+                    width: 160,
                     height: 40,
                     child: Center(
                       child: DropdownButton<String>(
@@ -52,7 +52,7 @@ class chance extends State<all_chance> {
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
-                              if(widget.temp[i]['workTime']==valu){
+                              if(widget.temp[i].job_Info['workTime']==valu){
                                 widget.jobs.add(widget.temp[i]);   }}});
                         },),),
                     decoration: BoxDecoration(
@@ -60,7 +60,7 @@ class chance extends State<all_chance> {
                   ),
                   ////////////  unfinished
                   Container( margin: EdgeInsets.all(5),
-                    width: 140,
+                    width: 160,
                     height: 40,
                     child: Center(
                       child: DropdownButton<String>(
@@ -75,7 +75,7 @@ class chance extends State<all_chance> {
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
-                              if(widget.temp[i]['workTime']==valu){
+                              if(widget.temp[i].job_Info['workTime']==valu){
                                 widget.jobs.add(widget.temp[i]);   }}});
                         },
                       ),),
@@ -83,7 +83,7 @@ class chance extends State<all_chance> {
                         color: Colors.white, borderRadius: BorderRadius.circular(30)),
                   ),
                   Container( margin: EdgeInsets.all(5),
-                    width: 120,
+                    width: 160,
                     height: 40,
                     child: Center(
                       child: DropdownButton<String>(
@@ -99,7 +99,7 @@ class chance extends State<all_chance> {
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
-                              if(widget.temp[i]['gender']==valu){
+                              if(widget.temp[i].job_Info['gender']==valu){
                                 widget.jobs.add(widget.temp[i]);   }}});
                         },
                         //  value : 1,
@@ -108,7 +108,7 @@ class chance extends State<all_chance> {
                         color: Colors.white, borderRadius: BorderRadius.circular(30)),
                   ),
                   Container( margin: EdgeInsets.all(5),
-                    width: 120,
+                    width: 160,
                     height: 40,
                     child: Center(
                       child: DropdownButton<String>(
@@ -123,7 +123,7 @@ class chance extends State<all_chance> {
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
-                              if(widget.temp[i]['expir']==valu){
+                              if(widget.temp[i].job_Info['expir']==valu){
                                 widget.jobs.add(widget.temp[i]);   }}});
                         },),),
                     decoration: BoxDecoration(
@@ -153,7 +153,7 @@ class chance extends State<all_chance> {
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
-                              if(widget.temp[i]['degree']==valu){
+                              if(widget.temp[i].job_Info['degree']==valu){
                                 widget.jobs.add(widget.temp[i]);   }}});
                         },
                       ),),
@@ -189,7 +189,7 @@ class chance extends State<all_chance> {
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
-                              if(widget.temp[i]['specialties']==valu){
+                              if(widget.temp[i].job_Info['specialties']==valu){
                                 widget.jobs.add(widget.temp[i]);   }}});
                         },
                       ),),
@@ -233,7 +233,7 @@ class chance extends State<all_chance> {
                                   size: 30,
                                 ),
                                 Text(
-                                  " ${widget.jobs[i]['specialties']} \n",style: new TextStyle(fontWeight: FontWeight.bold,),
+                                  " ${widget.jobs[i].company_Info['region']} \n",style: new TextStyle(fontWeight: FontWeight.bold,),
                                 ),
                               ]),
                               Card(
@@ -245,14 +245,12 @@ class chance extends State<all_chance> {
                                       Padding(
                                         padding:
                                         EdgeInsets.fromLTRB(20, 10, 20, 5),
-                                        child: Text(" المسمى الوظيفي :" +
-                                            " ${widget.jobs[i]["title"]} \n" +
-                                            "ساعات العمل :" +
-                                            " ${widget.jobs[i]["workTime"]} \n" +
-                                            " الراتب  :" +
-                                            " ${widget.jobs[i]["salary"]} \n" +
-                                            " الخبرة العملية  :" +
-                                            " ${widget.jobs[i]["level"]} \n"),
+                                        child: Text(" الأسم :" +
+                                            "${widget.jobs[i].job_Info['title']} \n" +
+                                            " الراتب :" +
+                                            " ${widget.jobs[i].job_Info['salary']} \n" +
+                                            " المهارات :" +
+                                            " ${widget.jobs[i].job_Info['skillNum']} \n"),
                                       )
                                     ]),
                                   ])),

@@ -36,7 +36,19 @@ class finish_QuizState extends State<finish_Quiz>{
               body: Text('Error'))
             ..show();
         });
-      }
+      }else{
+      await FirebaseFirestore.instance.collection("companies").doc(widget.company_Id).collection('chance').doc(widget.chance_Id).update({
+        "quiz_result.${widget.user_Id}": widget.success_rate,
+      }).then((value) {
+        print('Sucsess');
+      }).catchError((e) {
+        AwesomeDialog(
+            context: context,
+            title: "Error",
+            body: Text('Error'))
+          ..show();
+      });
+    }
     setState(() {
       loading = false ;
     });

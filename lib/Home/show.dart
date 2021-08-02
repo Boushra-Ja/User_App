@@ -64,6 +64,8 @@ class showState extends State<show> {
   }
 
   check_Presentation()async{
+    print(widget.job.job_Info['id']);
+    print( widget.docid);
     await FirebaseFirestore.instance.collection("companies").doc(widget.job.company_Id).collection('chance').doc(widget.job.job_Info['id']).get().then((value) async {
       for(int i=0; i < value.data()['Presenting_A_Job'].length ; i++)
         {
@@ -107,6 +109,7 @@ class showState extends State<show> {
       loading = false ;
     });
     }
+
   @override
   void initState() {
     ()async{
@@ -115,6 +118,7 @@ class showState extends State<show> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     CollectionReference chance_saved = FirebaseFirestore.instance
@@ -122,6 +126,92 @@ class showState extends State<show> {
         .doc(widget.docid)
         .collection('chance_saved');
     DocumentReference chance = FirebaseFirestore.instance.collection('companies').doc(widget.job.company_Id).collection('chance').doc(widget.job.job_Info['id']);
+    onPressed_Button()async{
+      if(check_P == false){
+
+        await chance.get().then((value) async {
+          if(value.data()['quiz'] == 0 )
+          {
+            setState(() {
+              check_P = true ;
+            });
+            await sendNotify();
+            await getMessage();
+            chance.update({
+              'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
+            }).then((value) {
+              print('Sucsess');
+            }).catchError((e) {
+              AwesomeDialog(
+                  context: context,
+                  title: "Error",
+                  body: Text('Error'))
+                ..show();
+            });
+          }
+          else {
+            if(value.data()['quiz_result'].containsKey('${widget.docid}'))
+            {
+              setState(() {
+                check_P = true ;
+              });
+              await sendNotify();
+              await getMessage();
+              chance.update({
+                'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
+              }).then((value) {
+                print('Sucsess');
+              }).catchError((e) {
+                AwesomeDialog(
+                    context: context,
+                    title: "Error",
+                    body: Text('Error'))
+                  ..show();
+              });
+
+
+            }else{
+              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid );
+              }));
+
+            }
+
+          }
+        });
+      }
+      else{
+        setState(() {
+          check_P = false ;
+        });
+        await chance.get().then((value) {
+          for(int i=0; i < value.data()['Presenting_A_Job'].length ; i++){
+            if(value.data()['Presenting_A_Job'][i] == widget.docid)
+            {
+              var val = []; //blank list for add elements which you want to delete
+              val.add('${value.data()['Presenting_A_Job'][i]}');
+              chance.update({
+                "Presenting_A_Job":
+                FieldValue
+                    .arrayRemove(
+                    val)
+              }).then((value) {
+                print('Sucsess');
+              }).catchError((e) {
+                AwesomeDialog(
+                    context:
+                    context,
+                    title: "Error",
+                    body: Text(
+                        'Error'))
+                  ..show();
+              });
+            }
+
+          }
+        });
+      }
+    }
 
     return loading ? Loading() : Directionality(
         textDirection: TextDirection.rtl,
@@ -186,16 +276,21 @@ class showState extends State<show> {
                                     ),
                                   ),
                                  SizedBox(width: 40,),
-                                 Container(
-                                    width: 150,
-                                    height: 40,
-                                    child: Center(child: Text("تقديم")),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(40),
-                                        color: Colors.grey.shade50
-                                    ),
+                                 InkWell(
+                                   onTap: (){
+                                     onPressed_Button();
+                                   },
+                                   child: Container(
+                                      width: 150,
+                                      height: 40,
+                                      child: Center(child: Text(check_P == false ? 'تقديم' : "الغاء التقديم")),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(40),
+                                          color: Colors.grey.shade50
+                                      ),
 
-                                )
+                                ),
+                                 )
                               ],
                             ),
                           ),
@@ -386,90 +481,7 @@ class showState extends State<show> {
               Center(
                 child:  ElevatedButton(
                       onPressed: () async{
-                        if(check_P == false){
-
-                          await chance.get().then((value) async {
-                            if(value.data()['quiz'] == 0 )
-                            {
-                              setState(() {
-                                check_P = true ;
-                              });
-                             await sendNotify();
-                             await getMessage();
-                             chance.update({
-                                'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
-                              }).then((value) {
-                                print('Sucsess');
-                              }).catchError((e) {
-                                AwesomeDialog(
-                                    context: context,
-                                    title: "Error",
-                                    body: Text('Error'))
-                                  ..show();
-                              });
-                            }
-                            else {
-                              if(value.data()['quiz_result'].containsKey('${widget.docid}'))
-                              {
-                                setState(() {
-                                  check_P = true ;
-                                });
-                                await sendNotify();
-                                await getMessage();
-                                chance.update({
-                                  'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
-                                }).then((value) {
-                                  print('Sucsess');
-                                }).catchError((e) {
-                                  AwesomeDialog(
-                                      context: context,
-                                      title: "Error",
-                                      body: Text('Error'))
-                                    ..show();
-                                });
-
-
-                              }else{
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                  return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid );
-                                }));
-
-                              }
-
-                            }
-                          });
-                        }
-                        else{
-                          setState(() {
-                            check_P = false ;
-                          });
-                          await chance.get().then((value) {
-                            for(int i=0; i < value.data()['Presenting_A_Job'].length ; i++){
-                              if(value.data()['Presenting_A_Job'][i] == widget.docid)
-                                {
-                                  var val = []; //blank list for add elements which you want to delete
-                                  val.add('${value.data()['Presenting_A_Job'][i]}');
-                                  chance.update({
-                                    "Presenting_A_Job":
-                                    FieldValue
-                                        .arrayRemove(
-                                        val)
-                                  }).then((value) {
-                                    print('Sucsess');
-                                  }).catchError((e) {
-                                    AwesomeDialog(
-                                        context:
-                                        context,
-                                        title: "Error",
-                                        body: Text(
-                                            'Error'))
-                                      ..show();
-                                  });
-                                }
-
-                            }
-                          });
-                        }
+                        onPressed_Button();
                       },
                       child: Text(check_P == false ? 'تقديم' : "الغاء التقديم" , style: TextStyle(fontSize: 18 , color: Colors.white , fontWeight: FontWeight.w600),),
                       style: ElevatedButton.styleFrom(
@@ -493,3 +505,4 @@ class showState extends State<show> {
         ));
   }
 }
+

@@ -1,17 +1,18 @@
+import 'package:b/Home/get_AllChance.dart';
 import 'package:b/Home/roadmaps.dart';
+import 'package:b/Info_Job.dart';
 import 'package:b/UserInfo.dart';
 import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../UserInfo.dart';
 import 'Company_Pages/Company_Page.dart';
 import 'Leatest_New/Refrech_Posts.dart';
 import 'my_chance.dart';
-import 'all_chance.dart';
 import 'package:b/Home/appbar.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -29,43 +30,62 @@ class _MyHomePageState extends State<MyHomePage> {
   bool loading = true;
   CollectionReference jobsref = FirebaseFirestore.instance.collection("companies");
   CollectionReference jobsre ;
+  Info_Job IJ = new Info_Job();
+  List<dynamic> temp=
+  [
+    'تكنولوجيا المعلومات',
+    'علوم طبيعية',
+    'تدريس',
+    'ترجمة ',
+    'تصيم غرافيكي وتحريك',
+    "سكرتاريا",
+    "صحافة",
+    "مدير مشاريع",
+    "محاسبة",
+    "كيمياء ومخابر",
+    "طبيب",
+    "صيدلة وأدوية",
+    "غير ذلك"
+  ];
   /////////////////////////////get all data
   get_All_data() async {
-    QuerySnapshot respon = await jobsref.get();
-    respon.docs.forEach((element) async {
+    var name ;
+    await FirebaseFirestore.instance.collection("users").doc(docid).get().then((value) {
       if (this.mounted) {
-        setState(() async {
-          // get_over(element.id);
-          jobsre =FirebaseFirestore.instance.collection('companies').doc(element.id).collection('chance');
-          QuerySnapshot respo = await jobsre.get();
-          respo.docs.forEach((element) {
-            setState(() {
-              if (this.mounted) {
-                aaa.add(element.data());
-                All_jobs.add(element.data());
-                print("all tt "+"${All_jobs.length}");
-
+        setState(() {
+          name = value.data()['firstname'] + " " + value.data()['endname'];
+        });
+      }
+    });
+    await jobsref.get().then((v) async {
+      if(v.docs.isNotEmpty){
+        ///////for companies
+        for(int p =0 ; p <v.docs.length ; p++)
+        {
+          await jobsref.doc(v.docs[p].id).collection("chance").get().then((value) async {
+            if(value.docs.isNotEmpty) {
+              /////////for chance
+              for(int k = 0 ; k <value.docs.length ; k++) {
+                IJ = new Info_Job();
+                IJ.company_Info = v.docs[p].data();
+                IJ.job_Info = value.docs[k].data();
+                IJ.company_Id = v.docs[p].id ;
+                IJ.user_name = name ;
+                if (this.mounted) {
+                  setState(() {
+                    aaa.add(IJ);
+                    All_jobs.add(IJ);
+                  });
+                }
               }
-            });
-          }
-
-          );
-          print("all data "+"${aaa.length}");
-
-          //  print ("oo//////////////////////ooooo");
-          //  print(aaa);
-
-
+            }});
 
         }
-        );
-
       }
-
-
     });
-
-    //print(All_jobs.length);
+    setState(() {
+      loading = false;
+    });
   }
 
   /////////////////////////////get my chance
@@ -166,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+    return loading ?loading_page():Directionality(
         textDirection: TextDirection.rtl,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -175,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Directionality(
                     textDirection: TextDirection.rtl,
                     child: Scaffold(
-                      appBar: myappbar(),
+                      appBar: myappbar(chance_List : All_jobs , user_Id: docid , specialization_list : temp ),
                       drawer: mydrawer(
                         user: user,
                         docid: docid,
@@ -184,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ? Loading()
                           : TabBarView(
                               children: [
-                                all_chance(aaa,All_jobs,docid),
+                                get_All_chance(temp_list : All_jobs,user_Id: docid,),
                                 my_chance(My_jobs, user, docid),
                                 companyPage(user_id: docid),
                                 Refrech_Posts(docid: docid),
@@ -195,14 +215,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+class loading_page extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          color: Colors.grey.shade100,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
 
-/*
-    onTap: () {
-                      GestureDetector(onTap:() async  =>{
-                      await canLaunch(url) ? await launch(url) : throw 'noooo'
-                  },);
-                }
-
-                var url = 'https://flutter.io';
-
-                      },*/
+        ),
+        Center(
+          child: SpinKitFadingCircle(
+            itemBuilder: (BuildContext context, int index) {
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  color: index.isEven ? Colors.pink : Colors.grey,
+                ),
+              );
+            },
+          ),
+        )
+      ],
+    );
+  }
+}

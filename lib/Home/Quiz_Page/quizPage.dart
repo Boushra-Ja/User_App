@@ -167,15 +167,20 @@ class quizPageState extends State<quizPage> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Container(
-                            width: 30,
-                            height: 40,
-                            child: Center(
-                                child: Text("الغاء",
-                                    style: TextStyle(fontSize: 16))),
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade400,
-                                borderRadius: BorderRadius.circular(30)),
+                          child: InkWell(
+                            onTap: (){
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 40,
+                              child: Center(
+                                  child: Text("الغاء",
+                                      style: TextStyle(fontSize: 16))),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade400,
+                                  borderRadius: BorderRadius.circular(30)),
+                            ),
                           ),
                         ),
                         SizedBox(

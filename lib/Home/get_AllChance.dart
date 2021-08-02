@@ -24,9 +24,11 @@ class get_All_chanceState extends State<get_All_chance>
   get_All_data() async {
     var name ;
     await FirebaseFirestore.instance.collection("users").doc(widget.user_Id).get().then((value) {
-      setState(() {
-        name = value.data()['firstname'] + " " + value.data()['endname'];
-      });
+      if (this.mounted) {
+        setState(() {
+          name = value.data()['firstname'] + " " + value.data()['endname'];
+        });
+      }
     });
     await jobsref.get().then((v) async {
       if(v.docs.isNotEmpty){
@@ -60,10 +62,11 @@ class get_All_chanceState extends State<get_All_chance>
 
   @override
   void initState() {
-    super.initState();
-    ()async{
+        ()async{
       await get_All_data() ;
     }();
+    super.initState();
+
   }
   @override
   Widget build(BuildContext context) {
