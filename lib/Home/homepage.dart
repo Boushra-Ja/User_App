@@ -143,8 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
             user.selectedCountry = doc.data()['originalhome'];
             user.selectedCity = doc.data()['placerecident'];
             user.imageurl = doc.data()['imageurl'];
-            //  user.privecy = doc.data()['privecy'];
-            //   user.notify = doc.data()['notify'];
+            user.privecy = doc.data()['privecy'];
+            user.notify = doc.data()['notify'];
             user.selectedEdu = doc.data()['scientific_level'];
             user.selectedFun = doc.data()['carrer_level'];
             user.selectedjob = doc.data()['work_field'];
@@ -157,6 +157,8 @@ class _MyHomePageState extends State<MyHomePage> {
             user.mygmail = doc.data()['gmail'];
             user.phone = doc.data()['phone'];
             docid = doc.id;
+            user.language = doc.data()['language'];
+            user.typechance = doc.data()['typechance'];
           });
         }
       });

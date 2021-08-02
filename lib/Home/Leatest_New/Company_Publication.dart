@@ -20,7 +20,7 @@ class company_PublicationState extends State<company_Publication> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return widget.post_Info.length ==0 ? Center(child: Text("لا يوجد منشورات")) : ListView.builder(
       shrinkWrap: true,
       physics: ScrollPhysics(),
       itemCount: widget.post_Info.length,

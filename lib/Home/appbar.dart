@@ -203,7 +203,7 @@ class show_temp extends StatelessWidget{
               bottomRight: Radius.circular(70),
             )),
       ),
-       body: all_chance(chance_list ,temp_list, user_Id),
+       body: all_chance(chance_list ,temp_list, user_Id , false),
 
     ));
   }

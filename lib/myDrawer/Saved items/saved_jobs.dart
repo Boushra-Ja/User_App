@@ -74,6 +74,6 @@ class savedJobsState extends State<savedJobs> {
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : all_chance(chance_list ,widget.temp_list, widget.user_Id);
+    return loading ? Loading() : all_chance(chance_list ,widget.temp_list, widget.user_Id ,false);
   }
 }

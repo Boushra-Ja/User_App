@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -62,10 +64,17 @@ class build_postState extends State<build_post> {
       print("success");
     });
   }
-  delete_interacton()async{
-    await FirebaseFirestore.instance.collection("users").doc(widget.user_Id).update({
-    'Interaction_log': FieldValue.arrayRemove([{}.remove("${widget.post_Info.companies_post.post_Id}")])
 
+  delete_interacton()async{
+    var map ;
+    await FirebaseFirestore.instance.collection("users").doc(widget.user_Id).get().then((value) {
+      map = value.data()['Interaction_log'];
+    });
+    map.remove('${widget.post_Info.companies_post.post_Id}');
+    await FirebaseFirestore.instance.collection("users").doc(widget.user_Id).update({
+      'Interaction_log' : map
+    }).then((value) {
+      print("sucesss");
     });
   }
 

@@ -535,7 +535,7 @@ class profileState extends State<companyProfile> {
                           )
                         : check2 == true
                             ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id)
-                            : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id):employePage()
+                            : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id  ,false) :employePage()
 
                   ],
 

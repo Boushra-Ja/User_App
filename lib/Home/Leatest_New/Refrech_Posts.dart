@@ -70,6 +70,26 @@ class RefrechPostsState extends State<Refrech_Posts> {
                     });
                   }
             });
+            //////check interaction
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.docid).get().then((t) {
+                  if(t.data()['Interaction_log'].containsKey("${value.docs[j].data()['id']}")){
+                    if(t.data()['Interaction_log']["${value.docs[j].data()['id']}"] == 'like'){
+                      setState(() {
+                        tem.check_like = true;
+                        tem.check_dislike = false;
+
+                      });
+                    }else{
+                      setState(() {
+                        tem.check_like = false;
+                        tem.check_dislike = true;
+
+                      });
+                    }
+                  }
+            });
             tem.companies_post = new postInformation();
             tem.companies_post.post_Id = value.docs[j].data()['id'];
             tem.companies_post.my_post = value.docs[j].data()['myPost'];

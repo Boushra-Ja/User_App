@@ -55,9 +55,12 @@ class get_All_chanceState extends State<get_All_chance>
         }
       }
     });
-    setState(() {
-      loading = false;
-    });
+    if(this.mounted)
+    {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -70,6 +73,6 @@ class get_All_chanceState extends State<get_All_chance>
   }
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : all_chance(All_jobs,widget.temp_list, widget.user_Id);
+    return loading ? Loading() : all_chance(All_jobs,widget.temp_list, widget.user_Id ,true);
   }
 }

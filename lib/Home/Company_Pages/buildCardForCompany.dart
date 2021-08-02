@@ -124,6 +124,27 @@ class buildCardCompanyState extends State<buildCardCompany> {
             await company.doc(widget.company_Id).get().then((v) {
               tem.num_follwers = v.data()['followers'].length;
             });
+
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.user_id).get().then((t) {
+              if(t.data()['Interaction_log'].containsKey("${docs.docs[i].data()['id']}")){
+                if(this.mounted) {
+                  if (t.data()['Interaction_log']["${docs.docs[i]
+                      .data()['id']}"] == 'like') {
+                    setState(() {
+                      tem.check_like = true;
+                      tem.check_dislike = false;
+                    });
+                  } else {
+                    setState(() {
+                      tem.check_like = false;
+                      tem.check_dislike = true;
+                    });
+                  }
+                }
+              }
+            });
             posts.add(tem);
           });
         }

@@ -52,6 +52,27 @@ class savedPostState extends State<savedPosts> {
                                 tem.num_follwers = comp.data()['followers'].length;
 
                           });
+
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(widget.user_Id).get().then((t) {
+                            if(t.data()['Interaction_log'].containsKey("${value.docs[i].data()['post_Id']}")){
+                              if(t.data()['Interaction_log']["${value.docs[i].data()['post_Id']}"] == 'like'){
+                                setState(() {
+                                  tem.check_like = true;
+                                  tem.check_dislike = false;
+
+                                });
+                              }else{
+                                setState(() {
+                                  tem.check_like = false;
+                                  tem.check_dislike = true;
+
+                                });
+                              }
+                            }
+                          });
+
                           posts_list.add(tem);
                         }
                     }
