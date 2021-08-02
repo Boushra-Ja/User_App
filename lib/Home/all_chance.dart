@@ -312,12 +312,14 @@ class chance extends State<all_chance> {
                               Padding(
                                 padding: EdgeInsets.fromLTRB(
                                     20, 10, 20, 5),
-                                child: Text(" الأسم :" +
-                                    "${widget.jobs[i].job_Info['title']} \n" +
-                                    " الراتب :" +
-                                    " ${widget.jobs[i].job_Info['salary']} \n" +
-                                    " المهارات :" +
-                                    " ${widget.jobs[i].job_Info['skillNum']} \n"),
+                                child: Text(" المسمى الوظيفي :" +
+                                    " ${widget.jobs[i].job_Info["title"]} \n" +
+                                    "ساعات العمل :" +
+                                    " ${widget.jobs[i].job_Info["workTime"]} \n" +
+                                    " الراتب  :" +
+                                    " ${widget.jobs[i].job_Info["salary"]} \n" +
+                                    " الخبرة العملية  :" +
+                                    " ${widget.jobs[i].job_Info["level"]} \n"),
                               )
                             ]),
                           ])),
@@ -327,6 +329,8 @@ class chance extends State<all_chance> {
   }
 }
 
+
+  //  .job_Info
 
 
 //  ramayag@gmail.com
