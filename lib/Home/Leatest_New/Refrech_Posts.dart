@@ -51,6 +51,9 @@ class RefrechPostsState extends State<Refrech_Posts> {
             await company.doc(companies_follow_Id[i]).get().then((val) {
               tem.company_Id = val.id ;
               tem.company_name = val.data()['company'];
+              tem.token = val.data()['token'];
+              print("____________________________");
+              print(tem.token);
               tem.num_follwers = val.data()['followers'].length;
             });
             ///////////////check about save

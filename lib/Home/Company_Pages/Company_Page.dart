@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class companyPage extends StatefulWidget {
-  final user_id;
-  const companyPage({Key key, this.user_id}) : super(key: key);
+  final user_id  , user_name;
+  const companyPage({Key key, this.user_id , this.user_name}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return companyState();
@@ -47,7 +47,7 @@ class companyState extends State<companyPage> {
                           itemCount: snapshot.data.docs.length,
                           itemBuilder: (context, i) {
                             return buildCardCompany(
-                                list: snapshot.data.docs[i], company_Id: snapshot.data.docs[i].id, user_id : widget.user_id
+                                list: snapshot.data.docs[i], company_Id: snapshot.data.docs[i].id, user_id : widget.user_id , user_name : widget.user_name
                             );
                           });
                     }

@@ -47,7 +47,7 @@ class showState extends State<show> {
             'id': '1',
             'status': 'done'
           },
-          'to': await FirebaseMessaging.instance.getToken(),
+          'to': widget.job.company_Info['token'],
         },
       ),
     );

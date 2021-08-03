@@ -5,6 +5,7 @@ import 'package:b/UserInfo.dart';
 import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List aaa=[];
   bool loading = true;
   CollectionReference jobsref = FirebaseFirestore.instance.collection("companies");
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference mapref = FirebaseFirestore.instance.collection("roadmaps");
   CollectionReference jobsre ;
   Info_Job IJ = new Info_Job();
   List<dynamic> temp=
@@ -107,7 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //////////////////////////get maps
 
-  CollectionReference mapref = FirebaseFirestore.instance.collection("roadmaps");
 
   /////////////////////////////get all data
   get_All_maps() async {
@@ -167,11 +169,27 @@ class _MyHomePageState extends State<MyHomePage> {
     print(user.firstName);
   }
 
+  token_storage()async{
+    var token ;
+    await FirebaseMessaging.instance.getToken().then((value) {
+      token = value;
+    });
+
+    await users.doc(docid).update({
+      'token' : token
+    }).then((value) {
+      print("sucess");
+    }).catchError((e){
+      print("errror");
+    });
+  }
+
   @override
   void initState() {
 
       () async {
         await getId();
+        token_storage();
         await get_All_data();
         await get_My_data();
         await get_All_maps();
@@ -208,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               children: [
                                 get_All_chance(temp_list : All_jobs,user_Id: docid,),
                                 my_chance(My_jobs, user, docid),
-                                companyPage(user_id: docid),
+                                companyPage(user_id: docid , user_name: (user.firstName + " " +  user.endName)),
                                 Refrech_Posts(docid: docid),
                                roadmaps(all_map),
                               ],

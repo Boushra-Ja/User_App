@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +38,7 @@ class build_postState extends State<build_post> {
             'id': '1',
             'status': 'done'
           },
-          'to': await FirebaseMessaging.instance.getToken(),
+          'to': await widget.post_Info.token,
         },
       ),
     );
@@ -76,6 +74,10 @@ class build_postState extends State<build_post> {
     }).then((value) {
       print("sucesss");
     });
+  }
+  @override
+  void initState() {
+print(FirebaseMessaging.instance.getToken());    super.initState();
   }
 
   @override
@@ -310,7 +312,3 @@ class build_postState extends State<build_post> {
   }
 }
 
-/*
- "#شاغر وظيفي " + '\n'+ "شركة ملابس تعلن غن توفر فرصة جديدة" + "\n\n" +"#في الرياض" +'\n\n'+ "الشروط : "
-                        + "\n" + "-خبرة في نفس المجال "
- */

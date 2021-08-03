@@ -7,8 +7,8 @@ import '../../temp_ForPost.dart';
 
 class buildCardCompany extends StatefulWidget {
   final list;
-  final company_Id, user_id;
-  const buildCardCompany({Key key, this.list, this.company_Id, this.user_id})
+  final company_Id, user_id , user_name;
+  const buildCardCompany({Key key, this.list, this.company_Id, this.user_id ,this.user_name})
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -93,6 +93,7 @@ class buildCardCompanyState extends State<buildCardCompany> {
         /////for to post for company
         for (int i = 0; i < docs.docs.length; i++) {
           tem = new temp_ForPost();
+
           await FirebaseFirestore.instance
               .collection('users')
               .doc(widget.user_id)
@@ -114,6 +115,8 @@ class buildCardCompanyState extends State<buildCardCompany> {
             } else {
               tem.check_save = false;
             }
+          });
+
             tem.companies_post = new postInformation();
             tem.companies_post.post_Id = docs.docs[i].data()['id'];
             tem.companies_post.my_post = docs.docs[i].data()['myPost'];
@@ -121,8 +124,9 @@ class buildCardCompanyState extends State<buildCardCompany> {
             tem.companies_post.date = docs.docs[i].data()['dateOfPublication'];
             tem.company_Id = widget.company_Id;
             tem.company_name = widget.list['company'];
+            tem.token = widget.list['token'];
             await company.doc(widget.company_Id).get().then((v) {
-              tem.num_follwers = v.data()['followers'].length;
+             tem.num_follwers = v.data()['followers'].length;
             });
 
             await FirebaseFirestore.instance
@@ -146,7 +150,6 @@ class buildCardCompanyState extends State<buildCardCompany> {
               }
             });
             posts.add(tem);
-          });
         }
       }
     });
@@ -217,6 +220,7 @@ class buildCardCompanyState extends State<buildCardCompany> {
           return companyProfile(
               list: widget.list,
               user_id: widget.user_id,
+              user_name : widget.user_name,
               check_followers: check_followers,
               company_Id : widget.company_Id,
               num_followers : num_followers,

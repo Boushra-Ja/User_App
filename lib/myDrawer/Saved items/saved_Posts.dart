@@ -49,6 +49,7 @@ class savedPostState extends State<savedPosts> {
                           await FirebaseFirestore.instance
                               .collection("companies").doc(value.docs[i].data()['company_Id']).get().then((comp){
                                 tem.company_name = comp.data()['company'];
+                                tem.token =comp.data()['token'];
                                 tem.num_follwers = comp.data()['followers'].length;
 
                           });

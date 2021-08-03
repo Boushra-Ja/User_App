@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:b/SettingPage/setting_page.dart';
 
@@ -14,6 +15,20 @@ class updatePassword extends StatefulWidget {
 }
 
 class updateState extends State<updatePassword> {
+
+  var pass_old , pass_new ;
+  GlobalKey<FormState> formeState = new GlobalKey<FormState>();
+
+
+  void _changePassword(String password) async{
+    User user = await FirebaseAuth.instance.currentUser;
+    user.updatePassword(password).then((_){
+      print("Successfully changed password");
+    }).catchError((error){
+      print("Password can't be changed" + error.toString());
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,43 +55,53 @@ class updateState extends State<updatePassword> {
           ),
           body: Container(
               margin: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  buildTextForm("كلمة المرور القديمة", 0),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  buildTextForm("كلمة المرور ألجديدة", 1),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  buildTextForm("تأكيد كلمة المرور", 1),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: 150,
-                    child: RaisedButton(
-                        onPressed: () async {},
-                        elevation: 10,
-                        child: Text(
-                          "تغيير",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(10.0)),
-                        color: Colors.pink.shade900.withOpacity(0.8)),
-                  )
-                ],
+              child: Form(
+                key: formeState,
+                child: Column(
+                  children: [
+                    buildTextForm("كلمة المرور القديمة", 0),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    buildTextForm("كلمة المرور ألجديدة", 1),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: 150,
+                      child: RaisedButton(
+                          onPressed: () async {
+                            var formdata = formeState.currentState;
+                            formdata.save();
+                            _changePassword(pass_new);
+
+                          },
+                          elevation: 10,
+                          child: Text(
+                            "تغيير",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(10.0)),
+                          color: Colors.pink.shade900.withOpacity(0.8)),
+                    )
+                  ],
+                ),
               )),
         ));
   }
 
   TextFormField buildTextForm(hintText, num) {
     return TextFormField(
+      onSaved: (val){
+        if(num == 0)
+          pass_old = val;
+        else
+          pass_new = val ;
+      },
       decoration: InputDecoration(
         prefixIcon: num == 1 ? Icon(Icons.lock) : Icon(Icons.vpn_key_outlined),
         hintText: hintText,
@@ -85,6 +110,7 @@ class updateState extends State<updatePassword> {
             color: Colors.grey.shade700,
             fontWeight: FontWeight.w300),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+
       ),
     );
   }
