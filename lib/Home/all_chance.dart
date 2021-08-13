@@ -70,6 +70,7 @@ class chance extends State<all_chance> {
                                 );
                               }).toList(),
                               onChanged: (String valu) {
+                                print(valu);
                                 setState(() {
                                   widget.jobs.clear();
                                   for (int i = 0; i < widget.temp.length; i++) {
@@ -166,7 +167,7 @@ class chance extends State<all_chance> {
                                 '8',
                                 'اكثر من ذلك'].map((String valu) {
                                 return DropdownMenuItem<String>(
-                                  //value: value,
+                                  value: valu,
                                   child: new Text("$valu "),
                                 );
                               }).toList(),
@@ -247,17 +248,17 @@ class chance extends State<all_chance> {
                                 "غير ذلك"
                               ].map((String value) {
                                 return DropdownMenuItem<String>(
-                                  //value: value,
+                                  value: value,
                                   child: new Text(value),
                                 );
                               }).toList(),
-                              onChanged: (String valu) {
+                              onChanged: (String value) {
+                                print(value);
                                 setState(() {
                                   widget.jobs.clear();
                                   for (int i = 0; i < widget.temp.length; i++) {
-                                    if (widget
-                                            .temp[i].job_Info['specialties'] ==
-                                        valu) {
+                                    if (widget.temp[i].job_Info['specialties'] ==
+                                        value) {
                                       widget.jobs.add(widget.temp[i]);
                                     }
                                   }
@@ -277,27 +278,31 @@ class chance extends State<all_chance> {
                             child: DropdownButton<String>(
                               hint: Text('حسب الخبرة العملية'),
                               items: <String>[
-                                'مبتدئ',
+                                'مبتدأ',
                                 'متمرس',
                                 'خبير'
                               ].map((String value) {
                                 return DropdownMenuItem<String>(
-                                  //value: value,
+                                  value: value,
                                   child: new Text(value),
                                 );
                               }).toList(),
                               onChanged: (String valu) {
+                                print(valu);
                                 setState(() {
-                                  print(widget.temp[0].job_Info);
                                   widget.jobs.clear();
                                   for (int i = 0; i < widget.temp.length; i++) {
-                                    if (widget.temp[i].job_Info["level"] ==
+                                    if (widget.temp[i].job_Info['level'] ==
                                         valu) {
                                       widget.jobs.add(widget.temp[i]);
                                     }
                                   }
                                 });
                               },
+
+
+
+
                             ),
                           ),
                           decoration: BoxDecoration(
