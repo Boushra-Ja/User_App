@@ -1,7 +1,9 @@
 import 'package:b/Home/show.dart';
+import 'package:b/cv_page/Work_Information.dart';
 import 'package:flutter/material.dart';
 import 'show.dart';
 
+// ignore: must_be_immutable
 class all_chance extends StatefulWidget {
   var docid, check;
   List jobs = [];
@@ -18,7 +20,6 @@ class all_chance extends StatefulWidget {
 class chance extends State<all_chance> {
   @override
   Widget build(BuildContext context) {
-    print(widget.temp);
     return Directionality(
         textDirection: TextDirection.rtl,
         child: widget.check == true
@@ -32,6 +33,24 @@ class chance extends State<all_chance> {
                     child: Row(
                       textDirection: TextDirection.rtl,
                       children: [
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          width: 160,
+                          height: 40,
+                          child: Center(
+                            child: InkWell(
+                              child: Text('الكل'),
+                              onTap: () =>  setState(() {
+                                widget.jobs.clear();
+                                for (int i = 0; i < widget.temp.length; i++) {
+                                     widget.jobs.add(widget.temp[i]);
+                                  }
+                              }),)
+                          ),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30)),
+                        ),
                         Container(
                           margin: EdgeInsets.all(5),
                           width: 160,
@@ -67,7 +86,6 @@ class chance extends State<all_chance> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(30)),
                         ),
-                        ////////////  unfinished
                         Container(
                           margin: EdgeInsets.all(5),
                           width: 160,
@@ -76,10 +94,7 @@ class chance extends State<all_chance> {
                             child: DropdownButton<String>(
                               hint: Text('حسب المرتب'),
                               items: <String>[
-                                'أكثر من 1000',
-                                'أكثر من 10000',
-                                'أكثر من 100000',
-                                'أكثر من 1000000'
+                                'أقل من 100000', "100000 - 300000", "300000 - 500000", "500000 - 700000", "700000 - 1000000", "1000000 - 1500000", "1500000 - 2000000", "أكبر من ذلك"
                               ].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -90,7 +105,7 @@ class chance extends State<all_chance> {
                                 setState(() {
                                   widget.jobs.clear();
                                   for (int i = 0; i < widget.temp.length; i++) {
-                                    if (widget.temp[i].job_Info['workTime'] ==
+                                    if (widget.temp[i].job_Info['salary'] ==
                                         valu) {
                                       widget.jobs.add(widget.temp[i]);
                                     }
@@ -110,9 +125,8 @@ class chance extends State<all_chance> {
                           child: Center(
                             child: DropdownButton<String>(
                               hint: Text('حسب الجنس'),
-                              //value: rr,
                               items:
-                                  <String>['ذكر', 'أنثى'].map((String value) {
+                                  <String>['ذكر', 'أنثى','لا يهم'].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: new Text(value),
@@ -129,7 +143,6 @@ class chance extends State<all_chance> {
                                   }
                                 });
                               },
-                              //  value : 1,
                             ),
                           ),
                           decoration: BoxDecoration(
@@ -142,8 +155,16 @@ class chance extends State<all_chance> {
                           height: 40,
                           child: Center(
                             child: DropdownButton<String>(
-                              hint: Text('حسب الخبرة'),
-                              items: <int>[1, 2, 3, 4].map((int valu) {
+                              hint: Text('حسب سنوات الخبرة'),
+                              items: <String>[ '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6',
+                                '7',
+                                '8',
+                                'اكثر من ذلك'].map((String valu) {
                                 return DropdownMenuItem<String>(
                                   //value: value,
                                   child: new Text("$valu "),
@@ -156,9 +177,7 @@ class chance extends State<all_chance> {
                                     if (widget.temp[i].job_Info['expir'] ==
                                         valu) {
                                       widget.jobs.add(widget.temp[i]);
-                                    }
-                                  }
-                                });
+                                    }}});
                               },
                             ),
                           ),
@@ -238,6 +257,41 @@ class chance extends State<all_chance> {
                                   for (int i = 0; i < widget.temp.length; i++) {
                                     if (widget
                                             .temp[i].job_Info['specialties'] ==
+                                        valu) {
+                                      widget.jobs.add(widget.temp[i]);
+                                    }
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30)),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          width: 180,
+                          height: 40,
+                          child: Center(
+                            child: DropdownButton<String>(
+                              hint: Text('حسب الخبرة العملية'),
+                              items: <String>[
+                                'مبتدئ',
+                                'متمرس',
+                                'خبير'
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  //value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (String valu) {
+                                setState(() {
+                                  print(widget.temp[0].job_Info);
+                                  widget.jobs.clear();
+                                  for (int i = 0; i < widget.temp.length; i++) {
+                                    if (widget.temp[i].job_Info["level"] ==
                                         valu) {
                                       widget.jobs.add(widget.temp[i]);
                                     }
@@ -330,9 +384,8 @@ class chance extends State<all_chance> {
 }
 
 
-  //  .job_Info
 
-
-//  ramayag@gmail.com
+//  zaid@gmail.com
 
 //   flutter run -d chrome --web-renderer html
+

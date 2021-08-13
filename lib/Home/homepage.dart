@@ -11,10 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../UserInfo.dart';
+import '../chat.dart';
 import 'Company_Pages/Company_Page.dart';
 import 'Leatest_New/Refrech_Posts.dart';
 import 'my_chance.dart';
 import 'package:b/Home/appbar.dart';
+
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -92,26 +94,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /////////////////////////////get my chance
-  get_My_data() async {
-    await jobsref.where("degree", isEqualTo: "اعدادي").get().then((value) => {
-          value.docs.forEach((element) {
-            if (this.mounted) {
-              setState(() {
-                My_jobs.add(element.data());
-              });
-            }
-          })
-        });
-    print(My_jobs.length);
+  get_My_data(){
     setState(() {
-      loading = false;
+      for(int i=0;i<All_jobs.length;i++){
+        if(All_jobs[i].job_Info['workTime'] == user.selectedTypeJob){
+                  My_jobs.add(All_jobs[i]);
+          }
+        }
     });
+
   }
-
-  //////////////////////////get maps
-
-
-  /////////////////////////////get all data
+  /////////////////////////////get maps
   get_All_maps() async {
     QuerySnapshot respon_map = await mapref.get();
     respon_map.docs.forEach((element) {
@@ -121,7 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     });
-    print(all_map.length);
   }
 
   ///////////////////////user Info
@@ -134,8 +126,6 @@ class _MyHomePageState extends State<MyHomePage> {
         if (doc['uid'] == FirebaseAuth.instance.currentUser.uid) {
           setState(() {
             user.firstName = doc.data()['firstname'];
-            print("*******************");
-            print(doc.data()['firstname']);
             user.endName = doc.data()['endname'];
             user.selectedGender = doc.data()['gender'];
             user.selectedDay = doc.data()['date']['day'];
@@ -165,8 +155,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     });
-
-    print(user.firstName);
   }
 
   token_storage()async{
@@ -189,17 +177,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       () async {
         await getId();
+       // await
         token_storage();
         await get_All_data();
         await get_My_data();
         await get_All_maps();
       }();
-
-
-    print("&&&&&&&&&&&");
-    print(user.selectedjob);
-    print(user.mygmail);
-    print(user.phone);
 
     super.initState();
   }
@@ -244,7 +227,6 @@ class loading_page extends StatelessWidget{
           color: Colors.grey.shade100,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-
         ),
         Center(
           child: SpinKitFadingCircle(
@@ -261,3 +243,6 @@ class loading_page extends StatelessWidget{
     );
   }
 }
+
+// flutter run -d chrome --web-renderer html
+// ramayag@gmail.com

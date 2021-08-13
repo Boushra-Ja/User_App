@@ -10,7 +10,7 @@ import 'show.dart';
 class my_chance extends StatelessWidget {
   List m_jobs=[];
   userInfo user ;
-  var docid;
+  var docid,check;
 
   my_chance(List my_jobs , userInfo user , docid){
     m_jobs=my_jobs;
@@ -23,7 +23,8 @@ class my_chance extends StatelessWidget {
   Widget build(BuildContext context) {
     return Directionality(
         textDirection: TextDirection.rtl,
-        child: Scaffold(
+        child:
+             Scaffold(
           body: ListView.builder(
             itemCount: m_jobs.length,
             /////// loop
@@ -60,12 +61,14 @@ class my_chance extends StatelessWidget {
                                   Row(children: [Padding(
                                     padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                                     child:
-                                    Text(" الأسم :" +
-                                        " ${m_jobs[i]["name_job"]} \n" +
-                                        " الراتب :" +
-                                        " ${m_jobs[i]["price"]} \n" +
-                                        " المهارات :" +
-                                        " ${m_jobs[i]["skill"]} \n"),
+                                    Text(" المسمى الوظيفي :" +
+                                        " ${m_jobs[i].job_Info["title"]} \n" +
+                                        "ساعات العمل :" +
+                                        " ${m_jobs[i].job_Info["workTime"]} \n" +
+                                        " الراتب  :" +
+                                        " ${m_jobs[i].job_Info["salary"]} \n" +
+                                        " الخبرة العملية  :" +
+                                        " ${m_jobs[i].job_Info["level"]} \n"),
                                   )]),
                                 ])),
                           ]))));
