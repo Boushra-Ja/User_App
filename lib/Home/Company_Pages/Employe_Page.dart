@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:flutter/material.dart';
 
 class employePage extends StatelessWidget{
@@ -15,7 +16,7 @@ class employePage extends StatelessWidget{
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
+                color:ThemeNotifier.mode==true ? Colors.white : Colors.grey.shade700,
 
               ),
               child: ListTile(
@@ -23,7 +24,7 @@ class employePage extends StatelessWidget{
                   padding: const EdgeInsets.only(bottom : 8.0),
                   child: Column(
                     children: [
-                      Text("بشرى أبوحمزة" , textAlign: TextAlign.center,style: TextStyle(fontSize: 16 , fontWeight: FontWeight.w600 , color: Colors.black)),
+                      Text("بشرى أبوحمزة" , textAlign: TextAlign.center,style: TextStyle(fontSize: 16 , fontWeight: FontWeight.w600 , color: ThemeNotifier.mode == true ?Colors.black : Colors.white)),
                       Text("سوريا ، دمشق" ,style: TextStyle(fontSize: 12),)
                     ],
                   ),

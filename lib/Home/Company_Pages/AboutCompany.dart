@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -8,10 +9,10 @@ class aboutCompany extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.pink.shade50,
+        color: ThemeNotifier.mode == true ? Colors.pink.shade50 : Colors.grey.shade800,
         height: 500,
         child: Card(
-          color: Colors.white,
+          color: ThemeNotifier.mode == true ? Colors.white : Colors.grey,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           child: SingleChildScrollView(

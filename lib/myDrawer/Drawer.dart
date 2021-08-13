@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/authintication/login.dart';
 import 'package:b/helpFunction/showDialoge_photo.dart';
 import 'package:b/myDrawer/UserProfilePage/ProfilePage.dart';
@@ -19,9 +20,9 @@ import 'Saved items/saved_Item.dart';
 
 class mydrawer extends StatefulWidget {
   final userInfo user;
-  final docid;
+  final docid , theme ;
 
-  const mydrawer({Key key, this.user, this.docid}) : super(key: key);
+  const mydrawer({Key key, this.user, this.docid , this.theme}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -98,12 +99,31 @@ class drawerState extends State<mydrawer> {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(
-              widget.user.firstName + " " + widget.user.endName,
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+            accountName: ListTile(
+              title: Text(
+                widget.user.firstName + " " + widget.user.endName,
+                style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600),
+              ),
+              trailing:
+                  IconButton(icon : ThemeNotifier.mode == true ? Icon(Icons.lightbulb_outline ,size: 20,) :   Icon(Icons.work ,size: 20,), onPressed: (){
+
+                    if(ThemeNotifier.mode == true ){
+                      setState(() {
+                        ThemeNotifier.mode = false;
+                      });
+                      widget.theme.setDarkMode();
+                    }else{
+                      setState(() {
+                        ThemeNotifier.mode = true;
+                      });
+                      widget.theme.setLightMode();                    }
+
+
+                  },),
+
             ),
             currentAccountPicture: showDialog_Photo(user: widget.user, docid: widget.docid, num : 1),
 
@@ -205,7 +225,9 @@ class drawerState extends State<mydrawer> {
                 icon: Icon(Icons.group_add, color: Colors.grey.shade600),
                 iconSize: 22,
               ),
-              onTap: () {}),
+              onTap: () {
+                widget.theme.setLightMode();
+              }),
           ListTile(
               title: Text(
                 " تسجيل الخروج",

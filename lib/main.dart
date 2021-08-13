@@ -6,6 +6,7 @@ import 'package:b/Home/homepage.dart';
 import 'package:load/load.dart';
 import 'package:provider/provider.dart';
 import 'Home/Company_Pages/Employe_Page.dart';
+import 'Home/ThemeManager.dart';
 import 'UserInfo.dart';
 import 'authintication/Welcom_Page.dart';
 
@@ -21,8 +22,10 @@ void main() async {
   } else {
     islogin = true;
   }
-  runApp(new Directionality(textDirection: TextDirection.rtl, child: MyApp()));
-}
+  return runApp(ChangeNotifierProvider<ThemeNotifier>(
+    create: (_) => new ThemeNotifier(),
+    child: MyApp(),
+  ));}
 
 class MyApp extends StatelessWidget {
   @override
@@ -32,8 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => userInfo()),
       ],
       child: MaterialApp(
-          theme: ThemeData(fontFamily: 'Lato'),
-          title: 'Jobs',
+
           debugShowCheckedModeBanner: false,
           home: // islogin == false ? Login() : MyHomePage() ,
               LoadingProvider(

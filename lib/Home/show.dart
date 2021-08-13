@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/Home/Company_Pages/buildCardForCompany.dart';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/component/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'Quiz_Page/quizPage.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,9 +27,11 @@ class show extends StatefulWidget{
 
 class showState extends State<show> {
   bool check_P = false, loading = true ;
+  var title , body ;
 
   sendNotify()async {
-
+    title =  'تقديم طلب';
+    body =  ("تم التقدم على فرصة " + "${widget.job.job_Info['title']}"+ " من قبل المستخدم " + " ${widget.job.user_name}");
     var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
     await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -38,8 +42,8 @@ class showState extends State<show> {
       body: jsonEncode(
         <String, dynamic>{
           'notification': <String, dynamic>{
-            'body': ("تم التقدم على فرصة " + "${widget.job.job_Info['title']}"+ " من قبل المستخدم " + " ${widget.job.user_name}"),
-            'title': 'تقديم طلب'
+            'body': body ,
+            'title': title
           },
           'priority': 'high',
           'data': <String, dynamic>{
@@ -60,6 +64,15 @@ class showState extends State<show> {
       print("++++++++++++++++++++++++++++++");
       print(event.notification.title);
       print(event.notification.body);
+    });
+  }
+
+  storage_notificatio()async{
+
+    await FirebaseFirestore.instance.collection("companies").doc(widget.job.company_Id).collection("notification").add({
+      'body' : body,
+      'title' : title ,
+      'user_Id' : widget.docid
     });
   }
 
@@ -136,6 +149,7 @@ class showState extends State<show> {
               check_P = true ;
             });
             await sendNotify();
+            storage_notificatio();
             await getMessage();
             chance.update({
               'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
@@ -156,6 +170,7 @@ class showState extends State<show> {
                 check_P = true ;
               });
               await sendNotify();
+              storage_notificatio();
               await getMessage();
               chance.update({
                 'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
@@ -221,11 +236,12 @@ class showState extends State<show> {
             children: [
               Stack(
                 children: [
+
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height:MediaQuery.of(context).size.height/2 - 50,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ThemeNotifier.mode == true ? Colors.white : Colors.black87,
                     ),
                   ),
                   Positioned(
@@ -239,7 +255,13 @@ class showState extends State<show> {
                         gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.pink.shade900, Colors.grey.shade800]),
+                            colors:ThemeNotifier.mode == true ? <Color>[
+                              Colors.pink.shade900, Colors.grey.shade800
+                            ] : <Color>[
+                              Colors.grey.shade600,
+                              Colors.black87
+                            ]
+                          ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,7 +276,7 @@ class showState extends State<show> {
                                 Column(
                                   children: [
                                     Text(widget.job.job_Info['title'] , style: TextStyle(color: Colors.white , fontSize: 20),),
-                                    Text(widget.job.job_Info['dateOfPublication'] ,  style: TextStyle(color: Colors.yellow.shade300 , fontSize: 14))
+                                    Text("kkk" ,  style: TextStyle(color: Colors.yellow.shade300 , fontSize: 14))
                                   ],
                                 )
                               ],
@@ -365,7 +387,7 @@ class showState extends State<show> {
                                 ), ),
                                 Expanded(flex : 4 , child: InkWell(
                                   onTap: (){
-
+                                    share(context);
                                   },
                                   child: Column(
                                     children: [
@@ -395,7 +417,7 @@ class showState extends State<show> {
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   shadowColor: Colors.black,
                   elevation: 4,
-                  color: Colors.grey.shade50,
+                  color: ThemeNotifier.mode == true ? Colors.grey.shade50 : Colors.grey.shade300,
                   child: Container(
                     margin: EdgeInsets.only(right: 30),
                     child: Column(
@@ -406,7 +428,7 @@ class showState extends State<show> {
                         Row(
                           children: [
                             Expanded(child: Text("") , flex : 1 ),
-                        Expanded(child: Divider() , flex : 5 ),
+                        Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
                    Expanded(child: Text("") , flex : 1 ),
 
                           ],
@@ -433,7 +455,7 @@ class showState extends State<show> {
                 margin: EdgeInsets.symmetric(horizontal: 10),
                 shadowColor: Colors.black,
                 elevation: 4,
-                color: Colors.grey.shade50,
+                color: ThemeNotifier.mode == true ? Colors.grey.shade50 : Colors.grey.shade300,
                 child: Container(
                   margin: EdgeInsets.only(right: 30),
                   child: Column(
@@ -444,7 +466,7 @@ class showState extends State<show> {
                       Row(
                         children: [
                           Expanded(child: Text("") , flex : 1 ),
-                          Expanded(child: Divider() , flex : 5 ),
+                          Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
                           Expanded(child: Text("") , flex : 1 ),
 
                         ],
@@ -469,7 +491,7 @@ class showState extends State<show> {
                   Row(
                     children: [
                       Expanded(child: Text("") , flex : 1 ),
-                      Expanded(child: Divider() , flex : 5 ),
+                      Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
                       Expanded(child: Text("") , flex : 1 ),
 
                     ],
@@ -504,5 +526,17 @@ class showState extends State<show> {
           )
         ));
   }
-}
 
+  void share(BuildContext context ){
+    String txt = "شاغر جديد في تطبيق BR_Jobs" +"\n" + "فرصة خاصة بمجال  " +"${widget.job.job_Info['specialties']}" + "\n"+
+        "عدد سنوات الخبرة :  " + "${widget.job.job_Info['age']}"+"\n"+
+        "المستوى العلمي :  " + "${widget.job.job_Info['degree']}" + "\n" +
+        "عدد ساعات العمل : " + "${widget.job.job_Info['workTime']}" +'\n';
+    final RenderBox box = context.findRenderObject();
+    final String text = txt;
+    Share.share(text ,
+      subject: "معلومات الفرصة",
+      sharePositionOrigin: box.localToGlobal(Offset.zero)&box.size,
+    );
+  }
+}

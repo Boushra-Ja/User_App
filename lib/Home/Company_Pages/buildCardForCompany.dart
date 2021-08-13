@@ -41,7 +41,6 @@ class buildCardCompanyState extends State<buildCardCompany> {
         /////////for chance
         for(int k = 0 ; k <value.docs.length ; k++) {
           IJ = new Info_Job();
-
           IJ.job_Info = value.docs[k].data();
           IJ.company_Id = widget.company_Id ;
           IJ.company_Info = com_Info;
@@ -62,20 +61,29 @@ class buildCardCompanyState extends State<buildCardCompany> {
     await company.doc(widget.company_Id).get().then((value) async {
       num_followers = value.data()['followers'].length;
       if (num_followers == 0) {
-        setState(() {
-          check_followers = false;
-        });
+        if(this.mounted)
+        {
+          setState(() {
+            check_followers = false;
+          });
+        }
       } else {
         for (int i = 0; i < num_followers; i++) {
           if (value.data()['followers'][i] == widget.user_id) {
-            setState(() {
-              check_followers = true;
-            });
+            if(this.mounted)
+              {
+                setState(() {
+                  check_followers = true;
+                });
+              }
             break;
           } else {
-            setState(() {
-              check_followers = false;
-            });
+            if(this.mounted)
+              {
+                setState(() {
+                  check_followers = false;
+                });
+              }
           }
         }
       }
@@ -121,10 +129,11 @@ class buildCardCompanyState extends State<buildCardCompany> {
             tem.companies_post.post_Id = docs.docs[i].data()['id'];
             tem.companies_post.my_post = docs.docs[i].data()['myPost'];
             tem.companies_post.title = docs.docs[i].data()['title'];
-            tem.companies_post.date = docs.docs[i].data()['dateOfPublication'];
+            tem.companies_post.date = docs.docs[i].data()['date_publication'];
             tem.company_Id = widget.company_Id;
             tem.company_name = widget.list['company'];
             tem.token = widget.list['token'];
+            tem.picture = widget.list['link_image'];
             await company.doc(widget.company_Id).get().then((v) {
              tem.num_follwers = v.data()['followers'].length;
             });

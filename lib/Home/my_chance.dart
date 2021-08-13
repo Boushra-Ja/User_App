@@ -24,7 +24,7 @@ class my_chance extends StatelessWidget {
     return Directionality(
         textDirection: TextDirection.rtl,
         child:
-             Scaffold(
+        Scaffold(
           body: ListView.builder(
             itemCount: m_jobs.length,
             /////// loop

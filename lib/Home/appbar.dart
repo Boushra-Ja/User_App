@@ -5,10 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'Notification_Page.dart';
+import 'ThemeManager.dart';
+
 class myappbar extends StatelessWidget  implements PreferredSize{
-  var chance_List ,temp_list, user_Id ;
+  var chance_List ,temp_list, user_Id , user_name;
   List<dynamic>specialization_list ;
-  myappbar({this.chance_List ,this.temp_list, this.user_Id ,this.specialization_list});
+  myappbar({this.chance_List ,this.temp_list, this.user_Id ,this.specialization_list , this.user_name});
   @override
   Widget build(BuildContext context) {
     return  AppBar(
@@ -17,9 +20,12 @@ class myappbar extends StatelessWidget  implements PreferredSize{
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: <Color>[
+                colors:ThemeNotifier.mode == true ? <Color>[
                   Colors.pink.shade900,
                   Colors.grey.shade800
+                ] : <Color>[
+                  Colors.grey.shade700,
+                  Colors.black87
                 ])),
       ),
       toolbarHeight: 150,
@@ -35,28 +41,28 @@ class myappbar extends StatelessWidget  implements PreferredSize{
           Tab(
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Icon(Icons.work),
+              child: Icon(Icons.work , color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200,),
             ),
           ),
           Tab(
-            child: Icon(Icons.favorite),
+            child: Icon(Icons.favorite ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
           ),
           Tab(
             child: Align(
               alignment: Alignment.centerRight,
-              child: Icon(Icons.business),
-            ),
-          ),
-          Tab(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Icon(Icons.markunread_sharp),
+              child: Icon(Icons.business ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
             ),
           ),
           Tab(
             child: Align(
               alignment: Alignment.centerRight,
-              child: Icon(Icons.lightbulb),
+              child: Icon(Icons.markunread_sharp ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
+            ),
+          ),
+          Tab(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Icon(Icons.lightbulb ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
             ),
           )
         ],
@@ -95,7 +101,9 @@ class myappbar extends StatelessWidget  implements PreferredSize{
             color: Colors.amberAccent,
           ),
           onPressed: () {
-            //do some things to show notifications
+            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+              return notificationPage(user_Id:  user_Id , user_name: user_name);
+            }));
           },
         ),
       ],

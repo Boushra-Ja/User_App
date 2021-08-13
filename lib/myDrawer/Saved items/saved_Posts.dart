@@ -17,8 +17,9 @@ class savedPosts extends StatefulWidget {
 
 class savedPostState extends State<savedPosts> {
   temp_ForPost tem = new temp_ForPost();
-  var posts_list = [];
+  var posts_list = [] , user_name;
   bool loading = true;
+
 
   get_posts() async {
     await FirebaseFirestore.instance
@@ -44,12 +45,14 @@ class savedPostState extends State<savedPosts> {
                           tem.companies_post.my_post = val.docs[k].data()['myPost'];
                           tem.companies_post.post_Id = value.docs[i].data()['post_Id'];
                           tem.companies_post.title = val.docs[k].data()['title'];
-                          tem.companies_post.date = val.docs[k].data()['dateOfPublication'];
+                          tem.companies_post.date = val.docs[k].data()['date_publication'];
 
                           await FirebaseFirestore.instance
                               .collection("companies").doc(value.docs[i].data()['company_Id']).get().then((comp){
                                 tem.company_name = comp.data()['company'];
+                                tem.company_Id = comp.id;
                                 tem.token =comp.data()['token'];
+                                tem.picture = comp.data()['link_image'];
                                 tem.num_follwers = comp.data()['followers'].length;
 
                           });
@@ -57,19 +60,25 @@ class savedPostState extends State<savedPosts> {
                           await FirebaseFirestore.instance
                               .collection('users')
                               .doc(widget.user_Id).get().then((t) {
+                                if(this.mounted){
+                                  setState(() {
+                                    user_name = (t.data()['firstname'] + " " + t.data()['endname']);
+                                  });
+                                }
                             if(t.data()['Interaction_log'].containsKey("${value.docs[i].data()['post_Id']}")){
-                              if(t.data()['Interaction_log']["${value.docs[i].data()['post_Id']}"] == 'like'){
-                                setState(() {
-                                  tem.check_like = true;
-                                  tem.check_dislike = false;
-
-                                });
-                              }else{
-                                setState(() {
-                                  tem.check_like = false;
-                                  tem.check_dislike = true;
-
-                                });
+                              if(this.mounted) {
+                                if (t.data()['Interaction_log']["${value.docs[i]
+                                    .data()['post_Id']}"] == 'like') {
+                                  setState(() {
+                                    tem.check_like = true;
+                                    tem.check_dislike = false;
+                                  });
+                                } else {
+                                  setState(() {
+                                    tem.check_like = false;
+                                    tem.check_dislike = true;
+                                  });
+                                }
                               }
                             }
                           });
@@ -115,11 +124,7 @@ class savedPostState extends State<savedPosts> {
                   itemCount: posts_list.length,
                   itemBuilder: (context, index) {
                     return build_post(
-                      // post: posts_list[index],
-                        //company_name: posts_list[index].company_name,
-                        //num_follwers: posts_list[index].num_followers,
-                        //user_Id: widget.user_Id
-                        post_Info: posts_list[index] , user_Id: widget.user_Id);
+                        post_Info: posts_list[index] , user_Id: widget.user_Id , user_name: user_name) ;
                   },
                 )
               ],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -46,6 +47,7 @@ class profileState extends State<companyProfile> {
   CollectionReference user = FirebaseFirestore.instance.collection("users");
   Info_Job IJ = new Info_Job();
   bool loading = true ;
+  String title , body;
 
   checkSaved() async {
     await FirebaseFirestore.instance
@@ -75,7 +77,12 @@ class profileState extends State<companyProfile> {
     });
   }
 
-  sendNotify()async {
+  sendNotify(int num)async {
+    title = 'متابعة';
+    if(num == 2)
+      body = "قام المستخدم " + "${widget.user_name}" + " بعمل متابعة لشركتك ^_^";
+    else
+      body =  "قام المستخدم " + "${widget.user_name}" +" بتصفح البروفايل الخاص بالشركة";
 
     var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
     await http.post(
@@ -87,14 +94,14 @@ class profileState extends State<companyProfile> {
       body: jsonEncode(
         <String, dynamic>{
           'notification': <String, dynamic>{
-            'body': "قام المستخدم " + "${widget.user_name}" + " بعمل متابعة لشركتك ^_^",
-            'title': 'متابعة'
+            'body': body,
+            'title': title
           },
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'id': '1',
-            'status': 'done'
+            'user_Id' : widget.user_id,
+            'num' : 1
           },
           'to': await widget.list['token'],
         },
@@ -111,10 +118,29 @@ class profileState extends State<companyProfile> {
       print(event.notification.body);
     });
   }
+
+  storage_notificatio()async{
+
+    await company.doc(widget.company_Id).collection("notification").add({
+      'body' : body,
+      'title' : title ,
+      'user_Id' : widget.user_id,
+      'date_publication' : {
+        'day' : DateTime.now().day,
+        'month' : DateTime.now().month,
+        'year' : DateTime.now().year
+
+      },
+      'num':1
+    });
+  }
+
   @override
   void initState() {
     () async {
       await checkSaved();
+      sendNotify(1);
+      storage_notificatio();
     }();
     super.initState();
   }
@@ -143,10 +169,13 @@ class profileState extends State<companyProfile> {
                                     gradient: LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
-                                        colors: <Color>[
+                                        colors:ThemeNotifier.mode == true ?  <Color>[
                                           Colors.pink.shade900,
                                           Colors.grey.shade800
-                                        ])),
+                                        ] :<Color>[
+                                          Colors.grey.shade900,
+                                          Colors.grey.shade700
+                                        ] )),
                                 child: Column(
                                   children: [
                                     Row(
@@ -272,7 +301,7 @@ class profileState extends State<companyProfile> {
                                           MediaQuery.of(context).size.width - 100,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(30),
-                                            color: Colors.white,
+                                            color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade500,
                                           ),
                                           child: Column(
                                             children: [
@@ -289,8 +318,8 @@ class profileState extends State<companyProfile> {
                                                       child: ElevatedButton.icon(
                                                         style: ElevatedButton.styleFrom(
                                                           elevation: 2,
-                                                          primary: Colors.amber.shade50,
-                                                          shadowColor: Colors.pink,
+                                                          primary:  ThemeNotifier.mode == true ? Colors.amber.shade50 : Colors.grey.shade800,
+                                                          shadowColor: Colors.pink.shade300,
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
                                                               new BorderRadius
@@ -300,8 +329,8 @@ class profileState extends State<companyProfile> {
                                                           //////////////Add User to Company
                                                           if (widget.check_followers ==
                                                               false) {
-                                                            sendNotify();
-                                                            getMessage();
+                                                            sendNotify(2);
+                                                            storage_notificatio();
                                                             setState(() {
                                                               widget.check_followers =
                                                               true;
@@ -442,7 +471,7 @@ class profileState extends State<companyProfile> {
                                                               false
                                                               ? Icons.plus_one
                                                               : Icons.minimize,
-                                                          color: Colors.black,
+                                                          color: ThemeNotifier.mode == true ? Colors.black : Colors.white,
                                                           size: 16,
                                                         ),
                                                         label: Text(
@@ -451,7 +480,7 @@ class profileState extends State<companyProfile> {
                                                               ? "متابعة"
                                                               : "الغاء المتابعة",
                                                           style: TextStyle(
-                                                              color: Colors.black,
+                                                              color: ThemeNotifier.mode == true ? Colors.black : Colors.white,
                                                               fontSize: 12),
                                                         ),
                                                       ),
@@ -465,8 +494,8 @@ class profileState extends State<companyProfile> {
                                                       child: ElevatedButton(
                                                         style: ElevatedButton.styleFrom(
                                                           elevation: 2,
-                                                          primary: Colors.amber.shade50,
-                                                          shadowColor: Colors.pink,
+                                                          primary: ThemeNotifier.mode == true ? Colors.amber.shade50 : Colors.grey.shade800,
+                                                          shadowColor: Colors.pink.shade300,
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
                                                               new BorderRadius
@@ -579,7 +608,7 @@ class profileState extends State<companyProfile> {
                           list: widget.list,
                         )
                             : check2 == true
-                            ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id)
+                            ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id ,user_name: widget.user_name)
                             : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id  ,false) :employePage()
 
                       ],
@@ -602,21 +631,21 @@ class profileState extends State<companyProfile> {
       )),
       decoration: BoxDecoration(
           color: num == 1
-              ? (check1 == true
-                  ? Colors.pink.shade900.withOpacity(0.4)
-                  : Colors.amber.shade50)
+              ? ((check1 == true && ThemeNotifier.mode == true) ?
+                   Colors.pink.shade900.withOpacity(0.4) : (check1 == true && ThemeNotifier.mode == false) ?Colors.grey.shade300
+              : ThemeNotifier.mode == true ? Colors.amber.shade50 : Colors.grey.shade700)
               : num == 2
-                  ? (check2 == true
-                      ? Colors.pink.shade900.withOpacity(0.4)
-                      : Colors.amber.shade50)
+                  ? ((check2 == true && ThemeNotifier.mode == true) ?
+          Colors.pink.shade900.withOpacity(0.4) : (check2 == true && ThemeNotifier.mode == false) ? Colors.grey.shade300
+              : ThemeNotifier.mode == true ? Colors.amber.shade50 : Colors.grey.shade700)
                   : num == 3
-                      ? (check3 == true
-                          ? Colors.pink.shade900.withOpacity(0.4)
-                          : Colors.amber.shade50)
+                      ? ((check3 == true && ThemeNotifier.mode == true) ?
+          Colors.pink.shade900.withOpacity(0.4) : (check3 == true && ThemeNotifier.mode == false) ?Colors.grey.shade300
+              : ThemeNotifier.mode == true ? Colors.amber.shade50 : Colors.grey.shade700)
                       : num == 4
-                          ? (check4 == true
-                              ? Colors.pink.shade900.withOpacity(0.4)
-                              : Colors.amber.shade50)
+                          ? ((check4 == true && ThemeNotifier.mode == true) ?
+          Colors.pink.shade900.withOpacity(0.4) : (check4 == true && ThemeNotifier.mode == false) ? Colors.grey.shade300
+              : ThemeNotifier.mode == true ? Colors.amber.shade50 : Colors.grey.shade700)
                           : null,
           borderRadius: BorderRadius.circular(30)),
     );
@@ -648,7 +677,7 @@ class PopupOptionMenuState extends State<PopupOptionMenu> {
       child: PopupMenuButton<MenuOption>(
           icon: Icon(
             Icons.menu,
-            color: Colors.black,
+            color: ThemeNotifier.mode == true ? Colors.black : Colors.white,
             size: 16,
           ),
           itemBuilder: (BuildContext context) {

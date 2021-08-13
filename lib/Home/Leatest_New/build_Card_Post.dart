@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -6,8 +7,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:convert';
 
 class build_post extends StatefulWidget {
-  var post_Info , user_Id;
-  build_post({this.post_Info , this.user_Id});
+  var post_Info , user_Id , user_name;
+  build_post({this.post_Info , this.user_Id , this.user_name});
 
   @override
   State<StatefulWidget> createState() {
@@ -17,8 +18,11 @@ class build_post extends StatefulWidget {
 
 class build_postState extends State<build_post> {
 
-  sendNotify(bool reaction)async {
+  var title , body , date;
 
+  sendNotify(bool reaction)async {
+    title = 'تفاعل مع البوست' ;
+    body = (reaction == true  ? "أعجب المستخدم " : "تفاعل المستخدم ") + "  ${widget.user_name}  " + "مع البوست الخاص بك";
     var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
     await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -29,14 +33,14 @@ class build_postState extends State<build_post> {
       body: jsonEncode(
         <String, dynamic>{
           'notification': <String, dynamic>{
-            'body': (reaction == true  ? "أعجب المستخدم " : "تفاعل المستخدم ") + "بشرى " + "مع البوست الخاص بك",
-            'title': 'تفاعل مع البوست'
+            'body': body ,
+            'title': title
           },
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'id': '1',
-            'status': 'done'
+            'num' : 2 ,
+            'post_Id' : widget.post_Info.companies_post.post_Id
           },
           'to': await widget.post_Info.token,
         },
@@ -75,9 +79,35 @@ class build_postState extends State<build_post> {
       print("sucesss");
     });
   }
+
+  storage_notification()async{
+
+    await FirebaseFirestore.instance.collection('companies').doc(widget.post_Info.company_Id).collection("notification").add({
+      'body' : body,
+      'title' : title ,
+      'post_Id' : widget.post_Info.companies_post.post_Id,
+      'date_publication' : {
+        'day' : DateTime.now().day,
+        'month' : DateTime.now().month,
+        'year' : DateTime.now().year
+
+      },
+      'num':2
+    });
+  }
+
   @override
   void initState() {
-print(FirebaseMessaging.instance.getToken());    super.initState();
+   if(DateTime.now().month == widget.post_Info.companies_post.date['month'])
+     {
+       if(DateTime.now().day == widget.post_Info.companies_post.date['day'])
+         {
+           date = "${ DateTime.now().hour -  widget.post_Info.companies_post.date['hour']}" + " ساعة";
+         }
+       else
+         date = "${DateTime.now().day -  widget.post_Info.companies_post.date['day']}" + " يوم";
+     }
+   super.initState();
   }
 
   @override
@@ -89,10 +119,10 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
         .collection("posts_saved");
 
     return Container(
-        color: Colors.pink.shade50,
+        color: ThemeNotifier.mode == true ? Colors.pink.shade50 : Colors.grey.shade800,
         width: MediaQuery.of(context).size.width,
         child: Card(
-          color: Colors.white,
+          color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade600,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
@@ -105,13 +135,18 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
                 Row(
                   children: [
                     CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.pink.shade900,
-                      child: Icon(
+                      child: widget.post_Info.picture== "not" ? Icon(
                         Icons.business,
                         size: 35,
                         color: Colors.white,
-                      ),
+                      ) : null,
+                      radius: 30,
+                      backgroundImage: widget.post_Info.picture != "not"
+                          ? NetworkImage(widget.post_Info.picture)
+                          : null,
+                      backgroundColor: widget.post_Info.picture== "not"
+                          ? Colors.pink.shade900
+                          : null,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 13),
@@ -129,13 +164,13 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
                             ),
                             Text(
                               "${widget.post_Info.num_follwers}" + " متابع",
-                              style: TextStyle(color: Colors.grey.shade700),
+                              style: TextStyle(color: ThemeNotifier.mode == true ? Colors.grey.shade700 : Colors.white70),
                             ),
                             Row(
                               children: [
-                                Text("${widget.post_Info.companies_post.date}",
+                                Text("منذ " + date,
                                     style:
-                                        TextStyle(color: Colors.grey.shade700)),
+                                        TextStyle(color: ThemeNotifier.mode == true ? Colors.grey.shade700 : Colors.white70)),
                                 Icon(Icons.public,
                                     size: 17, color: Colors.grey.shade700)
                               ],
@@ -194,6 +229,7 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
 
                               });
                               await sendNotify(true);
+                              storage_notification();
                               await getMessage();
                             }else{
                               delete_interacton();
@@ -203,7 +239,7 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
                             }
                           },
                           child: Column(
-                            children: [Icon(Icons.thumb_up_alt , color: widget.post_Info.check_like == false ? Colors.grey.shade700 : Colors.blue), Text("أعجبني")],
+                            children: [Icon(Icons.thumb_up_alt , color: widget.post_Info.check_like == false && ThemeNotifier.mode == true ? Colors.grey.shade700 : widget.post_Info.check_like == false && ThemeNotifier.mode == false ? Colors.white : Colors.blue), Text("أعجبني")],
                           ),
                         ),
                       ),
@@ -222,6 +258,7 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
 
                               });
                               await sendNotify(false);
+                              storage_notification();
                               await getMessage();
 
                             }else{
@@ -234,7 +271,7 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.thumb_down_alt , color: widget.post_Info.check_dislike == false ? Colors.grey.shade700 : Colors.red,),
+                              Icon(Icons.thumb_down_alt , color: widget.post_Info.check_dislike == false && ThemeNotifier.mode == true ? Colors.grey.shade700 : widget.post_Info.check_dislike == false && ThemeNotifier.mode == false ? Colors.white : Colors.red),
                               Text("لم يعجبني")
                             ],
                           ),
@@ -291,7 +328,7 @@ print(FirebaseMessaging.instance.getToken());    super.initState();
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.save , color: widget.post_Info.check_save == false ? Colors.grey.shade700:Colors.yellow.shade500,),
+                              Icon(Icons.save ,color: widget.post_Info.check_save == false && ThemeNotifier.mode == true ? Colors.grey.shade700 : widget.post_Info.check_save == false && ThemeNotifier.mode == false ? Colors.white : Colors.yellow.shade500),
                               Text(widget.post_Info.check_save == false
                                   ? "حفظ"
                                   : "الغاء الحفظ")
