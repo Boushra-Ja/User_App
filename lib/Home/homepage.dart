@@ -4,6 +4,7 @@ import 'package:b/Home/roadmaps.dart';
 import 'package:b/Home/show.dart';
 import 'package:b/Info_Job.dart';
 import 'package:b/UserInfo.dart';
+import 'package:b/chat_p/chats.dart';
 import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +22,7 @@ import 'Leatest_New/Refrech_Posts.dart';
 import 'ThemeManager.dart';
 import 'my_chance.dart';
 import 'package:b/Home/appbar.dart';
+import 'package:b/chat_p/chat.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -116,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //////////////////////////get maps
-
   get_All_maps() async {
     QuerySnapshot respon_map = await mapref.get();
     respon_map.docs.forEach((element) {
@@ -246,7 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         () async {
       await getId();
-      await token_storage();
+       token_storage();
       await FirebaseMessaging.onMessageOpenedApp.listen((event) async {
         print(event.data);
         if(event.data['num'] == '2')
@@ -319,6 +320,17 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Refrech_Posts(docid: docid , user_name: (user.firstName + " " +  user.endName)),
                                 roadmaps(all_map)
                               ],
+
+                            ),
+                            floatingActionButton: FloatingActionButton(
+                              backgroundColor: Colors.pink.shade900,
+                               child:Icon(Icons.add_comment),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                  return Chats(user_id : docid);
+                                }));
+                              }
+
                             ),
                           )))
               );
@@ -354,3 +366,6 @@ class loading_page extends StatelessWidget{
     );
   }
 }
+
+
+//   flutter run -d chrome --web-renderer html

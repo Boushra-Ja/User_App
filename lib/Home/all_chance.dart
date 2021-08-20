@@ -71,7 +71,6 @@ class chance extends State<all_chance> {
                           );
                         }).toList(),
                         onChanged: (String valu) {
-                          print(valu);
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
@@ -232,51 +231,6 @@ class chance extends State<all_chance> {
                     height: 40,
                     child: Center(
                       child: DropdownButton<String>(
-                        hint: Text('حسب الإختصاص' ,style: TextStyle(color: ThemeNotifier.mode==true ? Colors.grey.shade700 : Colors.white),),
-                        items: <String>[
-                          'تكنولوجيا المعلومات',
-                          'علوم طبيعية',
-                          'تدريس',
-                          'ترجمة',
-                          'تصيم غرافيكي وتحريك',
-                          "سكرتاريا",
-                          "صحافة",
-                          "مديرمشاريع",
-                          "محاسبة",
-                          "كيمياء ومخابر",
-                          "طبيب",
-                          "صيدلة وأدوية",
-                          "غير ذلك"
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String value) {
-                          print(value);
-                          setState(() {
-                            widget.jobs.clear();
-                            for (int i = 0; i < widget.temp.length; i++) {
-                              if (widget.temp[i].job_Info['specialties'] ==
-                                  value) {
-                                widget.jobs.add(widget.temp[i]);
-                              }
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                        color: ThemeNotifier.mode == true ? Colors.white : Colors.grey,
-                        borderRadius: BorderRadius.circular(30)),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(5),
-                    width: 180,
-                    height: 40,
-                    child: Center(
-                      child: DropdownButton<String>(
                         hint: Text('حسب الخبرة العملية' , style: TextStyle(color: ThemeNotifier.mode==true ? Colors.grey.shade700 : Colors.white),),
                         items: <String>[
                           'مبتدأ',
@@ -289,7 +243,6 @@ class chance extends State<all_chance> {
                           );
                         }).toList(),
                         onChanged: (String valu) {
-                          print(valu);
                           setState(() {
                             widget.jobs.clear();
                             for (int i = 0; i < widget.temp.length; i++) {
