@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   get_All_data() async {
     var name ;
     await FirebaseFirestore.instance.collection("users").doc(docid).get().then((value) {
-          name = value.data()['firstname'] + " " + value.data()['endname'];
+      name = value.data()['firstname'] + " " + value.data()['endname'];
     });
     await jobsref.get().then((v) async {
       if(v.docs.isNotEmpty){
@@ -126,11 +126,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     print(all_map.length);
     if(this.mounted)
-     {
-       setState(() {
-         loading = false;
-       });
-     }
+    {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   ///////////////////////user Info
@@ -302,32 +302,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   home: DefaultTabController(
                       length: 5,
                       child: Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: Scaffold(
-                            appBar: myappbar(chance_List : All_jobs , user_Id: docid , specialization_list : temp , user_name : user.firstName),
-                            drawer: mydrawer(
-                                user: user,
-                                docid: docid,
-                                theme :theme
-                            ),
-                            body: loading
-                                ? Loading()
-                                : TabBarView(
-                              children: [
-                                get_All_chance(temp_list : All_jobs,user_Id: docid,),
-                                my_chance(My_jobs, user, docid),
-                                companyPage(user_id: docid , user_name: (user.firstName + " " +  user.endName)),
-                                Refrech_Posts(docid: docid , user_name: (user.firstName + " " +  user.endName)),
-                                roadmaps(all_map)
-                              ],
-                            ),
+                        textDirection: TextDirection.rtl,
+                        child: Scaffold(
+                          appBar: myappbar(chance_List : All_jobs , user_Id: docid , specialization_list : temp , user_name : user.firstName),
+                          drawer: mydrawer(
+                              user: user,
+                              docid: docid,
+                              theme :theme
+                          ),
+                          body: loading
+                              ? Loading()
+                              : TabBarView(
+                            children: [
+                              get_All_chance(temp_list : All_jobs,user_Id: docid,),
+                              my_chance(My_jobs, user, docid),
+                              companyPage(user_id: docid , user_name: (user.firstName + " " +  user.endName)),
+                              Refrech_Posts(docid: docid , user_name: (user.firstName + " " +  user.endName)),
+                              roadmaps(all_map)
+                            ],
+                          ),
 
-                            floatingActionButton: Container(
-                                padding: const EdgeInsets.only(left : 10.0 , bottom: 10),
-                                height: 70.0,
-                                width: 70.0,
-                                child: FittedBox(
-                                  child: FloatingActionButton(
+                          floatingActionButton: Container(
+                            padding: const EdgeInsets.only(left : 10.0 , bottom: 10),
+                            height: 70.0,
+                            width: 70.0,
+                            child: FittedBox(
+                              child: FloatingActionButton(
                                   backgroundColor: ThemeNotifier.mode ? Colors.pink.shade800 : Colors.grey.shade300,
                                   child:Icon(Icons.add_comment),
                                   onPressed: () {
@@ -337,10 +337,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }
 
                               ),
-                                ),
-                              ),
-
+                            ),
                           ),
+
+                        ),
 
                       ))
               );
