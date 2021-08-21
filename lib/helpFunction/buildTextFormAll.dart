@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../UserInfo.dart';
@@ -53,12 +54,12 @@ class buildTextFormAll extends StatelessWidget{
         },
         initialValue: this.hintText == "false" ?
         valid_num == 1 ?  bloc.firstName : valid_num == 2 ? bloc.endName : valid_num == 3  ? bloc.mygmail : valid_num == 4 ? bloc.Skills : valid_num == 5 ? bloc.workSite : valid_num == 6 ? bloc.salary : bloc.phone
-            : null ,
+            : null ,style: TextStyle(color: Colors.black),
         decoration: InputDecoration(
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
             hintText: hintText == "true" ? 'ادخل هنا' : null ,
             hintStyle: TextStyle(
-                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w300),
+                fontSize: 14, color:Colors.black, fontWeight: FontWeight.w300),
             contentPadding: EdgeInsets.fromLTRB(10.0, 0.01, 20.0, 0.01),
             filled: true,
             fillColor: Colors.white),

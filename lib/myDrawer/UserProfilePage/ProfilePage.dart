@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/helpFunction/showDialoge_photo.dart';
 import 'package:b/myDrawer/UserProfilePage/Edit_SeientificInfo.dart';
 import 'package:b/myDrawer/UserProfilePage/Edit_WorkInfo.dart';
@@ -86,7 +87,7 @@ class userProfileState extends State<userProfile> {
             Container(
               height: 150,
               child: Card(
-                color: Colors.grey.shade100,
+                color:ThemeNotifier.mode == true ? Colors.grey.shade100 : Colors.grey.shade500,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                 child: Center(
                   child: InkWell(
@@ -122,7 +123,7 @@ class userProfileState extends State<userProfile> {
             SizedBox(height: 20,),
             Container(
              child: Card(
-               color: Colors.grey.shade100,
+               color: ThemeNotifier.mode == true ? Colors.grey.shade100 : Colors.grey.shade500,
                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                  child: Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +175,7 @@ class userProfileState extends State<userProfile> {
             SizedBox(height: 20,),
             Container(
               child: Card(
-                color: Colors.grey.shade100,
+                color: ThemeNotifier.mode == true ? Colors.grey.shade100 : Colors.grey.shade500,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,8 +261,10 @@ class HeaderCurvedContainer extends CustomPainter {
     Paint paint = Paint().. shader = ui.Gradient.linear(
       Offset(10 , 100),
       Offset(450 , 100),
-      [
+      ThemeNotifier.mode == true ? [
         Colors.pink.shade900 ,Colors.grey.shade900
+      ] : [
+        Colors.grey.shade900 ,Colors.grey.shade600
       ],
     )
     ;

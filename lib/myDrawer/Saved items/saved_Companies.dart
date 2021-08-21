@@ -85,7 +85,7 @@ class savedCompaniesState extends State<savedCompanies> {
                                         user_id: widget.user_Id);
                                   }
                                 }
-                                return Text('');
+                                return Text('', style: TextStyle(fontSize: 1),);
                               });
                         }
                         return Text("loading");

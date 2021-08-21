@@ -27,7 +27,7 @@ class show extends StatefulWidget{
 
 class showState extends State<show> {
   bool check_P = false, loading = true ;
-  var title , body ;
+  var title , body , date ;
 
   sendNotify()async {
     title =  'تقديم طلب';
@@ -72,7 +72,14 @@ class showState extends State<show> {
     await FirebaseFirestore.instance.collection("companies").doc(widget.job.company_Id).collection("notification").add({
       'body' : body,
       'title' : title ,
-      'user_Id' : widget.docid
+      'user_Id' : widget.docid,
+      'date_publication' : {
+        'day' : DateTime.now().day,
+        'month' : DateTime.now().month,
+        'year' : DateTime.now().year,
+        'hour': DateTime.now().hour
+      },
+      'num' : 2
     });
   }
 
@@ -126,6 +133,15 @@ class showState extends State<show> {
   @override
   void initState() {
     ()async{
+      if(DateTime.now().month == widget.job.job_Info['date_publication']['month'])
+      {
+        if(DateTime.now().day == widget.job.job_Info['date_publication']['day'])
+        {
+          date = "${ DateTime.now().hour - widget.job.job_Info['date_publication']['hour']}" + " ساعة";
+        }
+        else
+          date = "${DateTime.now().day -  widget.job.job_Info['date_publication']['day']}" + " يوم";
+      }
       await check_Presentation();
     }();
     super.initState();
@@ -140,8 +156,8 @@ class showState extends State<show> {
         .collection('chance_saved');
     DocumentReference chance = FirebaseFirestore.instance.collection('companies').doc(widget.job.company_Id).collection('chance').doc(widget.job.job_Info['id']);
     onPressed_Button()async{
-      if(check_P == false){
 
+      if(check_P == false){
         await chance.get().then((value) async {
           if(value.data()['quiz'] == 0 )
           {
@@ -162,6 +178,14 @@ class showState extends State<show> {
                   body: Text('Error'))
                 ..show();
             });
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(widget.docid).collection('chat').add({
+              'comp_id' :  widget.job.company_Id,
+              'help' : 1 ,
+              'img' : widget.job.company_Info['link_image'],
+              'name' : widget.job.company_Info['company']
+            });
           }
           else {
             if(value.data()['quiz_result'].containsKey('${widget.docid}'))
@@ -172,9 +196,10 @@ class showState extends State<show> {
               await sendNotify();
               storage_notificatio();
               await getMessage();
-              chance.update({
+              await chance.update({
                 'Presenting_A_Job' : FieldValue.arrayUnion([widget.docid])
               }).then((value) {
+                print("______________");
                 print('Sucsess');
               }).catchError((e) {
                 AwesomeDialog(
@@ -183,11 +208,16 @@ class showState extends State<show> {
                     body: Text('Error'))
                   ..show();
               });
-
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(widget.docid).collection('chat').add({
+                'comp_id' :  widget.job.company_Id,
+                'help' : 1
+              });
 
             }else{
               Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid );
+                return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid , image : widget.job.company_Info['link_image']);
               }));
 
             }
@@ -267,7 +297,7 @@ class showState extends State<show> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            margin: EdgeInsets.only(top : MediaQuery.of(context).size.height / 6 , left: 20),
+                            margin: EdgeInsets.only(top : MediaQuery.of(context).size.height / 7 , left: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -275,14 +305,14 @@ class showState extends State<show> {
                                 //SizedBox(width: 5,),
                                 Column(
                                   children: [
-                                    Text(widget.job.job_Info['title'] , style: TextStyle(color: Colors.white , fontSize: 20),),
-                                    Text("kkk" ,  style: TextStyle(color: Colors.yellow.shade300 , fontSize: 14))
+                                    AutoSizeText(widget.job.job_Info['title'] , style: TextStyle(color: Colors.white , fontSize: 20)),
+                                    Text("${date}" ,  style: TextStyle(color: Colors.yellow.shade300 , fontSize: 14))
                                   ],
                                 )
                               ],
                             ),
                           ),
-                          SizedBox(height: 30,),
+                          SizedBox(height:35,),
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: Row(
@@ -294,7 +324,7 @@ class showState extends State<show> {
                                     child: Center(child: Text("عدد المتقدمين")),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(40),
-                                      color: Colors.grey.shade50
+                                      color:ThemeNotifier.mode ?  Colors.grey.shade50 : Colors.black87
                                     ),
                                   ),
                                  SizedBox(width: 40,),
@@ -308,7 +338,7 @@ class showState extends State<show> {
                                       child: Center(child: Text(check_P == false ? 'تقديم' : "الغاء التقديم")),
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(40),
-                                          color: Colors.grey.shade50
+                                          color: ThemeNotifier.mode ?  Colors.grey.shade50 : Colors.black87
                                       ),
 
                                 ),
@@ -409,118 +439,139 @@ class showState extends State<show> {
 
                 ],
               ),
-              SizedBox(height: 20,),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                color: ThemeNotifier.mode ? Colors.white : Colors.black87,
+                child: Card(
+                    shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(20)),
+                    margin: EdgeInsets.symmetric(horizontal: 10 , vertical: 30),
+                    shadowColor: Colors.black,
+                    elevation: 4,
+                    color: ThemeNotifier.mode == true ? Colors.grey.shade50 : Colors.grey.shade700,
+                    child: Container(
+                      margin: EdgeInsets.only(right: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 20,),
+                          Center(child: Text("عن الفرصة" , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w600),)),
+                          Row(
+                            children: [
+                              Expanded(child: Text("") , flex : 1 ),
+                              Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
+                              Expanded(child: Text("") , flex : 1 ),
+                            ],
+                          ),
 
-                 Card(
-                   shape: RoundedRectangleBorder(
-                       borderRadius: BorderRadius.circular(20)),
-                  margin: EdgeInsets.symmetric(horizontal: 10),
+                          SizedBox(height: 10,),
+                          widget.job.job_Info['chanceId']!= 1  ? Text("المستوى العلمي :  " + "${widget.job.job_Info['degree']}", style: TextStyle(fontSize: 16)):Text('',style: TextStyle(fontSize: 1),),
+                          SizedBox(height: 10,),
+                          widget.job.job_Info['chanceId']== 0 ? Text("الخبرة الوظيفية :  " + "${widget.job.job_Info['level']}", style: TextStyle(fontSize: 16)) :Text('' , style: TextStyle(fontSize: 1),),
+                          widget.job.job_Info['chanceId']== 0 ? SizedBox(height: 10,) : SizedBox(height: 1,),
+                          widget.job.job_Info['chanceId']== 0 && widget.job.job_Info['level'] == "خبير" ? Text("عدد سنوات الخبرة :  " + "${widget.job.job_Info['age']}", style: TextStyle(fontSize: 16)) : Text('' , style: TextStyle(fontSize: 1),),
+                          widget.job.job_Info['chanceId']== 0 && widget.job.job_Info['level'] == "خبير" ? SizedBox(height: 10,) : SizedBox(height: 1,),
+                          Text("ساعات العمل : " + "${widget.job.job_Info['workTime']}" , style: TextStyle(fontSize: 16)),
+                          SizedBox(height: 10,),
+                          widget.job.job_Info['chanceId']== 1 ? Text('' , style: TextStyle(fontSize: 1),) : Text("الجنس : " + "${widget.job.job_Info['gender']}", style: TextStyle(fontSize: 16)),
+                          widget.job.job_Info['chanceId']!= 1 ? SizedBox(height: 20,) : SizedBox(height: 1,),
+                          widget.job.job_Info['chanceId']== 0 ? Text("الراتب :  " + "${widget.job.job_Info['salary']}", style: TextStyle(fontSize: 16)) : Text('' , style: TextStyle(fontSize: 1),),
+                          widget.job.job_Info['chanceId']== 0 ? SizedBox(height: 20,) : SizedBox(height: 1,),
+                          Text("الوصف : " + "${widget.job.job_Info['describsion']}", style: TextStyle(fontSize: 16)),
+                          SizedBox(height: 30,),
+                        ],
+                      ),
+                    ),
+                  ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                color: ThemeNotifier.mode ? Colors.white : Colors.black87,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  margin: EdgeInsets.symmetric(horizontal: 10 , vertical: 30),
                   shadowColor: Colors.black,
                   elevation: 4,
-                  color: ThemeNotifier.mode == true ? Colors.grey.shade50 : Colors.grey.shade300,
+                  color: ThemeNotifier.mode == true ? Colors.grey.shade50 : Colors.grey.shade700,
                   child: Container(
                     margin: EdgeInsets.only(right: 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 20,),
-                        Center(child: Text("عن الفرصة" , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w600),)),
+                        Center(child: Text("المهارات المطلوبة" , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w600),)),
                         Row(
                           children: [
                             Expanded(child: Text("") , flex : 1 ),
-                        Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
-                   Expanded(child: Text("") , flex : 1 ),
+                            Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
+                            Expanded(child: Text("") , flex : 1 ),
 
                           ],
                         ),
-
-                        SizedBox(height: 10,),
-                        Text("عدد سنوات الخبرة :  " + "${widget.job.job_Info['age']}", style: TextStyle(fontSize: 16)),
-                        SizedBox(height: 10,),
-                        Text("المستوى العلمي :  " + "${widget.job.job_Info['degree']}", style: TextStyle(fontSize: 16)),
-                        SizedBox(height: 10,),
-                        Text("عدد ساعات العمل : " + "${widget.job.job_Info['workTime']}" , style: TextStyle(fontSize: 16)),
-                        SizedBox(height: 10,),
-                        Text("الجنس : " + "${widget.job.job_Info['gender']}", style: TextStyle(fontSize: 16)),
-                        SizedBox(height: 20,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: AutoSizeText("${widget.job.job_Info['skillNum']} " , style: TextStyle(fontSize: 16)),
+                        ),
+                        SizedBox(height: 30,),
 
                       ],
                     ),
                   ),
                 ),
-              SizedBox(height: 40,),
-              Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                shadowColor: Colors.black,
-                elevation: 4,
-                color: ThemeNotifier.mode == true ? Colors.grey.shade50 : Colors.grey.shade300,
-                child: Container(
-                  margin: EdgeInsets.only(right: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20,),
-                      Center(child: Text("المهارات المطلوبة" , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w600),)),
-                      Row(
-                        children: [
-                          Expanded(child: Text("") , flex : 1 ),
-                          Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
-                          Expanded(child: Text("") , flex : 1 ),
+              ),
+              Container(
+              //  margin: EdgeInsets.symmetric(vertical: 20),
+                width: MediaQuery.of(context).size.width,
+                color: ThemeNotifier.mode ? Colors.white : Colors.black87,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top : 20),
+                      child: Center(child: Text("معلومات عن الشركة" , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w600),)),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: Text("") , flex : 1 ),
+                        Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
+                        Expanded(child: Text("") , flex : 1 ),
 
-                        ],
-                      ),
-
-                      SizedBox(height: 10,),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: AutoSizeText("${widget.job.job_Info['skillNum']} " , style: TextStyle(fontSize: 16)),
-                      ),
-                      SizedBox(height: 20,),
-
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 40,),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(child: Text("معلومات عن الشركة" , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w600),)),
-                  Row(
-                    children: [
-                      Expanded(child: Text("") , flex : 1 ),
-                      Expanded(child: Divider(color: ThemeNotifier.mode == true ? Colors.grey : Colors.white,) , flex : 5 ),
-                      Expanded(child: Text("") , flex : 1 ),
+              Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  width: MediaQuery.of(context).size.width,
+                  color: ThemeNotifier.mode ? Colors.white : Colors.black87,
+                  child: buildCardCompany(list: widget.job.company_Info,company_Id: widget.job.company_Id,user_id: widget.docid,)),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 30),
+                width: MediaQuery.of(context).size.width,
+                color: ThemeNotifier.mode ? Colors.white : Colors.black87,
+                child: Center(
+                  child:  ElevatedButton(
+                        onPressed: () async{
+                          onPressed_Button();
+                        },
+                        child: Text(check_P == false ? 'تقديم' : "الغاء التقديم" , style: TextStyle(fontSize: 18 , color: Colors.white , fontWeight: FontWeight.w600),),
+                        style: ElevatedButton.styleFrom(
+                          elevation: 4,
+                          minimumSize: Size(150.0, 50.0),
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          primary: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
+                          onPrimary: Colors.grey,
+                          shadowColor: Colors.black,
+                          shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)
+                          ),
 
-                    ],
-                  ),
-                ],
-              ),
-              buildCardCompany(list: widget.job.company_Info,company_Id: widget.job.company_Id,user_id: widget.docid,),
-              SizedBox(height: 40,),
-              Center(
-                child:  ElevatedButton(
-                      onPressed: () async{
-                        onPressed_Button();
-                      },
-                      child: Text(check_P == false ? 'تقديم' : "الغاء التقديم" , style: TextStyle(fontSize: 18 , color: Colors.white , fontWeight: FontWeight.w600),),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 4,
-                        minimumSize: Size(150.0, 50.0),
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        primary: Colors.pink.shade900,
-                        onPrimary: Colors.grey,
-                        shadowColor: Colors.black,
-                        shape: BeveledRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)
                         ),
-
                       ),
-                    ),
+                ),
               ),
-              SizedBox(height: 40,),
 
             ],
           )

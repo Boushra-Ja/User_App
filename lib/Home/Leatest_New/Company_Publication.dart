@@ -32,3 +32,4 @@ class company_PublicationState extends State<company_Publication> {
     );
   }
 }
+

@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-
-
 class roadmaps extends StatelessWidget {
   List roadm = [];
   roadmaps(List all_map,) {
@@ -28,15 +25,18 @@ class roadmaps extends StatelessWidget {
                   height: 400,
                   child:
                       GridTile(
-                        footer: new Text(roadm[i]['road_name'],textAlign: TextAlign.center,
-                            style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 22)),
+                        footer: Padding(
+                          padding: const EdgeInsets.only(top : 15.0),
+                          child: new Text(roadm[i]['road_name'],textAlign: TextAlign.center,
+                              style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 22)),
+                        ),
                        child :Card(
                            margin: EdgeInsets.all(25),
                          shadowColor: Colors.transparent,
                          color: Colors.transparent,
                          child:Column(children: [
                            CircleAvatar(
-                             radius: 45,
+                             radius: 40,
                              backgroundImage:
                              roadm[i]['ima'] != "not"
                                  ? NetworkImage(

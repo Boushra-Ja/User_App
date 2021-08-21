@@ -1,4 +1,5 @@
 import 'package:b/Home/Company_Pages/Company_Profile.dart';
+import 'package:b/UserInfo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../Info_Job.dart';
@@ -24,11 +25,43 @@ class buildCardCompanyState extends State<buildCardCompany> {
       FirebaseFirestore.instance.collection("companies");
   var posts = [];
   Info_Job IJ = new Info_Job();
-  List All_jobs = [];
+  List All_jobs = [] , employe = [] ;
+  List<userInfo> employe_List = [];
   var com_Info;
   bool loading = true ;
+  userInfo user = new userInfo();
 
   get_employe()async{
+    await FirebaseFirestore.instance.collection('companies').doc(widget.company_Id).get().then((value) {
+      employe = value.data()['all_accepted'];
+      print(value.data()['all_accepted']);
+    });
+
+   if(employe.isNotEmpty){
+     employe.forEach((element) async {
+       await  FirebaseFirestore.instance.collection('users').doc(element).get().then((value) {
+         user = new userInfo();
+         user.firstName = value.data()['firstname'];
+         user.endName = value.data()['endname'];
+         user.selectedCountry = value.data()['originalhome'];
+         user.selectedCity = value.data()['placerecident'];
+         user.selectedDay = value.data()['date']['day'];
+         user.selectedMonth = value.data()['date']['month'];
+         user.selectedYear = value.data()['date']['year'];
+         user.selectedEdu = value.data()['scientific_level'];
+         user.selectedFun = value.data()['carrer_level'];
+         user.selectedjob = value.data()['work_field'];
+         user.language =  value.data()['language'];
+         user.Skills =  value.data()['skill'];
+         user.mygmail = value.data()['gmail'];
+         user.imageurl = value.data()['imageurl'];
+         if(this.mounted){
+           employe_List.add(user);
+         }
+       });
+       });
+
+   }
 
   }
 
@@ -94,8 +127,8 @@ class buildCardCompanyState extends State<buildCardCompany> {
     await FirebaseFirestore.instance
         .collection('companies')
         .doc(widget.company_Id)
-        .collection('Post')
-        .get()
+        .collection('Post').orderBy('date_publication' , descending: true).
+        get()
         .then((docs) async {
       if (docs.docs.isNotEmpty) {
         /////for to post for company
@@ -169,6 +202,7 @@ class buildCardCompanyState extends State<buildCardCompany> {
     ()async{
       await get_Post();
       await get_chance();
+      await get_employe();
     }();
     super.initState();
   }
@@ -208,10 +242,10 @@ class buildCardCompanyState extends State<buildCardCompany> {
               child: Icon(Icons.arrow_forward_ios),
             ),
             leading: CircleAvatar(
-              child: Icon(
+              child: widget.list['link_image'] == "not" ? Icon(
                 Icons.business,
                 color: Colors.black,
-              ),
+              ) : null,
               radius: 40,
               backgroundImage: widget.list['link_image'] != "not"
                   ? NetworkImage(widget.list['link_image'])
@@ -234,112 +268,10 @@ class buildCardCompanyState extends State<buildCardCompany> {
               company_Id : widget.company_Id,
               num_followers : num_followers,
               list_post: posts,
-          chance_list: All_jobs);
+          chance_list: All_jobs ,
+          employe_List : employe_List);
         }));
       },
     );
   }
 }
-
-/*
-import 'package:b/stand.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-class datasearch extends SearchDelegate<String> {
-
-
-  var batol;
-  List<dynamic> list=new List();
-  List<String> data_save;
-  datasearch(this.list);
-  String u;
-  date(context) async {
-    CollectionReference ref =FirebaseFirestore.instance.collection("companies").doc(Provider.of<MyProvider>(context, listen: false).company_id).collection("chance");
-
-    String u;
-    await ref.where("title", isEqualTo: query).get().then((value) {
-      value.docs.forEach((element) {
-        u = element.id;
-        batol=element.data();
-
-      });
-    });
-    DocumentReference d =FirebaseFirestore.instance.collection("companies").doc(Provider.of<MyProvider>(context, listen: false).company_id).collection("chance").doc(u);
-
-    await d.get().then((value) {
-      String k1 = value.data()['title'];
-      String k2 = value.data()['age'];
-
-      data_save = new List();
-      data_save.add(k1);
-      data_save.add(k2);
-
-    });
-  }
-
-
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-          icon: Icon(
-            Icons.clear,
-          ),
-          onPressed: () {
-            query = "";
-          }),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-        ),
-        onPressed: () {
-          close(context, null);
-        });
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-
-    return Container(child:Column(children:<Widget> [
-
-      Text(data_save[0]),
-      SizedBox(height: 20,),
-
-      Text(data_save[1]),
-      SizedBox(height: 20,),
-    ],));
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    var sl = query.isEmpty
-        ? list
-        : list.where((element) => element.startsWith(query)).toList();
-    return ListView.builder(
-        itemCount: sl.length,
-        itemBuilder: (context, i) {
-          return ListTile(
-              leading: Icon(Icons.nature_people),
-              title: Text(sl[i]),
-              onTap: () {
-                query = sl[i];
-
-                bbbb(context);
-              });
-        });
-  }
-  bbbb(context)async{
-    await date(context);
-    showResults(context);
-  }
-}
- */
-
-

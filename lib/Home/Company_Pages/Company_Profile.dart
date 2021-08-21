@@ -9,12 +9,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:share/share.dart';
 import '../../Info_Job.dart';
 import 'AboutCompany.dart';
 import 'Employe_Page.dart';
 
 class companyProfile extends StatefulWidget {
-  var list, user_id, check_followers, list_post , company_Id ,num_followers , chance_list,temp_List ,user_name;
+  var list, user_id, check_followers, list_post , company_Id ,num_followers , chance_list,temp_List ,user_name , employe_List;
   companyProfile(
       {Key key,
       this.list,
@@ -26,6 +27,7 @@ class companyProfile extends StatefulWidget {
       this.list_post,
         this.chance_list,
         this.temp_List,
+        this.employe_List
       })
       : super(key: key);
   @override
@@ -128,7 +130,8 @@ class profileState extends State<companyProfile> {
       'date_publication' : {
         'day' : DateTime.now().day,
         'month' : DateTime.now().month,
-        'year' : DateTime.now().year
+        'year' : DateTime.now().year,
+        'hour' :  DateTime.now().hour
 
       },
       'num':1
@@ -257,7 +260,7 @@ class profileState extends State<companyProfile> {
                                                         fontSize: 16,
                                                         color: Colors.white),
                                                   ),
-                                                  Text("8k",
+                                                  Text("${widget.list['all_accepted'].length}",
                                                       style: TextStyle(
                                                           fontWeight:
                                                           FontWeight.w900,
@@ -301,7 +304,7 @@ class profileState extends State<companyProfile> {
                                           MediaQuery.of(context).size.width - 100,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(30),
-                                            color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade500,
+                                            color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade600,
                                           ),
                                           child: Column(
                                             children: [
@@ -609,7 +612,7 @@ class profileState extends State<companyProfile> {
                         )
                             : check2 == true
                             ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id ,user_name: widget.user_name)
-                            : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id  ,false) :employePage()
+                            : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id  ,false) :employePage(employe_List : widget.employe_List)
 
                       ],
 
@@ -739,7 +742,11 @@ class PopupOptionMenuState extends State<PopupOptionMenu> {
               ),
               PopupMenuItem(
                 child: ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    share(context);
+                    Navigator.of(context).pop();
+
+                  },
                   trailing: Icon(Icons.share, color: Colors.black),
                   title: Text(
                     "مشاركة   ",
@@ -761,6 +768,16 @@ class PopupOptionMenuState extends State<PopupOptionMenu> {
               )
             ];
           }),
+    );
+  }
+  void share(BuildContext context ){
+    String txt = "شركة فروح" +"\n" + "شركة مختصة بمحال ..... "  +"\n"+"موقع الشركة : بييييييييييي" + "\n"+
+        "الوصف : " + "ييييييييي" +'\n';
+    final RenderBox box = context.findRenderObject();
+    final String text = txt;
+    Share.share(text ,
+      subject: "معلومات الفرصة",
+      sharePositionOrigin: box.localToGlobal(Offset.zero)&box.size,
     );
   }
 }

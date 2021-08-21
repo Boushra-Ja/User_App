@@ -1,8 +1,6 @@
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../UserInfo.dart';
 
 class build_MultiSelect extends StatefulWidget{
   int flex_, _selected;
@@ -22,16 +20,16 @@ class build_MultiSelectState extends State<build_MultiSelect>{
       "value": "تكنولوجيا المعلومات",
     },
     {
-      "display": 'علوم طبيعية',
-      "value": 'علوم طبيعية',
+      "display": 'العلوم طبيعية',
+      "value": 'العلوم طبيعية',
     },
     {
-      "display":  'تدريس',
-      "value":  'تدريس',
+      "display":  'التعليم',
+      "value":  'التعليم',
     },
     {
-      "display": 'ترجمة ',
-      "value": 'ترجمة ',
+      "display": 'الترجمة',
+      "value": "الترجمة",
     },
 
     {
@@ -47,25 +45,25 @@ class build_MultiSelectState extends State<build_MultiSelect>{
       "value": 'تصيم غرافيكي وتحريك',
     },
     {
-      "display": "مديرمشاريع",
-      "value": "مديرمشاريع",
+      "display": "ادارة مشاريع",
+      "value": "ادارة مشاريع",
     },
     {
-      "display":  "محاسبة",
-      "value":  "محاسبة",
+      "display":  "المحاسبة",
+      "value":  "المحاسبة",
     },
     {
-      "display": "كيمياء ومخابر",
-      "value": "كيمياء ومخابر",
+      "display": "الكيمياء ومخابر",
+      "value": "الكيمياء ومخابر",
     },
     {
-      "display": "طبيب",
-      "value": "طبيب",
+      "display": "الطب",
+      "value": "الطب",
     },
     {
-      "display": "صيدلة وأدوية",
+      "display": "الصيدلة",
 
-      "value": "صيدلة وأدوية",
+      "value": "الصيدلة",
 
     },
     {
@@ -74,9 +72,9 @@ class build_MultiSelectState extends State<build_MultiSelect>{
       "value": "مطور ألعاب",
 
     }, {
-      "display": "غير ذلك",
+      "display": "مجالات مختلفة",
 
-      "value": "غير ذلك",
+      "value": "مجالات مختلفة",
 
     },
   ];
@@ -87,9 +85,9 @@ class build_MultiSelectState extends State<build_MultiSelect>{
       "value": "العربية",
     },
     {
-      "display": "الانجليزية",
+      "display": "الانكلليزية",
 
-      "value": "الانجليزية",
+      "value": "الانكليزية",
     },
     {
       "display": "الفرنسية",
@@ -100,7 +98,23 @@ class build_MultiSelectState extends State<build_MultiSelect>{
       "display": "الروسية",
 
       "value": "الروسية",
-    }
+    },
+    {
+      "display": "الصينية",
+
+      "value": "الصينية",
+    },
+    {
+      "display": "الألمانية",
+
+      "value": "الألمانية",
+    },
+    {
+      "display": "يابانية",
+
+      "value": "يابانية",
+    },
+
   ];
 
   List _myActivities = [];
@@ -119,8 +133,6 @@ class build_MultiSelectState extends State<build_MultiSelect>{
   @override
   void initState() {
     super.initState();
-    print(widget.text);
-    print(widget._selected);
   }
 
   @override

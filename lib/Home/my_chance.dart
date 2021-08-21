@@ -1,11 +1,8 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/Home/show.dart';
 import 'package:b/UserInfo.dart';
-import 'package:b/myDrawer/Drawer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'show.dart';
-
-
 
 class my_chance extends StatelessWidget {
   List m_jobs=[];
@@ -16,7 +13,6 @@ class my_chance extends StatelessWidget {
     m_jobs=my_jobs;
     this.user = user;
     this.docid = docid;
-    //print(jobs);
   }
 
   @override
@@ -38,38 +34,46 @@ class my_chance extends StatelessWidget {
                   },
 
                   child: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.symmetric(horizontal: 15 , vertical: 10),
                       decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
                           gradient: LinearGradient(
                               begin: Alignment.topRight,
                               end: Alignment.bottomLeft,
-                              colors: [Colors.black26, Colors.pink.shade800])),
+                              colors: ThemeNotifier.mode ? <Color>[Colors.black26, Colors.pink.shade800] : <Color>[Colors.black26, Colors.grey.shade600])),
                       child: Padding(
                           padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
                           child: Column(children: [
                             Row(children: [
                               Icon(Icons.account_circle,size: 30,),
-                              Text(" العنوان ",),
+                              Text(" ${m_jobs[i].company_Info['region']} ",),
                             ]),
 
                             Card(
-                                color: Colors.white70,
+                                margin: EdgeInsets.only(bottom: 20),
+                                color: ThemeNotifier.mode == true ? (m_jobs[i].job_Info["chanceId"] == 0 ? Colors.white70 : Colors.grey.shade100).withOpacity(0.7) : Colors.grey.shade400,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-
+                                    borderRadius:
+                                    BorderRadius.circular(20)),
                                 child: Column(children: [
-                                  Row(children: [Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                                    child:
-                                    Text(" المسمى الوظيفي :" +
-                                        " ${m_jobs[i].job_Info["title"]} \n" +
-                                        "ساعات العمل :" +
-                                        " ${m_jobs[i].job_Info["workTime"]} \n" +
-                                        " الراتب  :" +
-                                        " ${m_jobs[i].job_Info["salary"]} \n" +
-                                        " الخبرة العملية  :" +
-                                        " ${m_jobs[i].job_Info["level"]} \n"),
-                                  )]),
+                                  Row(children: [
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                          20, 10, 20, 5),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 10,),
+                                          Text("المسمى الوظيفي : " +
+                                              " ${m_jobs[i].job_Info["title"]} "),
+                                          m_jobs[i].job_Info["chanceId"] == 0 ? Text('نوع الفرصة : فرصة عادية ' ) : m_jobs[i].job_Info["chanceId"] == 1 ? Text('نوع الفرصة : فرصة تطوعية') : Text('نوع الفرصة : فرصة تدريب')
+                                          ,
+                                          Text("ساعات العمل : " + "${m_jobs[i].job_Info["workTime"]}"),
+                                          SizedBox(height: 10,)
+                                        ],
+                                      ),
+                                    )
+                                  ]),
                                 ])),
                           ]))));
             },

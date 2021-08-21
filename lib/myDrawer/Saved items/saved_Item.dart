@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/Home/homepage.dart';
 import 'package:b/myDrawer/Saved%20items/saved_Companies.dart';
 import 'package:b/myDrawer/Saved%20items/saved_Posts.dart';
@@ -41,22 +42,22 @@ class savedItemState extends State<saved_Item> {
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomRight,
-                        colors: <Color>[
+                        colors: ThemeNotifier.mode ? <Color>[
                       Colors.pink.shade900,
                       Colors.amber.shade50
-                    ])),
+                    ] : <Color>[
+                          Colors.black87,
+                          Colors.grey.shade700
+                        ])),
               ),
               leading: InkWell(
                 child: Icon(
                   Icons.arrow_back,
-                  color: Colors.pink.shade900,
+                  color: ThemeNotifier.mode ?  Colors.pink.shade900 : Colors.white,
                   size: 30,
                 ),
                 onTap: () {
-                  Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
-                    return MyHomePage();
-                  }));
+                  Navigator.of(context).pop();
                 },
               ),
             ),
@@ -64,25 +65,25 @@ class savedItemState extends State<saved_Item> {
               child: tabs.elementAt(_selectedIndex),
             ),
             bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
+              items:  <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.business),
-                  label: 'الشركات',
+                  icon: Icon(Icons.business , color: ThemeNotifier.mode ? Colors.black87 : Colors.white,),
+                  label: 'الشركات' ,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.work),
+                  icon: Icon(Icons.work , color: ThemeNotifier.mode ? Colors.black87 : Colors.white),
                   label: 'الفرص',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.markunread),
+                  icon: Icon(Icons.markunread , color: ThemeNotifier.mode ? Colors.black87 : Colors.white),
                   label: 'المنشورات',
                 ),
               ],
               currentIndex: _selectedIndex,
               selectedItemColor: Colors.pink.shade900,
-              selectedLabelStyle: TextStyle(fontSize: 16),
+              selectedLabelStyle: TextStyle(fontSize: 18),
               onTap: _onItemTapped,
-              unselectedItemColor: Colors.black,
+              unselectedLabelStyle: TextStyle(fontSize: 14 , color: ThemeNotifier.mode ? Colors.black87 : Colors.white),
             )));
   }
 }

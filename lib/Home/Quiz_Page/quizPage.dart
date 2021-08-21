@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'build_question.dart';
 
 class quizPage extends StatefulWidget {
-  final company_Id, chance_Id, company_name, user_Id;
+  final company_Id, chance_Id, company_name, user_Id , image;
   const quizPage(
       {Key key,
       this.company_Id,
       this.chance_Id,
       this.company_name,
-      this.user_Id})
+      this.user_Id,this.image})
       : super(key: key);
 
   @override
@@ -147,7 +147,10 @@ class quizPageState extends State<quizPage> {
                                     type_quiz: Q,
                                     company_Id: widget.company_Id,
                                     chance_Id: widget.chance_Id,
-                                    user_Id: widget.user_Id);
+                                    user_Id: widget.user_Id,
+                                  company_name : widget.company_name,
+                                  image : widget.image
+                                );
                               }));
                             },
                             child: Container(

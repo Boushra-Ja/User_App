@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/helpFunction/buildDropdownButton.dart';
 import 'package:b/helpFunction/buildText.dart';
 import 'package:b/helpFunction/buildTextFormAll.dart';
@@ -19,7 +20,7 @@ class buildCard extends StatelessWidget{
       child: Card(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
-        color: Colors.grey.shade100 ,
+        color: ThemeNotifier.mode ? Colors.grey.shade100 : Colors.grey.shade500,
         child : Column(
           children: [
             buildText(text , 0 ),

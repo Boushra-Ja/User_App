@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/component/alart.dart';
 import 'package:b/helpFunction/buildCard.dart';
 import 'package:b/helpFunction/buildDropdownButton.dart';
@@ -19,8 +20,8 @@ class Edit_WorkInfo extends StatelessWidget{
     return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
       appBar: AppBar(
       toolbarHeight: 80,
-      title : Text("تعديل المستوى العلمي " , style: TextStyle(fontSize: 18 , color: Colors.white),),
-      backgroundColor: Colors.pink.shade900,
+      title : Text("تعديل معلومات العمل " , style: TextStyle(fontSize: 18 , color: Colors.white),),
+      backgroundColor:ThemeNotifier.mode ?  Colors.pink.shade900 : Colors.black87,
       centerTitle: true,
       leading: InkWell(child: Icon(Icons.arrow_back ) , onTap: (){
         Navigator.of(context).pop();
@@ -50,7 +51,7 @@ class Edit_WorkInfo extends StatelessWidget{
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  color: Colors.grey.shade100 ,
+                  color: ThemeNotifier.mode ? Colors.grey.shade100 : Colors.grey.shade500,
                   child : Column(
                     children: [
                       buildText("حدد موقع العمل المطلوب" , 0 ),
@@ -68,7 +69,7 @@ class Edit_WorkInfo extends StatelessWidget{
         ),
        // buildCard( , 5, "حدد موقع العمل المطلوب", 13 , user ),
         SizedBox(height: 20,),
-        buildCard(user.salary == "null" ? "true" :"false" , 6, "حدد الراتب الذي ترغب فيه", 0, user  ),
+        buildCard("اختر" , 0, "حدد الراتب الذي ترغب فيه", 14, user ),
         SizedBox(height: 20,),
         Container(
             height: 70,
@@ -76,7 +77,7 @@ class Edit_WorkInfo extends StatelessWidget{
             child:  Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
-                color: Colors.grey.shade100,
+                color: ThemeNotifier.mode ? Colors.grey.shade100 : Colors.grey.shade500,
                 child: Row(
                   children: [
                     Container(padding : EdgeInsets.only(right: 20 ),child: Text("هل سبق أن عملت بشركة" , style: TextStyle(fontSize: 14),)) ,
@@ -98,7 +99,7 @@ class Edit_WorkInfo extends StatelessWidget{
             width: 140,
             height: 40,
             child: RaisedButton(
-              color: Colors.pink.shade900,
+              color: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
               child: Text("تعديل" , style: TextStyle(color : Colors.white , fontSize: 18),),

@@ -12,7 +12,7 @@ class aboutCompany extends StatelessWidget {
         color: ThemeNotifier.mode == true ? Colors.pink.shade50 : Colors.grey.shade800,
         height: 500,
         child: Card(
-          color: ThemeNotifier.mode == true ? Colors.white : Colors.grey,
+          color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade600,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           child: SingleChildScrollView(

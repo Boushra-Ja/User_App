@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:b/Home/Notification_Page.dart';
 import 'package:b/Home/ThemeManager.dart';
 import 'package:b/authintication/login.dart';
 import 'package:b/helpFunction/showDialoge_photo.dart';
@@ -19,10 +20,10 @@ import '../UserInfo.dart';
 import 'Saved items/saved_Item.dart';
 
 class mydrawer extends StatefulWidget {
-  final userInfo user;
+  userInfo user;
   final docid , theme ;
 
-  const mydrawer({Key key, this.user, this.docid , this.theme}) : super(key: key);
+   mydrawer({Key key, this.user, this.docid , this.theme}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,7 +33,6 @@ class mydrawer extends StatefulWidget {
 
 class drawerState extends State<mydrawer> {
   File file;
-
   var imagepicker = ImagePicker();
 
   CollectionReference userref = FirebaseFirestore.instance.collection("users");
@@ -179,7 +179,11 @@ class drawerState extends State<mydrawer> {
                     color: Colors.grey.shade600),
                 iconSize: 22,
               ),
-              onTap: () {}),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                  return notificationPage(user_Id: widget.docid,user_name: (widget.user.firstName + " " + widget.user.endName),);
+                }));
+              }),
           ListTile(
               title: Text(
                 "العناصر المحفوظة",
@@ -243,6 +247,9 @@ class drawerState extends State<mydrawer> {
                     builder: (context) {
                       return AlertDialog();
                     });
+
+                widget.user = new userInfo();
+                widget.theme.setLightMode();
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context)
                     .pushReplacement(MaterialPageRoute(builder: (context) {

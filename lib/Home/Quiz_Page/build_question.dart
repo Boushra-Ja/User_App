@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'finish_quiz.dart';
 
 class build_question extends StatefulWidget{
-  var Q , A , C_A , index , k , res , type_quiz , company_Id , chance_Id , user_Id;
+  var Q , A , C_A , index , k , res , type_quiz , company_Id , chance_Id , user_Id , company_name , image;
   final Duration timerTastoPremuto;
-  build_question({this.Q , this.A , this.C_A , this.index , this.k , this.res , this.type_quiz , this.company_Id , this.chance_Id , this.user_Id,this.timerTastoPremuto});
+  build_question({this.Q , this.A , this.C_A , this.index , this.k , this.res , this.type_quiz , this.company_Id , this.chance_Id , this.user_Id,this.timerTastoPremuto , this.company_name , this.image});
   @override
   State<StatefulWidget> createState() {
     return build_questionState();
@@ -130,7 +130,10 @@ class build_questionState extends State<build_question>{
                               type_quiz: widget.type_quiz,
                               company_Id: widget.company_Id,
                               chance_Id: widget.chance_Id,
-                              user_Id: widget.user_Id,);
+                              user_Id: widget.user_Id,
+                              company_name: widget.company_name,
+                              image: widget.image,
+                            );
                           }));
                     }
                     //////////if quiz true or false
@@ -150,7 +153,10 @@ class build_questionState extends State<build_question>{
                               type_quiz: widget.type_quiz,
                               company_Id: widget.company_Id,
                               chance_Id: widget.chance_Id,
-                              user_Id: widget.user_Id,);
+                              user_Id: widget.user_Id,
+                              company_name: widget.company_name,
+                              image: widget.image,
+                            );
                           }));
                     }
                   }
@@ -186,7 +192,10 @@ class build_questionState extends State<build_question>{
                               company_Id: widget.company_Id,
                               chance_Id: widget.chance_Id,
                               user_Id: widget.user_Id,
-                              success_rate: success_rate);
+                              success_rate: success_rate,
+                            company_name: widget.company_name,
+                            image: widget.image,
+                          );
                         }));
                   }
 

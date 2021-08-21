@@ -65,9 +65,24 @@ class PersnalState extends State<personalPage> {
       'companies_follow' : [],
       'language' : user.language,
       'typechance' : user.typechance,
-      'Interaction_log' : {}
-    }).then((value) {
+      'Interaction_log' : {},
+      'num_follow' : []
+    }).then((value) async {
       print('Sucsess');
+      await FirebaseFirestore.instance
+          .collection('users')
+          .get().then((value) {
+        value.docs.forEach((doc) async {
+
+          if (doc['uid'] ==
+              FirebaseAuth.instance.currentUser.uid) {
+            await FirebaseFirestore.instance
+                .collection('users').doc(doc.id).update({
+              'id' : doc.id
+            });
+          }
+        });
+      });
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
         return MyHomePage();
       }));
@@ -141,14 +156,8 @@ class PersnalState extends State<personalPage> {
                         formdata5.save();
                         print(user.mygmail);
                         print(user.phone);
-                        var res =await addData(user);
-                        if(res != null){
-                          print("***&&&&&&");
-                         setState(() {
-                           user = null;
-                         });
-                          print(user);
-                        }
+                       await addData(user);
+
                       }
 
                     }

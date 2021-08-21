@@ -31,20 +31,18 @@ class loginState extends State<Login> {
       formdata.save();
 
       try {
-        showLoading(context);
         userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: myemail, password: mypassword);
+        showLoading(context);
         return userCredential;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
-          Navigator.of(context).pop();
           AwesomeDialog(
               context: context,
               title: "Error",
               body: Text('No user found for that email.'))
             ..show();
         } else if (e.code == 'wrong-password') {
-          Navigator.of(context).pop();
           AwesomeDialog(
               context: context,
               title: "Error",

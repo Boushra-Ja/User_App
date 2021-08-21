@@ -194,8 +194,6 @@ class dataSearch extends SearchDelegate<String>{
 
 }
 
-
-
 class show_temp extends StatelessWidget{
   var chance_list ,temp_list,  user_Id;
   show_temp({this.chance_list ,this.temp_list, this.user_Id});
@@ -203,7 +201,7 @@ class show_temp extends StatelessWidget{
   Widget build(BuildContext context) {
     return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink.shade900,
+        backgroundColor: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
         toolbarHeight: MediaQuery.of(context).size.height/7,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

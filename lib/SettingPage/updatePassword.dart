@@ -1,3 +1,4 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:b/SettingPage/setting_page.dart';
@@ -36,7 +37,7 @@ class updateState extends State<updatePassword> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.pink.shade900,
+            backgroundColor: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
             leading: InkWell(
               child: Icon(
                 Icons.arrow_back_ios,
@@ -86,7 +87,7 @@ class updateState extends State<updatePassword> {
                           ),
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(10.0)),
-                          color: Colors.pink.shade900.withOpacity(0.8)),
+                          color: ThemeNotifier.mode ? Colors.pink.shade900.withOpacity(0.8) : Colors.black87),
                     )
                   ],
                 ),

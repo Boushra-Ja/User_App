@@ -4,6 +4,7 @@ import 'package:b/Home/roadmaps.dart';
 import 'package:b/Home/show.dart';
 import 'package:b/Info_Job.dart';
 import 'package:b/UserInfo.dart';
+import 'package:b/chat_p/chats.dart';
 import 'package:b/component/Loading.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,28 +46,24 @@ class _MyHomePageState extends State<MyHomePage> {
   List<dynamic> temp=
   [
     'تكنولوجيا المعلومات',
-    'علوم طبيعية',
-    'تدريس',
-    'ترجمة ',
+    'العلوم طبيعية',
+    'التعليم',
+    'الترجمة',
     'تصيم غرافيكي وتحريك',
     "سكرتاريا",
     "صحافة",
-    "مدير مشاريع",
-    "محاسبة",
-    "كيمياء ومخابر",
-    "طبيب",
-    "صيدلة وأدوية",
-    "غير ذلك"
+    "ادارة مشاريع",
+    "المحاسبة",
+    "الكيمياء والمخابر",
+    "الطب",
+    "الصيدلة",
+    "مجالات مختلفة"
   ];
   /////////////////////////////get all data
   get_All_data() async {
     var name ;
     await FirebaseFirestore.instance.collection("users").doc(docid).get().then((value) {
-      if (this.mounted) {
-        setState(() {
           name = value.data()['firstname'] + " " + value.data()['endname'];
-        });
-      }
     });
     await jobsref.get().then((v) async {
       if(v.docs.isNotEmpty){
@@ -90,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
               }
             }});
-
         }
       }
     });
@@ -105,13 +101,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /////////////////////////////get my chance
   get_My_data(){
-    setState(() {
-      for(int i=0;i<All_jobs.length;i++){
-        if(All_jobs[i].job_Info['workTime'] == user.selectedTypeJob){
-          My_jobs.add(All_jobs[i]);
+    if(this.mounted){
+      setState(() {
+        for(int i=0;i<All_jobs.length;i++){
+          if(All_jobs[i].job_Info['workTime'] == user.selectedTypeJob){
+            My_jobs.add(All_jobs[i]);
+          }
         }
-      }
-    });
+      });
+    }
 
   }
 
@@ -127,9 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
     print(all_map.length);
-    setState(() {
-      loading = false;
-    });
+    if(this.mounted)
+     {
+       setState(() {
+         loading = false;
+       });
+     }
   }
 
   ///////////////////////user Info
@@ -320,7 +321,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                 roadmaps(all_map)
                               ],
                             ),
-                          )))
+
+                            floatingActionButton: Container(
+                                padding: const EdgeInsets.only(left : 10.0 , bottom: 10),
+                                height: 70.0,
+                                width: 70.0,
+                                child: FittedBox(
+                                  child: FloatingActionButton(
+                                  backgroundColor: ThemeNotifier.mode ? Colors.pink.shade800 : Colors.grey.shade300,
+                                  child:Icon(Icons.add_comment),
+                                  onPressed: () {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                      return Chats(user_id : docid);
+                                    }));
+                                  }
+
+                              ),
+                                ),
+                              ),
+
+                          ),
+
+                      ))
               );
 
             })

@@ -35,22 +35,25 @@ class get_All_chanceState extends State<get_All_chance>
         ///////for companies
         for(int p =0 ; p <v.docs.length ; p++)
         {
-          await jobsref.doc(v.docs[p].id).collection("chance").get().then((value) async {
+          await jobsref.doc(v.docs[p].id).collection("chance").orderBy('date_publication' , descending: true).get().then((value) async {
             if(value.docs.isNotEmpty) {
               /////////for chance
               for(int k = 0 ; k <value.docs.length ; k++) {
-                IJ = new Info_Job();
-                IJ.company_Info = v.docs[p].data();
-                IJ.job_Info = value.docs[k].data();
-                IJ.company_Id = v.docs[p].id ;
-                IJ.user_name = name ;
-                if (this.mounted) {
-                  setState(() {
-                    All_jobs.add(IJ);
-                  });
-                }
-              }
-            }});
+                if((value.docs[k].data()['date_publication']['year'] == DateTime.now().year && value.docs[k].data()['date_publication']['month'] == DateTime.now().month && value.docs[k].data()['date_publication']['day'] >= (DateTime.now().day - 10)) ||(value.docs[k].data()['date_publication']['year'] == DateTime.now().year && value.docs[k].data()['date_publication']['month'] ==( DateTime.now().month - 1 )&& value.docs[k].data()['date_publication']['day'] > ((DateTime.now().day - 10)%10))  )
+                        IJ = new Info_Job();
+                        IJ.company_Info = v.docs[p].data();
+                        IJ.job_Info = value.docs[k].data();
+                        IJ.company_Id = v.docs[p].id ;
+                        IJ.user_name = name ;
+                        if (this.mounted) {
+                          setState(() {
+                            All_jobs.add(IJ);
+                          });
+                        }
+                      }
+                    }
+
+            });
 
         }
       }

@@ -3,7 +3,6 @@ import 'package:b/component/Loading.dart';
 import 'package:b/postInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../../temp_ForPost.dart';
 
 class savedPosts extends StatefulWidget {

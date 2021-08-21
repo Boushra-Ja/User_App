@@ -42,21 +42,18 @@ class signupState extends State<signUp> {
     if (formdata.validate()) {
       formdata.save();
       try {
-
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: myemail, password: mypassword);
         return userCredential;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          Navigator.of(context).pop();
           AwesomeDialog(
               context: context,
               title: "Error",
               body: Text('The password provided is too weak.'))
             ..show();
         } else if (e.code == 'email-already-in-use') {
-          Navigator.of(context).pop();
           AwesomeDialog(
               context: context,
               title: "Error",

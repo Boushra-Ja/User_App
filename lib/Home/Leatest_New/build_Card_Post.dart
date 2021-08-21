@@ -98,16 +98,17 @@ class build_postState extends State<build_post> {
 
   @override
   void initState() {
-   if(DateTime.now().month == widget.post_Info.companies_post.date['month'])
-     {
-       if(DateTime.now().day == widget.post_Info.companies_post.date['day'])
-         {
-           date = "${ DateTime.now().hour -  widget.post_Info.companies_post.date['hour']}" + " ساعة";
-         }
-       else
-         date = "${DateTime.now().day -  widget.post_Info.companies_post.date['day']}" + " يوم";
-     }
-   super.initState();
+    if(DateTime.now().month == widget.post_Info.companies_post.date['month'])
+    {
+      if(DateTime.now().day == widget.post_Info.companies_post.date['day'])
+      {
+        date = "${ DateTime.now().hour -  widget.post_Info.companies_post.date['hour']}" + " ساعة";
+      }
+      else
+        date = "${DateTime.now().day -  widget.post_Info.companies_post.date['day']}" + " يوم";
+    }
+
+    super.initState();
   }
 
   @override
@@ -152,7 +153,7 @@ class build_postState extends State<build_post> {
                       padding: const EdgeInsets.only(right: 13),
                       child: Container(
                         width:
-                            2 * ((MediaQuery.of(context).size.width - 40) / 3),
+                        2 * ((MediaQuery.of(context).size.width - 40) / 3),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -168,9 +169,9 @@ class build_postState extends State<build_post> {
                             ),
                             Row(
                               children: [
-                                Text("منذ " + date,
+                                Text(date,
                                     style:
-                                        TextStyle(color: ThemeNotifier.mode == true ? Colors.grey.shade700 : Colors.white70)),
+                                    TextStyle(color: ThemeNotifier.mode == true ? Colors.grey.shade700 : Colors.white70)),
                                 Icon(Icons.public,
                                     size: 17, color: Colors.grey.shade700)
                               ],
@@ -187,7 +188,7 @@ class build_postState extends State<build_post> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   child: AutoSizeText("##"+
-                    "${widget.post_Info.companies_post.title}",
+                      "${widget.post_Info.companies_post.title}",
                     style: TextStyle(fontSize: 16),
                     maxLines: 10,
                     textAlign: TextAlign.start,
@@ -308,7 +309,7 @@ class build_postState extends State<build_post> {
                                         widget.post_Info.companies_post.post_Id) {
                                       saved_Item
                                           .where("post_Id",
-                                              isEqualTo: widget.post_Info.companies_post.post_Id)
+                                          isEqualTo: widget.post_Info.companies_post.post_Id)
                                           .get()
                                           .then((value) {
                                         value.docs.forEach((element) {

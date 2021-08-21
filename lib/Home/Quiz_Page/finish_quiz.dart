@@ -1,23 +1,18 @@
-import 'dart:convert';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:b/Home/homepage.dart';
 import 'package:b/component/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 class finish_Quiz extends StatefulWidget{
   bool res ;
   String result ;
-  var company_Id , chance_Id , user_Id , success_rate;
-  finish_Quiz({this.res , this.result , this.company_Id , this.chance_Id , this.user_Id , this.success_rate});
+  var company_Id , chance_Id , user_Id , success_rate , company_name , image;
+  finish_Quiz({this.res , this.result , this.company_Id , this.chance_Id , this.user_Id , this.success_rate , this.company_name , this.image});
   @override
   State<StatefulWidget> createState() {
     return finish_QuizState();
   }
 }
-
 
 class finish_QuizState extends State<finish_Quiz>{
   bool loading = true ;
@@ -36,6 +31,14 @@ class finish_QuizState extends State<finish_Quiz>{
               body: Text('Error'))
             ..show();
         });
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(widget.user_Id).collection('chat').add({
+          'comp_id' :  widget.company_Id,
+          'help' : 1 ,
+          'img' : widget.image,
+          'name' : widget.company_name
+        });
       }else{
       await FirebaseFirestore.instance.collection("companies").doc(widget.company_Id).collection('chance').doc(widget.chance_Id).update({
         "quiz_result.${widget.user_Id}": widget.success_rate,
@@ -49,6 +52,7 @@ class finish_QuizState extends State<finish_Quiz>{
           ..show();
       });
     }
+
     setState(() {
       loading = false ;
     });

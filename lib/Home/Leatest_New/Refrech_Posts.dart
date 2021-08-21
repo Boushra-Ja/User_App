@@ -53,6 +53,7 @@ class RefrechPostsState extends State<Refrech_Posts> {
                   {
                     break;
                   }
+
             else{
                   print(value.docs[j].data()['date_publication']['day']);
                   print(value.docs[j].data()['myPost']);

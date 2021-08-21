@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/component/alart.dart';
 import 'package:b/helpFunction/buildCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,8 +20,8 @@ class Edit_ContactInfo extends StatelessWidget{
 
       appBar: AppBar(
         toolbarHeight: 80,
-        title : Text("تعديل المستوى العلمي " , style: TextStyle(fontSize: 18 , color: Colors.white),),
-        backgroundColor: Colors.pink.shade900,
+        title : Text("تعديل معلومات التواصل" , style: TextStyle(fontSize: 18 , color: Colors.white),),
+        backgroundColor: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
         centerTitle: true,
         leading: InkWell(child: Icon(Icons.arrow_back ) , onTap: (){
           Navigator.of(context).pop();
@@ -48,7 +49,7 @@ class Edit_ContactInfo extends StatelessWidget{
                     width: 140,
                     height: 40,
                     child: RaisedButton(
-                      color: Colors.pink.shade900,
+                      color: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       child: Text("تعديل" , style: TextStyle(color : Colors.white , fontSize: 18),),
