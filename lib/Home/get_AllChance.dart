@@ -35,7 +35,7 @@ class get_All_chanceState extends State<get_All_chance>
         ///////for companies
         for(int p =0 ; p <v.docs.length ; p++)
         {
-          await jobsref.doc(v.docs[p].id).collection("chance").orderBy('date_publication' , descending: true).get().then((value) async {
+          await jobsref.doc(v.docs[p].id).collection("chance").orderBy('date' , descending: true).get().then((value) async {
             if(value.docs.isNotEmpty) {
               /////////for chance
               for(int k = 0 ; k <value.docs.length ; k++) {

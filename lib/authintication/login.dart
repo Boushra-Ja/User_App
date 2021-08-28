@@ -33,7 +33,6 @@ class loginState extends State<Login> {
       try {
         userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: myemail, password: mypassword);
-        showLoading(context);
         return userCredential;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
@@ -49,6 +48,10 @@ class loginState extends State<Login> {
               body: Text('Wrong password provided for that user.'))
             ..show();
         }
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return MyHomePage();
+        }));
       }
     }
   }
@@ -81,7 +84,6 @@ class loginState extends State<Login> {
 
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +199,7 @@ class loginState extends State<Login> {
                         SizedBox(
                           height: 5,
                         ),
+                       /*
                         Center(
                           child: InkWell(
                             child: CircleAvatar(
@@ -218,6 +221,7 @@ class loginState extends State<Login> {
                             },
                           ),
                         )
+                        */
                       ],
                     )),
               ),
@@ -302,6 +306,7 @@ class loginState extends State<Login> {
         borderRadius: new BorderRadius.circular(30.0),
       ),
       callback: ()async {
+        showLoading(context);
         var response = await SignIn();
         if (response != null) {
           Navigator.of(context)

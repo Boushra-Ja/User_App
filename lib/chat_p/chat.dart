@@ -6,14 +6,12 @@ import 'NewMassage.dart';
 
 class Chat extends StatelessWidget {
   GlobalKey<FormState> k1 = new GlobalKey<FormState>();
-  var docid,com_id;
-  var name="اسم الشركة";
-  Chat(com_id,docid,name){
+  var docid , com_id , name , img;
+  Chat(com_id , docid  , name , img){
     this.name=name;
     this.docid=docid;
     this.com_id=com_id;
-    print(docid);
-    print(com_id);
+    this.img = img;
   }
 
   @override
@@ -21,8 +19,32 @@ class Chat extends StatelessWidget {
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-            appBar: AppBar(backgroundColor:ThemeNotifier.mode ?  Colors.pink.shade900 : Colors.black87,
-              title:  Text("شركة " + name),
+            appBar: AppBar(backgroundColor:ThemeNotifier.mode ?  Colors.pink.shade900 : Colors.black87,toolbarHeight: 80,
+              leadingWidth: 2,
+              title:  Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    child: img == "not" ? Icon(
+                      Icons.business,
+                      color: Colors.black,
+                    ) : null,
+
+                    backgroundImage:
+                    img != "not"
+                        ? NetworkImage(
+                        img)
+                        : null,
+                    backgroundColor:
+                   img == "not"
+                        ? Colors.pink.shade100
+                        : null,
+
+                  ),
+                  SizedBox(width: 10,),
+                  Text("شركة " + name),
+                ],
+              ),
               centerTitle: true,
             ),
             body: Container(

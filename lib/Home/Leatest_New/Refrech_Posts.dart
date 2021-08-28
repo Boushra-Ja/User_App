@@ -4,6 +4,7 @@ import 'package:b/temp_ForPost.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../ThemeManager.dart';
 import 'Company_Publication.dart';
 
 class Refrech_Posts extends StatefulWidget {
@@ -42,7 +43,7 @@ class RefrechPostsState extends State<Refrech_Posts> {
       await FirebaseFirestore.instance
           .collection('companies')
           .doc(companies_follow_Id[i])
-          .collection('Post').orderBy('date_publication' , descending: true)
+          .collection('Post').orderBy('date' , descending: true)
           .get()
           .then((value) async {
         if (value.docs.isNotEmpty) {
@@ -150,7 +151,12 @@ class RefrechPostsState extends State<Refrech_Posts> {
   Widget build(BuildContext context) {
     return loading
         ? Loading()
-        : company_Publication(
-            post_Info : post_Info , user_Id: widget.docid,user_name: widget.user_name);
+        : Container(
+         padding : EdgeInsets.only(top : 40) ,
+         width: MediaQuery.of(context).size.width,
+         color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+          child: company_Publication(
+              post_Info : post_Info , user_Id: widget.docid,user_name: widget.user_name),
+        );
   }
 }

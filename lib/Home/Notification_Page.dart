@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Info_Job.dart';
 import '../postInformation.dart';
 import '../temp_ForPost.dart';
+import 'Company_Pages/Company_Profile.dart';
 
 class notificationPage extends StatefulWidget{
   final user_Id , user_name ;
@@ -22,6 +23,7 @@ class notificationPage extends StatefulWidget{
 class notificationPageState extends State<notificationPage>{
   bool load = true ;
   Info_Job IJ = new Info_Job();
+  var list;
   temp_ForPost tem = new temp_ForPost() ;
 
   get_Info(comapny_Id , chance_Id)async{
@@ -62,6 +64,12 @@ class notificationPageState extends State<notificationPage>{
 
   }
 
+  get_company(com_id)async{
+    await FirebaseFirestore.instance.collection('companies').doc(com_id).get().then((value) {
+      list = value.data();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     CollectionReference N_user =
@@ -75,8 +83,9 @@ class notificationPageState extends State<notificationPage>{
         toolbarHeight: 80,
       ),
       body: Container(
+        color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade700,
         child: StreamBuilder(
-            stream: N_user.snapshots(),
+            stream: N_user.orderBy("date").snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Text("Error");
@@ -111,11 +120,14 @@ class notificationPageState extends State<notificationPage>{
                               onTap: ()async{
                                 if(snapshot.data.docs[i]["num"] == 2)
                                   {
+                                    print("***********");
                                     await get_Info(snapshot.data.docs[i]['id_company'] , snapshot.data.docs[i]["id"]);
                                     Navigator.of(context).push(MaterialPageRoute(builder: (context){
                                       return show(IJ, widget.user_Id);
                                     }));
-                                  }else{
+                                  } else if(snapshot.data.docs[i]["num"] == 1){
+
+                                    print("((((((((((((((***********))))))))))))))");
                                   await get_Info_Post(snapshot.data.docs[i]['id_company'] , snapshot.data.docs[i]["id"]);
                                   Navigator.of(context).push(MaterialPageRoute(builder: (context){
                                     return load ? Loading() : Directionality(textDirection: TextDirection.rtl, child: Scaffold(
@@ -123,6 +135,19 @@ class notificationPageState extends State<notificationPage>{
                                       body: build_post(post_Info: tem,user_Id: widget.user_Id,user_name: widget.user_name),
                                     ));
                                   }));
+                                }
+                                else if(snapshot.data.docs[i]["num"] == 3)
+                                {
+                                    await get_company(snapshot.data.docs[i]["id"]);
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                    return  companyProfile(
+                                    list: list,
+                                    user_id: widget.user_Id,
+                                    user_name : widget.user_name,
+                                    company_Id : snapshot.data.docs[i]["id"],
+                                    num_followers: list['followers'].length,
+                                );
+                                }));
                                 }
 
                               },
@@ -132,7 +157,8 @@ class notificationPageState extends State<notificationPage>{
                             ),
                           ),
                           Divider(),
-                          SizedBox(height: 10,)
+                          SizedBox(height: 10)
+
                         ],
                       ) : Text("" , style: TextStyle(fontSize: 1),);
                     });

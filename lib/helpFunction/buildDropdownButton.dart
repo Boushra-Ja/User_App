@@ -20,7 +20,6 @@ class DropState extends State<buildDropdownButton> {
   List  _month = [];
   List _year = [];
   List _country ;
-  List _city ;
   List  eductionlist = [
     'تعليم ابتدائي',
     'تعليم اعدادي',
@@ -31,6 +30,7 @@ class DropState extends State<buildDropdownButton> {
     'شهادة دكتوراه',
     'لم أحصل على تعليم'
   ];
+
   List functionalist = [
     'مبتدئ',
     'متمرس',
@@ -51,7 +51,7 @@ class DropState extends State<buildDropdownButton> {
     "صيدلة وأدوية",
     "غير ذلك"
   ];
-  List experiencelist = [
+  List experiencelist= [
     '1',
     '2',
     '3',
@@ -64,7 +64,7 @@ class DropState extends State<buildDropdownButton> {
   ];
   List typeworkList = ['دوام كامل ', 'دوام جزئي'];
   List salary = ["أقل من 100000", "100000 - 300000", "300000 - 500000", "500000 - 700000", "700000 - 1000000", "1000000 - 1500000", "1500000 - 2000000", "أكبر من ذلك"];
-  List type_chance = ['فرص عادية' , "فرص تدريب"  , "فرص تطوعية"];
+  List type_chance  = ['فرص عادية' , "فرص تدريب"  , "فرص تطوعية"];
   @override
   void initState() {
     for (int i = 1980; i < 2020; i++) {

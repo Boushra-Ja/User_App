@@ -4,7 +4,6 @@ class buildRaisedButton extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       height: 50,
       margin: EdgeInsets.symmetric(vertical: 15),

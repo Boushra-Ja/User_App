@@ -11,9 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:b/Home/homepage.dart';
 import 'package:b/SettingPage/setting_page.dart';
-import 'package:b/component/alart.dart';
-import 'package:path/path.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../UserInfo.dart';
@@ -37,6 +34,7 @@ class drawerState extends State<mydrawer> {
 
   CollectionReference userref = FirebaseFirestore.instance.collection("users");
   var city = {}, country = [];
+
   get_LocationList()async{
     await FirebaseFirestore.instance.collection("location").doc("Pju9ofIYjWDZF86czL75").get().then((value) {
       country = value.data()['array'];
@@ -46,7 +44,6 @@ class drawerState extends State<mydrawer> {
     });
   }
 
-
   @override
   void initState() {
     print(widget.user);
@@ -54,41 +51,6 @@ class drawerState extends State<mydrawer> {
       await get_LocationList();
     }();
     super.initState();
-  }
-
-  UploadImagesFromCamera(context, int num) async {
-    var picker;
-    if (num == 1)
-      picker = await imagepicker.getImage(source: ImageSource.camera);
-    else
-      picker = await imagepicker.getImage(source: ImageSource.gallery);
-
-    if (picker != null) {
-      file = File(picker.path);
-      var nameImage = basename(picker.path);
-      var random = Random().nextInt(10000);
-      nameImage = "$random$nameImage";
-      var refstorage = FirebaseStorage.instance
-          .ref()
-          .child("profileImages")
-          .child("$nameImage");
-      showLoading(context);
-      await refstorage.putFile(file);
-      var url = await refstorage.getDownloadURL();
-
-      print(widget.docid);
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.docid)
-          .update({'imageurl': url}).then((value) {
-        print("sucsess");
-        showLoading(context);
-        Navigator.of(context).pop();
-        Navigator.of(context).pushReplacementNamed('homepage');
-      }).catchError((e) {
-        print("error");
-      });
-    }
   }
 
   @override
@@ -247,7 +209,6 @@ class drawerState extends State<mydrawer> {
                     builder: (context) {
                       return AlertDialog();
                     });
-
                 widget.user = new userInfo();
                 widget.theme.setLightMode();
                 await FirebaseAuth.instance.signOut();

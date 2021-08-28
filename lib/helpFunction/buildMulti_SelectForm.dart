@@ -85,7 +85,7 @@ class build_MultiSelectState extends State<build_MultiSelect>{
       "value": "العربية",
     },
     {
-      "display": "الانكلليزية",
+      "display": "الانكليزية",
 
       "value": "الانكليزية",
     },
@@ -117,19 +117,8 @@ class build_MultiSelectState extends State<build_MultiSelect>{
 
   ];
 
-  List _myActivities = [];
-  String _myActivitiesResult = '';
   final formKey = new GlobalKey<FormState>();
 
-  _saveForm() {
-    var form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      setState(() {
-        _myActivitiesResult = _myActivities.toString();
-      });
-    }
-  }
   @override
   void initState() {
     super.initState();

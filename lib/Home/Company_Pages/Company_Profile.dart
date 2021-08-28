@@ -1,33 +1,31 @@
 import 'dart:convert';
 import 'package:b/Home/ThemeManager.dart';
+import 'package:b/component/Loading.dart';
 import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/Home/Leatest_New/Company_Publication.dart';
 import 'package:b/Home/all_chance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:share/share.dart';
 import '../../Info_Job.dart';
+import '../../UserInfo.dart';
+import '../../postInformation.dart';
+import '../../temp_ForPost.dart';
 import 'AboutCompany.dart';
 import 'Employe_Page.dart';
 
 class companyProfile extends StatefulWidget {
-  var list, user_id, check_followers, list_post , company_Id ,num_followers , chance_list,temp_List ,user_name , employe_List;
+  var list, user_id, company_Id  ,user_name ,num_followers ;
   companyProfile(
       {Key key,
       this.list,
       this.user_id,
         this.user_name,
-      this.check_followers,
         this.company_Id,
-        this.num_followers,
-      this.list_post,
-        this.chance_list,
-        this.temp_List,
-        this.employe_List
+        this.num_followers
       })
       : super(key: key);
   @override
@@ -42,14 +40,86 @@ class profileState extends State<companyProfile> {
   bool check1 = true,
       check2 = false,
       check3 = false,
-      check4 = false;
-  var num_companies_follow, num_follow;
-  CollectionReference company =
-      FirebaseFirestore.instance.collection("companies");
-  CollectionReference user = FirebaseFirestore.instance.collection("users");
+      check4 = false , loading = true;
+  var num_companies_follow, num_follow ,com_Info , owner_token;
   Info_Job IJ = new Info_Job();
-  bool loading = true ;
-  String title , body;
+  temp_ForPost tem = new temp_ForPost();
+  var posts = [];
+  List  All_jobs = [] ;
+  CollectionReference company =
+  FirebaseFirestore.instance.collection("companies");
+  CollectionReference user = FirebaseFirestore.instance.collection("users");
+  bool check_followers = true;
+  List  employe = [] ;
+  List<userInfo> employe_List = [];
+  userInfo user_ = new userInfo();
+
+  check_follower() async {
+    await company.doc(widget.company_Id).get().then((value) async {
+      widget.num_followers = value.data()['followers'].length;
+      if (widget.num_followers == 0) {
+        if(this.mounted)
+        {
+          setState(() {
+            check_followers = false;
+          });
+        }
+      } else {
+        for (int i = 0; i < widget.num_followers; i++) {
+          if (value.data()['followers'][i] == widget.user_id) {
+            if(this.mounted)
+            {
+              setState(() {
+                check_followers = true;
+              });
+            }
+            break;
+          } else {
+            if(this.mounted)
+            {
+              setState(() {
+                check_followers = false;
+              });
+            }
+          }
+        }
+      }
+    });
+  }
+
+  get_employe()async{
+    await FirebaseFirestore.instance.collection('companies').doc(widget.company_Id).get().then((value) {
+      employe = value.data()['all_accepted'];
+      print(value.data()['all_accepted']);
+    });
+
+    if(employe.isNotEmpty){
+      employe.forEach((element) async {
+        await  FirebaseFirestore.instance.collection('users').doc(element).get().then((value) {
+          user_ = new userInfo();
+          user_.firstName = value.data()['firstname'];
+          user_.endName = value.data()['endname'];
+          user_.selectedCountry = value.data()['originalhome'];
+          user_.selectedCity = value.data()['placerecident'];
+          user_.selectedDay = value.data()['date']['day'];
+          user_.selectedMonth = value.data()['date']['month'];
+          user_.selectedYear = value.data()['date']['year'];
+          user_.selectedEdu = value.data()['scientific_level'];
+          user_.selectedFun = value.data()['carrer_level'];
+          user_.selectedjob = value.data()['work_field'];
+          user_.language =  value.data()['language'];
+          user_.Skills =  value.data()['skill'];
+          user_.mygmail = value.data()['gmail'];
+          user_.imageurl = value.data()['imageurl'];
+          if(this.mounted){
+            employe_List.add(user_);
+          }
+        });
+      });
+
+    }
+
+  }
 
   checkSaved() async {
     await FirebaseFirestore.instance
@@ -79,12 +149,7 @@ class profileState extends State<companyProfile> {
     });
   }
 
-  sendNotify(int num)async {
-    title = 'متابعة';
-    if(num == 2)
-      body = "قام المستخدم " + "${widget.user_name}" + " بعمل متابعة لشركتك ^_^";
-    else
-      body =  "قام المستخدم " + "${widget.user_name}" +" بتصفح البروفايل الخاص بالشركة";
+  sendNotify(String title , String body , var token , String num )async {
 
     var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
     await http.post(
@@ -102,10 +167,10 @@ class profileState extends State<companyProfile> {
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'user_Id' : widget.user_id,
-            'num' : 1
+            'user_Id' :widget.user_id,
+            'num' : num,
           },
-          'to': await widget.list['token'],
+          'to':await token  ,
         },
       ),
     );
@@ -113,15 +178,7 @@ class profileState extends State<companyProfile> {
 
   }
 
-  getMessage()async{
-    FirebaseMessaging.onMessage.listen((event) {
-      print("++++++++++++++++++++++++++++++");
-      print(event.notification.title);
-      print(event.notification.body);
-    });
-  }
-
-  storage_notificatio()async{
+  storage_notificatio(title , body)async{
 
     await company.doc(widget.company_Id).collection("notification").add({
       'body' : body,
@@ -134,23 +191,135 @@ class profileState extends State<companyProfile> {
         'hour' :  DateTime.now().hour
 
       },
-      'num':1
+      'num':1,
+      "date": Timestamp.now()
+
+    });
+  }
+
+  get_chance()async{
+    await company.doc(widget.company_Id).get().then((value) {
+      com_Info = value.data();
+    });
+    company.doc(widget.company_Id).collection("chance").get().then((value) async {
+      if(value.docs.isNotEmpty) {
+        /////////for chance
+        for(int k = 0 ; k <value.docs.length ; k++) {
+          IJ = new Info_Job();
+          IJ.job_Info = value.docs[k].data();
+          IJ.company_Id = widget.company_Id ;
+          IJ.company_Info = com_Info;
+
+          if (this.mounted) {
+            setState(() {
+              All_jobs.add(IJ);
+            });
+          }
+        }
+      }
+
+    });
+    if(this.mounted)
+      {
+        setState(() {
+          loading = false;
+        });
+      }
+
+  }
+
+  get_Post() async {
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(widget.company_Id)
+        .collection('Post').orderBy('date_publication' , descending: true).
+    get()
+        .then((docs) async {
+      if (docs.docs.isNotEmpty) {
+        /////for to post for company
+        for (int i = 0; i < docs.docs.length; i++) {
+          tem = new temp_ForPost();
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.user_id)
+              .collection('posts_saved')
+              .get()
+              .then((value) async {
+            if (value.docs.isNotEmpty) {
+              ///////for to post_saved in user
+              for (int j = 0; j < value.docs.length; j++) {
+                if (value.docs[j].data()['post_Id'] ==
+                    docs.docs[i].data()['id']) {
+                  tem.check_save = true;
+                  break;
+                } else {
+                  tem.check_save = false;
+                }
+
+              }
+            } else {
+              tem.check_save = false;
+            }
+          });
+
+          tem.companies_post = new postInformation();
+          tem.companies_post.post_Id = docs.docs[i].data()['id'];
+          tem.companies_post.my_post = docs.docs[i].data()['myPost'];
+          tem.companies_post.title = docs.docs[i].data()['title'];
+          tem.companies_post.date = docs.docs[i].data()['date_publication'];
+          tem.company_Id = widget.company_Id;
+          tem.company_name = widget.list['company'];
+          tem.token = widget.list['token'];
+          tem.picture = widget.list['link_image'];
+          await company.doc(widget.company_Id).get().then((v) {
+            tem.num_follwers = v.data()['followers'].length;
+          });
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.user_id).get().then((t) {
+            if(t.data()['Interaction_log'].containsKey("${docs.docs[i].data()['id']}")){
+              if(this.mounted) {
+                if (t.data()['Interaction_log']["${docs.docs[i]
+                    .data()['id']}"] == 'like') {
+                  setState(() {
+                    tem.check_like = true;
+                    tem.check_dislike = false;
+                  });
+                } else {
+                  setState(() {
+                    tem.check_like = false;
+                    tem.check_dislike = true;
+                  });
+                }
+              }
+            }
+          });
+          posts.add(tem);
+        }
+      }
     });
   }
 
   @override
   void initState() {
     () async {
+      await FirebaseFirestore.instance.collection('oner').doc('DPi7T09bNPJGI0lBRqx4').get().then((value) {
+        owner_token = value.data()['token'];
+      });
+      await check_follower();
       await checkSaved();
-      sendNotify(1);
-      storage_notificatio();
+      await get_Post();
+      await get_chance();
+      await get_employe();
     }();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Directionality(
+    return  loading ? Loading() : Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
               body: LayoutBuilder(
@@ -330,12 +499,12 @@ class profileState extends State<companyProfile> {
                                                         ),
                                                         onPressed: () async {
                                                           //////////////Add User to Company
-                                                          if (widget.check_followers ==
+                                                          if (check_followers ==
                                                               false) {
-                                                            sendNotify(2);
-                                                            storage_notificatio();
+                                                            sendNotify('متابعة' , "قام المستخدم " + "${widget.user_name}" + " بعمل متابعة لشركتك ^_^" ,  widget.list['token']  , "1" );
+                                                            storage_notificatio('متابعة' , "قام المستخدم " + "${widget.user_name}" + " بعمل متابعة لشركتك ^_^" );
                                                             setState(() {
-                                                              widget.check_followers =
+                                                              check_followers =
                                                               true;
                                                               widget.num_followers =
                                                                   widget.num_followers +
@@ -376,7 +545,7 @@ class profileState extends State<companyProfile> {
                                                             });
                                                           } else {
                                                             setState(() {
-                                                              widget.check_followers =
+                                                              check_followers =
                                                               false;
                                                               widget.num_followers =
                                                                   widget.num_followers -
@@ -470,7 +639,7 @@ class profileState extends State<companyProfile> {
                                                           }
                                                         },
                                                         icon: Icon(
-                                                          widget.check_followers ==
+                                                          check_followers ==
                                                               false
                                                               ? Icons.plus_one
                                                               : Icons.minimize,
@@ -478,7 +647,7 @@ class profileState extends State<companyProfile> {
                                                           size: 16,
                                                         ),
                                                         label: Text(
-                                                          widget.check_followers ==
+                                                          check_followers ==
                                                               false
                                                               ? "متابعة"
                                                               : "الغاء المتابعة",
@@ -508,7 +677,7 @@ class profileState extends State<companyProfile> {
                                                         child: PopupOptionMenu(
                                                             user_Id: widget.user_id,
                                                             company_Id:
-                                                            widget.company_Id),
+                                                            widget.company_Id,user_name: widget.user_name,company_name: widget.list['company'],owner_token: owner_token,),
                                                       ),
                                                     ),
                                                   ],
@@ -611,8 +780,18 @@ class profileState extends State<companyProfile> {
                           list: widget.list,
                         )
                             : check2 == true
-                            ?company_Publication(post_Info: widget.list_post,user_Id: widget.user_id ,user_name: widget.user_name)
-                            : check3 == true ?  all_chance(widget.chance_list,widget.temp_List, widget.user_id  ,false) :employePage(employe_List : widget.employe_List)
+                            ?Container(
+                          width: MediaQuery.of(context).size.width,
+                            color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+                            child: company_Publication(post_Info: posts,user_Id: widget.user_id ,user_name: widget.user_name))
+                            : check3 == true ?  Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+                            child: all_chance(All_jobs,All_jobs, widget.user_id  ,false)) :
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+                            child: employePage(employe_List : employe_List))
 
                       ],
 
@@ -658,8 +837,8 @@ class profileState extends State<companyProfile> {
 enum MenuOption { save, share, report }
 
 class PopupOptionMenu extends StatefulWidget {
-  final user_Id, company_Id;
-  const PopupOptionMenu({Key key, this.user_Id, this.company_Id})
+  final user_Id, company_Id , user_name , company_name , owner_token;
+  const PopupOptionMenu({Key key, this.user_Id, this.company_Id,this.user_name,this.company_name,this.owner_token})
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -668,8 +847,12 @@ class PopupOptionMenu extends StatefulWidget {
 }
 
 class PopupOptionMenuState extends State<PopupOptionMenu> {
+
   @override
   Widget build(BuildContext context) {
+    String title , body;
+    title = 'اشعار إبلاغ';
+    body = "قام المستخدم " + "${widget.user_name}" + " بالإبلاغ عن الشركة " +"${widget.company_name}";
     CollectionReference saved_Item = FirebaseFirestore.instance
         .collection("users")
         .doc(widget.user_Id)
@@ -757,7 +940,11 @@ class PopupOptionMenuState extends State<PopupOptionMenu> {
               ),
               PopupMenuItem(
                 child: ListTile(
-                  onTap: () {},
+                  onTap: ()async {
+                     await sendNotify(title , body);
+                     Navigator.of(context).pop();
+                     await storage_notificatio(title , body);
+                  },
                   trailing: Icon(Icons.report, color: Colors.black),
                   title: Text(
                     "ابلاغ",
@@ -780,4 +967,56 @@ class PopupOptionMenuState extends State<PopupOptionMenu> {
       sharePositionOrigin: box.localToGlobal(Offset.zero)&box.size,
     );
   }
+
+  sendNotify(String title , String body)async {
+
+    var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
+    await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverToken',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'body': body,
+            'title': title
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'user_Id' : widget.user_Id,
+            'num' : "2",
+            'id' : widget.company_Id,
+            'type' : "1"
+
+          },
+          'to':await widget.owner_token  ,
+        },
+      ),
+    );
+
+
+  }
+
+  storage_notificatio(String title , String body)async{
+
+    await FirebaseFirestore.instance.collection('oner').doc("DPi7T09bNPJGI0lBRqx4").collection("reports").add({
+      'body' : body,
+      'title' : title ,
+      'id' : widget.company_Id,
+      'date_publication' : {
+        'day' : DateTime.now().day,
+        'month' : DateTime.now().month,
+        'year' : DateTime.now().year,
+        'hour' :  DateTime.now().hour
+      },
+      'num': 2 ,
+      "date": Timestamp.now(),
+      'type' : 1
+    });
+  }
+
+
 }

@@ -9,13 +9,11 @@ import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:b/component/alart.dart';
-
 import '../UserInfo.dart';
 
 class showDialog_Photo extends StatefulWidget {
   final docid , num ;
   final userInfo user;
-
   const showDialog_Photo({Key key,  this.user , this.docid , this.num}) : super(key: key);
 
   @override
@@ -148,7 +146,6 @@ class showDialogeState extends State<showDialog_Photo>{
       picker = await imagepicker.getImage(source: ImageSource.camera);
     else
       picker = await imagepicker.getImage(source: ImageSource.gallery);
-  //  showLoading(context);
     if (picker != null) {
       file = File(picker.path);
       var nameImage = basename(picker.path);
@@ -162,20 +159,20 @@ class showDialogeState extends State<showDialog_Photo>{
         photo = file;
       });
 
+      showLoading(context);
       await UpdateData(context);
     }
   }
   UpdateData(context) async {
-    showLoading(context);
-     await refstorage.putFile(file);
+        await refstorage.putFile(file);
         var url = await refstorage.getDownloadURL();
         widget.user.imageurl = url;
         await userRef.doc(widget.docid).update({
           'imageurl': url
         }).then((value) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context){
-            return userProfile(user: widget.user, docid: widget.docid,);
-          }));
+          widget.num == 0 ? Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+            return userProfile(user: widget.user, docid: widget.docid);
+          })) : Navigator.of(context).pop() ;
           print('Sucsess');
         }).catchError((e) {
           AwesomeDialog(context: context, title: "Error", body: Text('Error'))

@@ -9,15 +9,12 @@ class Massege extends StatelessWidget {
   Massege(docid,com_id){
     this.docid=docid;
     this.com_id=com_id;
-    print(docid);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("users").doc(docid).collection("chat").
-      doc(com_id)
-          .collection("chats")
+      stream: FirebaseFirestore.instance.collection("users").doc(docid).collection("chat").doc(com_id).collection('chats')
           .orderBy("date", descending: true)
           .snapshots(),
       builder: (ctx, snapshot) {

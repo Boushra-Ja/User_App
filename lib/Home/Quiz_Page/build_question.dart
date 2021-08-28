@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:b/Home/ThemeManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'finish_quiz.dart';
 
 class build_question extends StatefulWidget{
-  var Q , A , C_A , index , k , res , type_quiz , company_Id , chance_Id , user_Id , company_name , image;
+  var Q , A , C_A , index , k , res , type_quiz , company_Id , chance_Id , user_Id , company_name , image , chance_name , token ,user_name;
   final Duration timerTastoPremuto;
-  build_question({this.Q , this.A , this.C_A , this.index , this.k , this.res , this.type_quiz , this.company_Id , this.chance_Id , this.user_Id,this.timerTastoPremuto , this.company_name , this.image});
+  build_question({this.Q , this.A , this.C_A , this.index , this.k , this.res , this.type_quiz , this.company_Id , this.chance_Id , this.user_Id,this.timerTastoPremuto , this.company_name , this.image ,this.chance_name ,this.token ,this.user_name});
   @override
   State<StatefulWidget> createState() {
     return build_questionState();
@@ -46,7 +47,11 @@ class build_questionState extends State<build_question>{
                         type_quiz: widget.type_quiz,
                         company_Id: widget.company_Id,
                         chance_Id: widget.chance_Id,
-                        user_Id: widget.user_Id,);
+                        user_Id: widget.user_Id,
+                        chance_name: widget.chance_name,
+                        token: widget.token,
+                        user_name: widget.user_name,
+                      );
                     }));
               } else {
                 Navigator.of(context).pushReplacement(
@@ -60,7 +65,9 @@ class build_questionState extends State<build_question>{
                         type_quiz: widget.type_quiz,
                         company_Id: widget.company_Id,
                         chance_Id: widget.chance_Id,
-                        user_Id: widget.user_Id,);
+                        user_Id: widget.user_Id,chance_name: widget.chance_name,
+                        token: widget.token,
+                        user_name: widget.user_name,);
                     }));
               }
             }else{
@@ -72,7 +79,11 @@ class build_questionState extends State<build_question>{
                         company_Id: widget.company_Id,
                         chance_Id: widget.chance_Id,
                         user_Id: widget.user_Id,
-                        success_rate: success_rate);
+                        success_rate: success_rate,
+                      chacne_name: widget.chance_name,
+                      token: widget.token,
+                      user_name: widget.user_name,
+                    );
                   }));
             }
           });
@@ -84,7 +95,6 @@ class build_questionState extends State<build_question>{
       },
     );
   }
-
 
   @override
   void initState() {
@@ -133,6 +143,9 @@ class build_questionState extends State<build_question>{
                               user_Id: widget.user_Id,
                               company_name: widget.company_name,
                               image: widget.image,
+                              chance_name: widget.chance_name,
+                              token: widget.token,
+                              user_name: widget.user_name,
                             );
                           }));
                     }
@@ -156,6 +169,9 @@ class build_questionState extends State<build_question>{
                               user_Id: widget.user_Id,
                               company_name: widget.company_name,
                               image: widget.image,
+                              chance_name: widget.chance_name,
+                              token: widget.token,
+                              user_name: widget.user_name,
                             );
                           }));
                     }
@@ -195,6 +211,9 @@ class build_questionState extends State<build_question>{
                               success_rate: success_rate,
                             company_name: widget.company_name,
                             image: widget.image,
+                            chacne_name: widget.chance_name,
+                            token: widget.token,
+                            user_name: widget.user_name,
                           );
                         }));
                   }
@@ -214,7 +233,7 @@ class build_questionState extends State<build_question>{
 
     return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.pink.shade900,
+          backgroundColor: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87,
           toolbarHeight: MediaQuery.of(context).size.height/7,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -235,7 +254,7 @@ class build_questionState extends State<build_question>{
                 width: MediaQuery.of(context).size.width,
                 child : Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30 , horizontal: 10),
-                  child: Text("${widget.index+1}) " + "${widget.Q[widget.index]}" + "؟؟؟؟؟؟؟؟؟؟" ),//
+                  child: Text("${widget.index+1}) " + "${widget.Q[widget.index]}" + "؟؟؟؟؟؟؟؟؟؟" , style: TextStyle(color: ThemeNotifier.mode?Colors.black87:Colors.white), ),//
                 ),
               ) ,
 
@@ -247,7 +266,8 @@ class build_questionState extends State<build_question>{
                       check = 'Yes';
                     });
                   } ,
-                    title: Text("${widget.A[widget.k]}"),//${widget.A[0]}
+                    activeColor: Colors.blue,
+                    title: Text("${widget.A[widget.k]}", style: TextStyle(color: ThemeNotifier.mode?Colors.black87:Colors.white)),//${widget.A[0]}
                   ),
                   RadioListTile(
                     selected: ans == '${widget.A[(widget.k+1)]}' ? true :false,
@@ -259,7 +279,8 @@ class build_questionState extends State<build_question>{
                     });
 
                   } ,
-                    title: Text("${widget.A[widget.k + 1]}"),//
+                    activeColor: Colors.blue,
+                    title: Text("${widget.A[widget.k + 1]}" , style: TextStyle(color: ThemeNotifier.mode?Colors.black87:Colors.white)),//
                   ),
                   widget.type_quiz == false ? RadioListTile(
                     selected: ans == '${widget.A[(widget.k+2)] }' ? true :false,
@@ -270,7 +291,7 @@ class build_questionState extends State<build_question>{
 
                     });
                   } ,
-                    title: Text("${widget.A[widget.k + 2]}"),
+                    title: Text("${widget.A[widget.k + 2]}" , style: TextStyle(color: ThemeNotifier.mode?Colors.black87:Colors.white)),
                   ) : Text(""),
             ],
           ),

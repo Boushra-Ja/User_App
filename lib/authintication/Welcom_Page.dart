@@ -18,7 +18,6 @@ class WelcomState extends State<Welcom>{
   @override
   void initState() {
     super.initState();
-  //  addLocation();
   }
   @override
   Widget build(BuildContext context) {
@@ -125,85 +124,3 @@ class WelcomState extends State<Welcom>{
     );
   }
 }
-
-/* addLocation()async{
-    await userRef.add(
-        {
-          'location': {
-            'سوريا': {
-              '1': "دمشق",
-              '2': "حلب",
-              '3': "حماة",
-              '4': "الحسكة",
-              '5': "حمص",
-              '6': "دير الزور",
-              '7': "درعا",
-              '8': "غير ذدلك",
-            },
-            'العراق': {
-              '1': "بغداد",
-              '2': "البصرة",
-              '3': "القادسية",
-              '4': "أربيل",
-              '5': "	كربلاء",
-              '6': "غير ذدلك",
-            },
-            'الأردن': {
-              '1': "عمان",
-              '2': "إربد",
-              '3': "البلقاء",
-              '4': "مادبا",
-              '5': "العقبة",
-              '6': "عجلون",
-              '7': "غير ذدلك",
-            },
-
-          }
-        }
-    ).then((value) {
-      print("sad");
-    }).catchError((e){
-      print('sd');
-    });
-  }*/
-
-////marks_as_unr
-///lightblub
-//////castfor edu
-///work
-/////busniess
-//star
-//favorite border
-/*GradientCircularProgressIndicator(
-  gradient: Gradients.aliHussien,
-);*/
-
-
-/*
-GradientButton(
-      increaseWidthBy: 240,
-      increaseHeightBy: 12,
-      elevation: 10,
-      child: Text(
-        "تسجيل الدخول",
-        style: TextStyle(
-            color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: new BorderRadius.circular(30.0),
-      ),
-      callback: ()async {
-        var response = await SignIn();
-        if (response != null) {
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            return MyHomePage();
-          }));
-        }
-      },
-      gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.pink.shade900, Colors.grey.shade800]),
-    )
- */

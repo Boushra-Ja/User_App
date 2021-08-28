@@ -11,7 +11,15 @@ class buildCard extends StatelessWidget{
   String hinttext , text ;
   int num , _selected;
   userInfo user;
-  buildCard(this.hinttext , this.num , this.text , this._selected , this.user ) ;
+  buildCard(hinttext_ , num_ , text_ , selected_ , user_ ){
+    this.hinttext = hinttext_;
+    this.num = num_;
+    this.text = text_;
+    this._selected = selected_;
+    this.user = user_;
+    print("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}");
+    print(this.num);
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -28,7 +36,7 @@ class buildCard extends StatelessWidget{
             _selected == 0  ? Row(
               children: [
                 Expanded(flex : 1 ,child: buildText("" , 0) ),
-                buildTextFormAll(5 , hinttext , num ,user),
+                buildTextFormAll(5 , hinttext , num ,user) ,
                 Expanded(flex : 1 ,child: buildText("" , 0)),
               ],
             ) : _selected == 5 ? Row(

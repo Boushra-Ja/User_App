@@ -1,7 +1,6 @@
 import 'package:b/Home/ThemeManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 
 class NewMassage extends StatefulWidget {
@@ -10,7 +9,6 @@ class NewMassage extends StatefulWidget {
   NewMassage(docid,com_id){
     this.docid=docid;
     this.com_id=com_id;
-    print(docid);
   }
 
   @override
@@ -46,13 +44,10 @@ class _NewMassageState extends State<NewMassage> {
     );
   }
 
-  sendMassage() {
+  sendMassage() async{
     FocusScope.of(context).unfocus();
 
-    FirebaseFirestore.instance
-        .collection("users").doc(widget.docid).collection("chat").
-    doc(widget.com_id)
-        .collection("chats")
+    await FirebaseFirestore.instance.collection("users").doc(widget.docid).collection("chat").doc(widget.com_id).collection('chats')
         .add({"text": enterdMassage, "date": Timestamp.now(), "num": 2});
 
     control.clear();

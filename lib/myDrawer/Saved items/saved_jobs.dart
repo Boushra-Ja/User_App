@@ -1,5 +1,7 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/Home/all_chance.dart';
 import 'package:b/component/Loading.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../Info_Job.dart';
@@ -74,6 +76,10 @@ class savedJobsState extends State<savedJobs> {
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : all_chance(chance_list ,widget.temp_list, widget.user_Id ,false);
+    return loading ? Loading() : (chance_list.length == 0 ? Container(
+        padding: EdgeInsets.only(top : 60),
+        width: MediaQuery.of(context).size.width,
+        color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+        child: notFound(text: "فرص محفوظة", num: 1)) : all_chance(chance_list ,widget.temp_list, widget.user_Id ,false));
   }
 }

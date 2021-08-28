@@ -1,4 +1,5 @@
 import 'package:b/Home/show.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:b/cv_page/Work_Information.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,6 @@ class chance extends State<all_chance> {
         child: widget.check == true
             ? Column(children: <Widget>[
           Container(
-            //margin: EdgeInsets.all(5),
             color: ThemeNotifier.mode == true ? Colors.grey.shade300 : Colors.grey.shade800,
             height: 60,
             child: SingleChildScrollView(
@@ -266,15 +266,59 @@ class chance extends State<all_chance> {
                         color: ThemeNotifier.mode == true ? Colors.white : Colors.grey,
                         borderRadius: BorderRadius.circular(30)),
                   ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    width: 160,
+                    height: 40,
+                    child: Center(
+                      child: DropdownButton<String>(
+                        hint: Text('حسب نوع الفرص' , style: TextStyle(color: ThemeNotifier.mode==true ? Colors.grey.shade700 : Colors.white),),
+                        items: <String>[
+                          'فرص عادية',
+                          'فرص تطوعية',
+                          'فرص تدريب',
+                        ].map((String valu) {
+                          return DropdownMenuItem<String>(
+                            value: valu,
+                            child: new Text("$valu "),
+                          );
+                        }).toList(),
+                        onChanged: (String valu) {
+                          setState(() {
+                            widget.jobs.clear();
+                            for (int i = 0; i < widget.temp.length; i++) {
+                              if (widget.temp[i].job_Info['chanceId'] == 0 && valu =='فرص عادية') {
+                                widget.jobs.add(widget.temp[i]);
+                              }
+                              if (widget.temp[i].job_Info['chanceId'] == 1 && valu =='فرص تطوعية') {
+                                widget.jobs.add(widget.temp[i]);
+                              }
+                              if (widget.temp[i].job_Info['chanceId'] == 2 && valu =='فرص تدريبية') {
+                                widget.jobs.add(widget.temp[i]);
+                              }
+                            }});
+                        },
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        color: ThemeNotifier.mode == true ? Colors.white : Colors.grey,
+                        borderRadius: BorderRadius.circular(30)),
+                  ),
                 ],
               ),
             ),
           ),
-          Expanded(child: buildListView())
+          Expanded(child: widget.jobs.length == 0 ? Container(
+              width: MediaQuery.of(context).size.width,
+              color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+              child: notFound(text : "فرص بهذه الشروط" , num : 0)) : buildListView())
 
         ])
             : widget.jobs.length == 0
-            ? Center(child: Text("لا يوجد فرص"))
+            ? Container(child: notFound(text : "فرص متاحة" , num : 0),
+            width: MediaQuery.of(context).size.width,
+            color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+        )
             : buildListView());
   }
 
@@ -285,7 +329,7 @@ class chance extends State<all_chance> {
       itemCount: widget.jobs.length,
       /////// loop
       itemBuilder: (context, i) {
-        return GestureDetector(
+        return widget.jobs.length != 0 ? GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
@@ -340,9 +384,37 @@ class chance extends State<all_chance> {
                               )
                             ]),
                           ])),
-                    ]))));
+                    ])))) : Container(
+          width: MediaQuery.of(context).size.width,
+          color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+          child: notFound(text: "فرص بهذه الشروط",),
+        );
       },
     );
   }
 
 }
+
+/*
+UpdateData(var token) async {
+    await userRef.doc(widget.docid).update({
+      'notify' : notify,
+      'token': token
+    }).then((value) {
+      print('Sucsess');
+    }).catchError((e) {
+      AwesomeDialog(context: context, title: "Error", body: Text('Error'))
+        ..show();
+    });
+  }
+  UpdateData2() async {
+    await userRef.doc(widget.docid).update({
+      'privecy' :previcy ,
+    }).then((value) {
+      print('Sucsess');
+    }).catchError((e) {
+      AwesomeDialog(context: context, title: "Error", body: Text('Error'))
+        ..show();
+    });
+  }
+ */

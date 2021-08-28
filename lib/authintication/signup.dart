@@ -1,11 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:b/component/Loading.dart';
+import 'package:b/component/alart.dart';
 import 'package:b/cv_page/PersonalPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:b/component/alart.dart';
 import 'login.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 
@@ -18,7 +17,7 @@ class signUp extends StatefulWidget {
 
 class signupState extends State<signUp> {
   TapGestureRecognizer changesign;
-  bool showSignIn = true , loading = true;
+  bool showSignIn = true , loading = true , k = false;
   var myemail, mypassword, myconfirmPassword;
   GlobalKey<FormState> formeState = new GlobalKey<FormState>();
   var city = {} , country = [];
@@ -181,8 +180,10 @@ class signupState extends State<signUp> {
         } else if (valid_num == 1) {
           mypassword = val;
         } else if (valid_num == 2) {
-          myconfirmPassword = val;
+             myconfirmPassword = val;
+
         }
+
       },
       decoration: InputDecoration(
         hintText: myHintText,
@@ -254,12 +255,14 @@ class signupState extends State<signUp> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 20,),
                       buildText("البريد الالكتروني "),
                       buildTextFormAll(false, "  ادخل هنا  ", 0),
+                      SizedBox(height: 30,),
                       buildText("كلمة المرور "),
                       buildTextFormAll(true, "  ***********   ", 1),
-                      buildText(" تأكيد كلمة المرور"),
-                      buildTextFormAll(true, "  ***********   ", 2),
+                     // buildText(" تأكيد كلمة المرور"),
+                      //buildTextFormAll(true, "  ***********   ", 2),
                     ],
                   ),
                 ),
@@ -280,6 +283,7 @@ class signupState extends State<signUp> {
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)),
         callback: ()async {
+          showLoading(context);
           var response = await SignUp();
           if (response != null) {
              Navigator.of(context)

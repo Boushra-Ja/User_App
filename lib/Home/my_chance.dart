@@ -1,16 +1,17 @@
 import 'package:b/Home/ThemeManager.dart';
 import 'package:b/Home/show.dart';
 import 'package:b/UserInfo.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:flutter/material.dart';
 import 'show.dart';
 
 class my_chance extends StatelessWidget {
-  List m_jobs=[];
+  List m_jobs;
   userInfo user ;
   var docid,check;
 
   my_chance(List my_jobs , userInfo user , docid){
-    m_jobs=my_jobs;
+    this.m_jobs=my_jobs;
     this.user = user;
     this.docid = docid;
   }
@@ -21,11 +22,13 @@ class my_chance extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child:
         Scaffold(
-          body: ListView.builder(
+          body: m_jobs.length == 0 ? Container( padding : EdgeInsets.only(top : 40) , child:  notFound(text : "فرص بالشروط المدخلة" , num : 0), width: MediaQuery.of(context).size.width,
+            color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,) :ListView.builder(
             itemCount: m_jobs.length,
             /////// loop
             itemBuilder: (context, i) {
-              return GestureDetector(
+              print(m_jobs.length);
+              return  GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,

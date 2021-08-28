@@ -1,4 +1,5 @@
 import 'package:b/Home/ThemeManager.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class Chats extends StatefulWidget {
 }
 
 class chats_s extends State<Chats> {
+  var name , image ;
   @override
   Widget build(BuildContext context) {
     var company = FirebaseFirestore.instance
@@ -69,7 +71,6 @@ class chats_s extends State<Chats> {
                                     contentPadding:
                                     EdgeInsets.fromLTRB(10, 15, 10, 15),
                                     title: Text(
-                                      //"iiii",
                                       snapshot.data.docs[i]['name'],
                                       style: TextStyle(
                                         fontSize: 18,
@@ -85,11 +86,12 @@ class chats_s extends State<Chats> {
                                       ),
                                     ),
                                     leading: CircleAvatar(
-                                      child: Icon(
+                                      child: snapshot.data.docs[i]['img'] == "not" ? Icon(
                                         Icons.business,
                                         color: Colors.black,
-                                      ),
+                                      ) : null,
                                       radius: 40,
+
                                       backgroundImage:
                                       snapshot.data.docs[i]['img'] != "not"
                                           ? NetworkImage(
@@ -99,6 +101,7 @@ class chats_s extends State<Chats> {
                                       snapshot.data.docs[i]['img'] == "not"
                                           ? Colors.pink.shade100
                                           : null,
+
                                     ),
                                   ),
                                 ),
@@ -110,16 +113,14 @@ class chats_s extends State<Chats> {
                                   return Chat(
                                       snapshot.data.docs[i].id,
                                       widget.user_id,
-                                      snapshot.data.docs[i]['name']);
+                                      snapshot.data.docs[i]['name'] , snapshot.data.docs[i]['img']);
                                 }));
                               },
                             );
                           });
                     }
                     if (!snapshot.hasData) {
-                      return Text(
-                        "لم تراسلك أي شركة بعد",
-                      );
+                      return notFound();
                     }
                     return Text("loading");
                   }),
@@ -130,3 +131,124 @@ class chats_s extends State<Chats> {
     );
   }
 }
+
+/*
+showBottomSheet(context) async {
+    var imagepicker = await ImagePicker();
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Directionality(
+              textDirection: TextDirection.rtl,
+              child: Container(
+                padding: EdgeInsets.all(20),
+                height: 240,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "اختر صوره للارسال",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Divider(
+                      height: 2,
+                      color: Theme.of(context).primaryColor,
+                      thickness: 2,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        var picked = await imagepicker.getImage(
+                            source: ImageSource.gallery);
+                        if (picked != null) {
+                          file = File(picked.path);
+
+                          var rand = Random().nextInt(100000);
+                          var imagename = "$rand" + basename(picked.path);
+                          Reference ref =
+                              FirebaseStorage.instance.ref("images/$imagename");
+                          setState(() {
+                            image = file;
+                          });
+                          await ref.putFile(file);
+                          var urlk = await ref.getDownloadURL();
+                          jobScreen.d["image_url"]=urlk;
+                           Navigator.of(context).pop();
+                        }
+                      },
+                      child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.photo_outlined,
+                                color: Colors.teal[700],
+                                size: 30,
+                              ),
+                              SizedBox(width: 20),
+                              Text(
+                                "المعرض ",
+                                style: TextStyle(fontSize: 20),
+                              )
+                            ],
+                          )),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        var picked = await imagepicker.getImage(
+                            source: ImageSource.camera);
+                        if (picked != null) {
+                          file = File(picked.path);
+                          var rand = Random().nextInt(100000);
+                          var imagename = "$rand" + basename(picked.path);
+                          Reference ref =
+                              FirebaseStorage.instance.ref("images/$imagename");
+                          setState(() {
+                            image = file;
+                          });
+                          // await ref.putFile(file);
+                          // var url = await ref.getDownloadURL();
+                          // var user = FirebaseAuth.instance.currentUser;
+                          // await jobReference
+                          //     .where("email_advance", isEqualTo: user.email)
+                          //     .get()
+                          //     .then((value) {
+                          //   value.docs.forEach((element) {
+                          //     DocumentReference d = FirebaseFirestore.instance
+                          //         .collection("companies")
+                          //         .doc(element.id);
+                          //
+                          //     d.update({
+                          //       'link_image': url,
+                          //     });
+                          //   });
+                          // });
+
+                          //Navigator.of(context).pop();
+                        }
+                      },
+                      child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.camera,
+                                color: Colors.teal[700],
+                                size: 30,
+                              ),
+                              SizedBox(width: 20),
+                              Text(
+                                " الكاميرا",
+                                style: TextStyle(fontSize: 20),
+                              )
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+              ));
+        });
+  }
+ */

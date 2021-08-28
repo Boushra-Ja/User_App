@@ -1,4 +1,5 @@
 import 'package:b/Home/ThemeManager.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:flutter/material.dart';
 import 'Employe_Profile.dart';
 
@@ -8,7 +9,7 @@ class employePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return employe_List.length == 0 ? notFound(text : "موظفين" ,num : 0) : Container(
          margin: EdgeInsets.all(10),
         child: GridView.builder(
             shrinkWrap: true,

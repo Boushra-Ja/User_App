@@ -1,5 +1,7 @@
 import 'package:b/Home/Company_Pages/buildCardForCompany.dart';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/component/Loading.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,7 @@ class savedCompanies extends StatefulWidget {
 class savedCompaniesState extends State<savedCompanies> {
   var companies_list = [];
   bool loading = true;
+
   get_companies() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -29,7 +32,9 @@ class savedCompaniesState extends State<savedCompanies> {
         }
       }
     });
-    setState(() {
+    print("^^^^^^^^^^^");
+    print(companies_list.length)
+;    setState(() {
       loading = false;
     });
   }
@@ -56,7 +61,11 @@ class savedCompaniesState extends State<savedCompanies> {
                   width: MediaQuery.of(context).size.width,
                   color: Colors.pink.shade50.withOpacity(0.4),
                 ),
-                Container(
+                companies_list.length ==0 ? Container(
+                    padding: EdgeInsets.only(top : 60),
+                    width: MediaQuery.of(context).size.width,
+                    color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+                    child: notFound(text : "شركات محفوظة" , num : 1)) : Container(
                   padding: EdgeInsets.only(top: 20),
                   child: StreamBuilder(
                       stream: FirebaseFirestore.instance
@@ -71,7 +80,7 @@ class savedCompaniesState extends State<savedCompanies> {
                           return Text("Loading");
                         }
                         if (snapshot.hasData) {
-                          return ListView.builder(
+                          return  ListView.builder(
                               itemCount: snapshot.data.docs.length,
                               itemBuilder: (context, i) {
                                 for (int j = 0;
@@ -88,7 +97,11 @@ class savedCompaniesState extends State<savedCompanies> {
                                 return Text('', style: TextStyle(fontSize: 1),);
                               });
                         }
-                        return Text("loading");
+                        else{
+                          print("&&&&&&&&&&&&&&&&");
+                          return Text("loading") ;
+
+                        }
                       }),
                 )
               ],

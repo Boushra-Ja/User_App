@@ -17,14 +17,14 @@ class userInfo with ChangeNotifier{
       selectedExpr ,
       selectedTypeJob ,
       Skills = "null" ,
-      workSite ,
+      workSite,
       salary ,
       imageurl = 'not',
       typechance,
       previous_job = " ";
-  bool  privecy ,
+      bool  privecy ,
       notify ;
-
+  
 
   List selectedjob = [] , language = [];
 

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:b/Home/homepage.dart';
 import 'package:load/load.dart';
 import 'package:provider/provider.dart';
-import 'Home/Company_Pages/Employe_Page.dart';
-import 'Home/Company_Pages/Employe_Profile.dart';
 import 'Home/ThemeManager.dart';
 import 'UserInfo.dart';
 import 'authintication/Welcom_Page.dart';
@@ -36,7 +34,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => userInfo()),
       ],
       child: MaterialApp(
-
           debugShowCheckedModeBanner: false,
           home: // islogin == false ? Login() : MyHomePage() ,
               LoadingProvider(

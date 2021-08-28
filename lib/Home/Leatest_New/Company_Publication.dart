@@ -1,3 +1,4 @@
+import 'package:b/component/notFoundPage.dart';
 import 'package:flutter/material.dart';
 import 'build_Card_Post.dart';
 
@@ -20,7 +21,7 @@ class company_PublicationState extends State<company_Publication> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.post_Info.length ==0 ? Center(child: Text("لا يوجد منشورات")) : ListView.builder(
+    return widget.post_Info.length ==0 ?notFound(text : "منشورات حديثة" , num : 0) : ListView.builder(
       shrinkWrap: true,
       physics: ScrollPhysics(),
       itemCount: widget.post_Info.length,

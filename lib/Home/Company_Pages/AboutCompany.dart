@@ -25,7 +25,10 @@ class aboutCompany extends StatelessWidget {
                     "${list['region']} ، ${list['city']}", context),
                 buildContainer(
                     " التخصص : ", "${list['specialization']}", context),
-                buildContainer(" الوصف : ", "${list['description']} ", context),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: buildContainer(" الوصف : ", "${list['description']} ", context),
+                ),
                 buildContainer(" رقم الشركة : ", "${list['phone']}", context),
                 SizedBox(
                   height: 20,
@@ -41,10 +44,8 @@ class aboutCompany extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(top: 30, right: 30),
       child: AutoSizeText(
-        text1 + " : " + text2,
-        style: TextStyle(fontSize: 16),
-        maxLines: 2,
-      ),
+       text1 + " : " + text2,
+          style: TextStyle(fontSize: 16),)
     );
   }
 }

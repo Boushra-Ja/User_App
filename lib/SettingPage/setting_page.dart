@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:b/Home/ThemeManager.dart';
 import 'package:b/authintication/Welcom_Page.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:b/SettingPage/updatePassword.dart';
 import 'package:b/myDrawer/Drawer.dart';
 import '../UserInfo.dart';
+import 'package:http/http.dart' as http;
+
 
 class settingPage extends StatefulWidget {
 
@@ -23,14 +26,14 @@ class settingPage extends StatefulWidget {
 
 class SettingState extends State<settingPage>{
   bool notify , previcy ;
-
-  String choice ;
+  String choice ,owner_token ;
   CollectionReference userRef = FirebaseFirestore.instance.collection("users");
+  CollectionReference company = FirebaseFirestore.instance.collection('companies');
 
   UpdateData() async {
     await userRef.doc(widget.docid).update({
       'privecy' :previcy ,
-      'notify' : notify
+      'notify' : notify,
     }).then((value) {
       print('Sucsess');
     }).catchError((e) {
@@ -38,12 +41,19 @@ class SettingState extends State<settingPage>{
         ..show();
     });
   }
+
   @override
   void initState() {
+    ()async{
+      await FirebaseFirestore.instance.collection('oner').doc('DPi7T09bNPJGI0lBRqx4').get().then((value) {
+        owner_token = value.data()['token'];
+      });
+    }();
     notify = widget.user.notify;
     previcy = widget.user.privecy ;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
 
@@ -181,8 +191,26 @@ class SettingState extends State<settingPage>{
                             ds.reference.delete();
                           }
                         });
+                        FirebaseFirestore.instance.collection('users').doc(widget.docid).collection('companies_saved').get().then((snapshot) {
+                          for (DocumentSnapshot ds in snapshot.docs){
+                            ds.reference.delete();
+                          }
+                        });
+                        FirebaseFirestore.instance.collection('users').doc(widget.docid).collection('companies_saved').get().then((snapshot) {
+                          for (DocumentSnapshot ds in snapshot.docs){
+                            ds.reference.delete();
+                          }
+                        });
+                        FirebaseFirestore.instance.collection('users').doc(widget.docid).collection('companies_saved').get().then((snapshot) {
+                          for (DocumentSnapshot ds in snapshot.docs){
+                            ds.reference.delete();
+                          }
+                        });
                         await FirebaseFirestore.instance.collection("users").doc(
                             widget.docid).delete();
+                        sendNotify('اشعار حذف' ,   "قام المستخدم " + "${widget.user.firstName} " + "${widget.user.endName}  " +" بحذف الحساب الخاص به");
+                        storage_notificatio('اشعار حذف', "قام المستخدم " + "${widget.user.firstName} " + "${widget.user.endName}  " +" بحذف الحساب الخاص به");
+                        delete_user(widget.docid);
                         await FirebaseAuth.instance.currentUser.delete();
                         await FirebaseAuth.instance.signOut();
                         Navigator.of(context)
@@ -204,7 +232,6 @@ class SettingState extends State<settingPage>{
                 Center(child: Text("^_^ BR_Jobs" , style: TextStyle(fontSize: 16 , color: ThemeNotifier.mode ? Colors.pink.shade900 : Colors.black87),),),
                 SizedBox(height: 10,),
 
-
               ],
             ),
 
@@ -213,4 +240,171 @@ class SettingState extends State<settingPage>{
       ),
     ));
   }
+  sendNotify(String title , String body)async {
+
+    var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
+    await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverToken',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'body': body,
+            'title': title
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'num' : "1",
+            'id' : widget.docid,
+            'type' : "1"
+
+          },
+          'to':await owner_token  ,
+        },
+      ),
+    );
+
+
+  }
+
+  storage_notificatio(String title , String body)async{
+
+    await FirebaseFirestore.instance.collection('oner').doc("DPi7T09bNPJGI0lBRqx4").collection("reports").add({
+      'body' : body,
+      'title' : title ,
+      'id' : widget.docid,
+      'date_publication' : {
+        'day' : DateTime.now().day,
+        'month' : DateTime.now().month,
+        'year' : DateTime.now().year,
+        'hour' :  DateTime.now().hour
+      },
+      'num': 1 ,
+      "date": Timestamp.now(),
+      'type' : 1
+    });
+  }
+
+  delete_user(var user_Id)async{
+    //////delete user from chance
+    var num_Presenting_A_Job , accept , all_accept;
+    List comp_id = [];
+    await company
+        .get()
+        .then((value) {
+      if(value.docs.isNotEmpty){
+        value.docs.forEach((element) {
+          comp_id.add(element.id);
+        });
+      }
+    });
+    for(int j = 0 ; j < comp_id.length ; j++)
+    {
+      //all_accepted
+      ///////////////////////////////
+      await company.doc(comp_id[j]).get().then((value) {
+        all_accept = value.data()['all_accepted'].length;
+
+        for (int i = 0;
+        i < all_accept;
+        i++) {
+          if (value.data()[
+          'all_accepted']
+          [i] ==
+              user_Id) {
+            var val =
+            []; //blank list for add elements which you want to delete
+            val.add(
+                '${value.data()['all_accepted'][i]}');
+            company
+                .doc(comp_id[j])
+                .update({
+              "all_accepted":
+              FieldValue
+                  .arrayRemove(
+                  val)
+            }).then((value) {
+              print('Sucsess');
+            }).catchError((e) {
+              print("errroee");
+            });
+          }
+
+        }
+      });
+      ///////////////////////////////////////
+      await company.doc(comp_id[j]).collection('chance').get().then((value) {
+        if(value.docs.isNotEmpty){
+          for(int k =0 ; k < value.docs.length ; k++)
+          {
+            num_Presenting_A_Job = value.docs[k]
+                .data()['Presenting_A_Job']
+                .length;
+
+            for (int i = 0;
+            i < num_Presenting_A_Job;
+            i++) {
+              if (value.docs[k].data()[
+              'Presenting_A_Job']
+              [i] ==
+                  user_Id) {
+                var val =
+                []; //blank list for add elements which you want to delete
+                val.add(
+                    '${value.docs[k].data()['Presenting_A_Job'][i]}');
+                company
+                    .doc(comp_id[j]).collection('chance').doc(value.docs[k].id)
+                    .update({
+                  "Presenting_A_Job":
+                  FieldValue
+                      .arrayRemove(
+                      val)
+                }).then((value) {
+                  print('Sucsess');
+                }).catchError((e) {
+                  print("errroee");
+                });
+              }
+
+            }
+            /////////////////////////////////////
+            accept = value.docs[k]
+                .data()['accepted']
+                .length;
+
+            for (int i = 0;
+            i < accept;
+            i++){
+              if (value.docs[k].data()[
+              'accepted'][i] ==
+                  user_Id){
+                var val2 =
+                []; //blank list for add elements which you want to delete
+                val2.add(
+                    '${value.docs[k].data()['accepted'][i]}');
+                company
+                    .doc(comp_id[j]).collection('chance').doc(value.docs[k].id)
+                    .update({
+                  "accepted":
+                  FieldValue
+                      .arrayRemove(
+                      val2)
+                }).then((value) {
+                  print('Sucsess');
+                }).catchError((e) {
+                  print("errroee");
+                });
+              }
+            }
+
+          }
+        }
+      });
+    }
+  }
+
 }

@@ -34,7 +34,6 @@ class PersnalState extends State<personalPage> {
   GlobalKey<FormState> formState5 = new GlobalKey<FormState>();
 
   addData(userInfo user) async {
-    showLoading(context);
     await userRef.add({
       'firstname': user.firstName,
       'endname': user.endName,
@@ -69,6 +68,7 @@ class PersnalState extends State<personalPage> {
       'num_follow' : []
     }).then((value) async {
       print('Sucsess');
+      print('Sucsess');
       await FirebaseFirestore.instance
           .collection('users')
           .get().then((value) {
@@ -92,10 +92,6 @@ class PersnalState extends State<personalPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<userInfo>(context);
@@ -154,9 +150,11 @@ class PersnalState extends State<personalPage> {
                     } else {
                       if (formdata5.validate()) {
                         formdata5.save();
-                        print(user.mygmail);
-                        print(user.phone);
-                       await addData(user);
+                        showLoading(context);
+                        await addData(user);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                          return MyHomePage();
+                        }));
 
                       }
 
@@ -190,9 +188,6 @@ class PersnalState extends State<personalPage> {
                                 borderRadius: new BorderRadius.circular(30.0)),
                             color: Colors.pink.shade900.withOpacity(0.7),
                             onPressed: () {
-                              print(user.firstName);
-                              print(user.endName);
-                              print(user.salary);
                               onStepContinue();
                             },
                             child: Text(

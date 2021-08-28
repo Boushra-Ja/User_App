@@ -18,10 +18,12 @@ import '../UserInfo.dart';
 import '../postInformation.dart';
 import '../temp_ForPost.dart';
 import 'Company_Pages/Company_Page.dart';
+import 'Company_Pages/Company_Profile.dart';
 import 'Leatest_New/Refrech_Posts.dart';
+import 'Notification_Page.dart';
 import 'ThemeManager.dart';
 import 'my_chance.dart';
-import 'package:b/Home/appbar.dart';
+import 'package:b/Home/DataSearch.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -29,13 +31,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var docid;
+  var docid , list;
   userInfo user = new userInfo();
   List All_jobs = [];
   List My_jobs = [];
   List all_map=[];
   List aaa=[];
-  bool loading = true , load = true;
+  bool loading = true , load = true , notif = false;
   CollectionReference jobsref = FirebaseFirestore.instance.collection("companies");
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   CollectionReference mapref = FirebaseFirestore.instance.collection("roadmaps");
@@ -101,36 +103,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /////////////////////////////get my chance
   get_My_data(){
-    if(this.mounted){
-      setState(() {
-        for(int i=0;i<All_jobs.length;i++){
-          if(All_jobs[i].job_Info['workTime'] == user.selectedTypeJob){
-            My_jobs.add(All_jobs[i]);
-          }
+      for(int i=0;i<All_jobs.length;i++){
+        if(All_jobs[i].job_Info['workTime'] == user.selectedTypeJob&&
+            All_jobs[i].job_Info['salary'] == user.salary&&
+            All_jobs[i].job_Info['gender'] == user.selectedGender&&
+            All_jobs[i].job_Info['degree'] == user.selectedEdu){
+          My_jobs.add(All_jobs[i]);
         }
-      });
-    }
-
-  }
-
-  //////////////////////////get maps
-
-  get_All_maps() async {
-    QuerySnapshot respon_map = await mapref.get();
-    respon_map.docs.forEach((element) {
-      if (this.mounted) {
+      }
+      if(this.mounted){
         setState(() {
-          all_map.add(element.data());
+          loading = false ;
         });
       }
-    });
-    print(all_map.length);
-    if(this.mounted)
-    {
-      setState(() {
-        loading = false;
-      });
-    }
   }
 
   ///////////////////////user Info
@@ -194,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print("errror");
     });
   }
-
+  ////////////for Notification
   get_Info_Job(var event)async{
     await FirebaseFirestore.instance.collection("companies").doc(event.data['id_company']).get().then((value) {
       if(this.mounted){
@@ -216,6 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
+  ////////////for Notification
   get_Info_Post(event)async{
 
     await FirebaseFirestore.instance.collection("companies").doc(event.data['id_company']).get().then((value) {
@@ -232,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
       tem.companies_post.post_Id = value.data()['id'];
       tem.companies_post.my_post = value.data()['myPost'];
       tem.companies_post.title = value.data()['title'];
-      tem.companies_post.date = value.data()['date_publication']['day'];
+      tem.companies_post.date = value.data()['date_publication'];
     });
     if(this.mounted)
     {
@@ -242,49 +228,107 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  ////////////for Notification
+  get_company(com_id)async{
+    await FirebaseFirestore.instance.collection('companies').doc(com_id).get().then((value) {
+      list = value.data();
+    });
+  }
+
+  ///////////for notification
+
   @override
   void initState() {
 
         () async {
       await getId();
       await token_storage();
-      await FirebaseMessaging.onMessageOpenedApp.listen((event) async {
-        print(event.data);
-        if(event.data['num'] == '2')
-        {
-          await get_Info_Job(event);
-          Navigator.of(context).push(MaterialPageRoute(builder: (context){
-            return show(chance, docid);
-          }));
-        }
-        else{
-          await get_Info_Post(event);
-          Navigator.of(context).push(MaterialPageRoute(builder: (context){
-            return load ? Loading()  :Directionality(textDirection: TextDirection.rtl, child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.pink.shade900,
-                toolbarHeight: 80,
-              ),
-              body: build_post(post_Info: tem , user_Id: docid ,user_name: user.firstName,),
-            ));
-          }));
-
-        }
-
-      });
-
-      var message = await FirebaseMessaging.instance.getInitialMessage();
-      if(message != null)
+     // if(user.notify)
       {
-        await get_Info_Job(message);
-        Navigator.of(context).push(MaterialPageRoute(builder: (context){
-          return show(chance, docid);
-        }));
+        FirebaseMessaging.onMessage.listen((event) {
+          if(this.mounted)
+          {
+            setState(() {
+              notif = true;
+            });
+          }
+        });
+        await FirebaseMessaging.onMessageOpenedApp.listen((event) async {
+          print(event.data['num'] );
+          if(event.data['num'] == '2' || event.data['num'] == '4')
+          {
+            await get_Info_Job(event);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+              return show(chance, docid);
+            }));
+          }
+          else if(event.data['num'] == '1'){
+            await get_Info_Post(event);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+              return load ? Loading()  :Directionality(textDirection: TextDirection.rtl, child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.pink.shade900,
+                  toolbarHeight: 80,
+                ),
+                body: build_post(post_Info: tem , user_Id: docid ,user_name: user.firstName,),
+              ));
+            }));
+          }
+          else if(event.data['num'] == '3')
+            {
+              await get_company(event.data['id']);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                return  companyProfile(
+                  list: list,
+                  user_id: docid,
+                  user_name : user.firstName + " " + user.endName,
+                  company_Id : event.data['id'],
+                  num_followers: list['followers'].length,
+                );
+              }));
+            }
+
+        });
+
+        var message = await FirebaseMessaging.instance.getInitialMessage();
+        if(message != null)
+        {
+          if(message.data['num'] == '2' || message.data['num'] == '4')
+          {
+            await get_Info_Job(message);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+              return show(chance, docid);
+            }));
+          }
+          else if(message.data['num'] == '1'){
+            await get_Info_Post(message);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+              return load ? Loading()  :Directionality(textDirection: TextDirection.rtl, child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.pink.shade900,
+                  toolbarHeight: 80,
+                ),
+                body: build_post(post_Info: tem , user_Id: docid ,user_name: user.firstName,),
+              ));
+            }));
+          }else if(message.data['num'] == '3')
+            {
+              await get_company(message.data['id']);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                return  companyProfile(
+                  list: list,
+                  user_id: docid,
+                  user_name : user.firstName + " " + user.endName,
+                  company_Id : message.data['id'],
+                  num_followers: list['followers'].length,
+                );
+              }));
+            }
+        }
       }
+
       await get_All_data();
       await get_My_data();
-      await get_All_maps();
-
     }();
 
     super.initState();
@@ -304,7 +348,102 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Directionality(
                         textDirection: TextDirection.rtl,
                         child: Scaffold(
-                          appBar: myappbar(chance_List : All_jobs , user_Id: docid , specialization_list : temp , user_name : user.firstName),
+                          appBar: AppBar(
+                            flexibleSpace: Container(
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors:ThemeNotifier.mode == true ? <Color>[
+                                        Colors.pink.shade900,
+                                        Colors.grey.shade800
+                                      ] : <Color>[
+                                        Colors.grey.shade700,
+                                        Colors.black87
+                                      ])),
+                            ),
+                            toolbarHeight: 150,
+
+                            bottom: TabBar(
+                              indicatorColor: Colors.white,
+                              indicator: UnderlineTabIndicator(
+                                //  borderSide: BorderSide(width: 10.0),
+                                  insets: EdgeInsets.symmetric(
+                                    horizontal: 60.0,
+                                  )),
+                              tabs: [
+                                Tab(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(Icons.work , color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200,),
+                                  ),
+                                ),
+                                Tab(
+                                  child: Icon(Icons.favorite ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
+                                ),
+                                Tab(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Icon(Icons.business ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
+                                  ),
+                                ),
+                                Tab(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Icon(Icons.markunread_sharp ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
+                                  ),
+                                ),
+                                Tab(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Icon(Icons.lightbulb ,  color: ThemeNotifier.mode == true ? Colors.white : Colors.grey.shade200),
+                                  ),
+                                )
+                              ],
+                            ),
+                            title : InkWell(
+                              onTap: (){
+                                showSearch(context: context, delegate: dataSearch(chance_List: All_jobs , user_Id:  docid , specialization_list : temp));
+                              },
+                              child: Container(
+                                width: 3*(MediaQuery.of(context).size.width/4) ,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white
+                                ),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.search , color: Colors.grey,size: 18,),
+                                      onPressed: () {
+                                      },
+                                    ),
+                                    Text("انقر للبحث....." , style: TextStyle(color: Colors.grey , fontSize: 16),)
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            iconTheme: IconThemeData(color: Colors.white),
+
+                            //backgroundColor: Colors.white,
+                            actions: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.notifications_active ,
+                                  color: notif ? Colors.amberAccent : Colors.grey.shade200,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    notif = false;
+                                  });
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                    return notificationPage(user_Id:  docid , user_name: "ds");
+                                  }));
+                                },
+                              ),
+                            ],
+                          ),
                           drawer: mydrawer(
                               user: user,
                               docid: docid,
@@ -318,14 +457,14 @@ class _MyHomePageState extends State<MyHomePage> {
                               my_chance(My_jobs, user, docid),
                               companyPage(user_id: docid , user_name: (user.firstName + " " +  user.endName)),
                               Refrech_Posts(docid: docid , user_name: (user.firstName + " " +  user.endName)),
-                              roadmaps(all_map)
+                              roadmaps()
                             ],
                           ),
 
                           floatingActionButton: Container(
                             padding: const EdgeInsets.only(left : 10.0 , bottom: 10),
-                            height: 70.0,
-                            width: 70.0,
+                            height: 75.0,
+                            width: 75.0,
                             child: FittedBox(
                               child: FloatingActionButton(
                                   backgroundColor: ThemeNotifier.mode ? Colors.pink.shade800 : Colors.grey.shade300,

@@ -1,5 +1,7 @@
 import 'package:b/Home/Leatest_New/build_Card_Post.dart';
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/component/Loading.dart';
+import 'package:b/component/notFoundPage.dart';
 import 'package:b/postInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +119,11 @@ class savedPostState extends State<savedPosts> {
                   width: MediaQuery.of(context).size.width,
                   color: Colors.pink.shade50.withOpacity(0.4),
                 ),
-                ListView.builder(
+                posts_list.length == 0 ? Container(
+                    padding: EdgeInsets.only(top : 60),
+                    width: MediaQuery.of(context).size.width,
+                    color: ThemeNotifier.mode ? Colors.white : Colors.grey.shade800,
+                    child: notFound(text: "منشورات محفوظة", num: 1))  : ListView.builder(
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
                   itemCount: posts_list.length,

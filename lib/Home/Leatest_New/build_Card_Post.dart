@@ -17,12 +17,10 @@ class build_post extends StatefulWidget {
 }
 
 class build_postState extends State<build_post> {
-
-  var title , body , date;
-
+  var date;
   sendNotify(bool reaction)async {
-    title = 'تفاعل مع البوست' ;
-    body = (reaction == true  ? "أعجب المستخدم " : "تفاعل المستخدم ") + "  ${widget.user_name}  " + "مع البوست الخاص بك";
+    var title = 'تفاعل مع البوست' ;
+    var body = (reaction == true  ? "أعجب المستخدم " : "تفاعل المستخدم ") + "  ${widget.user_name}  " + "مع البوست الخاص بك";
     var serverToken = "AAAAUnOn5ZE:APA91bGSkIL6DLpOfbulM_K3Yp5W1mlcp8F0IWu2mcKWloc4eQcF8C230XaHhXBfBYphuyp2P92dc_Js19rBEuU6UqPBGYOSjJfXsBJVmIu9TsLe44jaSOLDAovPTspwePb1gw7-1GNZ";
     await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -39,15 +37,13 @@ class build_postState extends State<build_post> {
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'num' : 2 ,
+            'num' : "2" ,
             'post_Id' : widget.post_Info.companies_post.post_Id
           },
           'to': await widget.post_Info.token,
         },
       ),
     );
-
-
   }
 
   getMessage()async{
@@ -81,7 +77,8 @@ class build_postState extends State<build_post> {
   }
 
   storage_notification()async{
-
+    var title = 'تفاعل مع البوست' ;
+    var body =  "تفاعل المستخدم " +"  ${widget.user_name}  " + "مع البوست الخاص بك";
     await FirebaseFirestore.instance.collection('companies').doc(widget.post_Info.company_Id).collection("notification").add({
       'body' : body,
       'title' : title ,
@@ -92,7 +89,9 @@ class build_postState extends State<build_post> {
         'year' : DateTime.now().year
 
       },
-      'num':2
+      'num':2,
+      "date": Timestamp.now()
+
     });
   }
 
@@ -102,7 +101,10 @@ class build_postState extends State<build_post> {
     {
       if(DateTime.now().day == widget.post_Info.companies_post.date['day'])
       {
-        date = "${ DateTime.now().hour -  widget.post_Info.companies_post.date['hour']}" + " ساعة";
+        if(DateTime.now().hour == widget.post_Info.companies_post.date['hour'])
+          date = 'الان';
+        else
+          date = "${ DateTime.now().hour -  widget.post_Info.companies_post.date['hour']}" + " ساعة";
       }
       else
         date = "${DateTime.now().day -  widget.post_Info.companies_post.date['day']}" + " يوم";
@@ -200,7 +202,6 @@ class build_postState extends State<build_post> {
                   child: AutoSizeText(
                     "${widget.post_Info.companies_post.my_post}",
                     style: TextStyle(fontSize: 16),
-                    maxLines: 10,
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
                   ),

@@ -1,16 +1,17 @@
+import 'package:b/Home/ThemeManager.dart';
 import 'package:b/component/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'build_question.dart';
 
 class quizPage extends StatefulWidget {
-  final company_Id, chance_Id, company_name, user_Id , image;
+  final company_Id, chance_Id, company_name, user_Id , image , chance_name,token,user_name ;
   const quizPage(
       {Key key,
       this.company_Id,
       this.chance_Id,
       this.company_name,
-      this.user_Id,this.image})
+      this.user_Id,this.image,this.chance_name ,this.token,this.user_name})
       : super(key: key);
 
   @override
@@ -24,6 +25,7 @@ class quizPageState extends State<quizPage> {
   var questions_List = [], Answer_List = [], coorect_Answer = [], N;
 
   getQuestions() async {
+
     await FirebaseFirestore.instance
         .collection('companies')
         .doc(widget.company_Id)
@@ -72,7 +74,7 @@ class quizPageState extends State<quizPage> {
             textDirection: TextDirection.rtl,
             child: Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.pink.shade900,
+                backgroundColor: ThemeNotifier.mode ?Colors.pink.shade900:Colors.black87,
                 toolbarHeight: MediaQuery.of(context).size.height / 7,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -149,7 +151,10 @@ class quizPageState extends State<quizPage> {
                                     chance_Id: widget.chance_Id,
                                     user_Id: widget.user_Id,
                                   company_name : widget.company_name,
-                                  image : widget.image
+                                  image : widget.image,
+                                  chance_name: widget.chance_name,
+                                  token: widget.token,
+                                  user_name: widget.user_name,
                                 );
                               }));
                             },
@@ -160,7 +165,7 @@ class quizPageState extends State<quizPage> {
                                   child: Text("ابدأ",
                                       style: TextStyle(fontSize: 16))),
                               decoration: BoxDecoration(
-                                  color: Colors.yellow.shade600,
+                                  color: ThemeNotifier.mode ?Colors.yellow.shade600:Colors.black87,
                                   borderRadius: BorderRadius.circular(30)),
                             ),
                           ),

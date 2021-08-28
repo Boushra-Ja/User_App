@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 
 
 class show extends StatefulWidget{
-  var job , docid;
+  var job , docid ;
   show(job , Id) {
     this.job=job;
     this.docid = Id ;
@@ -48,8 +48,8 @@ class showState extends State<show> {
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'id': '1',
-            'status': 'done'
+            'user_Id' : widget.docid,
+            'num' : "1"
           },
           'to': widget.job.company_Info['token'],
         },
@@ -79,7 +79,8 @@ class showState extends State<show> {
         'year' : DateTime.now().year,
         'hour': DateTime.now().hour
       },
-      'num' : 2
+      'num' : 1,
+      "date": Timestamp.now()
     });
   }
 
@@ -137,7 +138,10 @@ class showState extends State<show> {
       {
         if(DateTime.now().day == widget.job.job_Info['date_publication']['day'])
         {
-          date = "${ DateTime.now().hour - widget.job.job_Info['date_publication']['hour']}" + " ساعة";
+          if(DateTime.now().hour == widget.job.job_Info['date_publication']['hour'])
+            date = 'الان';
+          else
+             date = "${ DateTime.now().hour - widget.job.job_Info['date_publication']['hour']}" + " ساعة";
         }
         else
           date = "${DateTime.now().day -  widget.job.job_Info['date_publication']['day']}" + " يوم";
@@ -155,12 +159,15 @@ class showState extends State<show> {
         .doc(widget.docid)
         .collection('chance_saved');
     DocumentReference chance = FirebaseFirestore.instance.collection('companies').doc(widget.job.company_Id).collection('chance').doc(widget.job.job_Info['id']);
+
     onPressed_Button()async{
+
 
       if(check_P == false){
         await chance.get().then((value) async {
           if(value.data()['quiz'] == 0 )
           {
+
             setState(() {
               check_P = true ;
             });
@@ -177,14 +184,6 @@ class showState extends State<show> {
                   title: "Error",
                   body: Text('Error'))
                 ..show();
-            });
-            await FirebaseFirestore.instance
-                .collection("users")
-                .doc(widget.docid).collection('chat').add({
-              'comp_id' :  widget.job.company_Id,
-              'help' : 1 ,
-              'img' : widget.job.company_Info['link_image'],
-              'name' : widget.job.company_Info['company']
             });
           }
           else {
@@ -208,16 +207,10 @@ class showState extends State<show> {
                     body: Text('Error'))
                   ..show();
               });
-              await FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(widget.docid).collection('chat').add({
-                'comp_id' :  widget.job.company_Id,
-                'help' : 1
-              });
 
             }else{
               Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid , image : widget.job.company_Info['link_image']);
+                return quizPage(company_Id: widget.job.company_Id , chance_Id:widget.job.job_Info['id'] , company_name : widget.job.company_Info['company'] , user_Id : widget.docid , image : widget.job.company_Info['link_image'] ,chance_name: widget.job.job_Info['title'],token: widget.job.company_Info['token'],user_name: widget.job.user_name,);
               }));
 
             }
@@ -321,7 +314,7 @@ class showState extends State<show> {
                                   Container(
                                     width: 150,
                                     height: 40,
-                                    child: Center(child: Text("عدد المتقدمين")),
+                                    child: Center(child: Text("عدد المتقدمين" + "  ${widget.job.job_Info['accepted'].length}")),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(40),
                                       color:ThemeNotifier.mode ?  Colors.grey.shade50 : Colors.black87
@@ -353,17 +346,6 @@ class showState extends State<show> {
                             child: Row(
                               children: [
                                 Expanded(flex:  1, child : Text("")),
-                                Expanded(flex : 4 , child: InkWell(
-                                  onTap: (){
-
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.message , size: 30, color: Colors.white,),
-                                      Text("مراسلة" , style: TextStyle(color: Colors.white , fontSize: 12),)
-                                    ],
-                                  ),
-                                ),) ,
                                 Expanded(flex : 4 , child: InkWell(
                                   onTap: ()async{
                                     if(widget.job.check_save == false) {
@@ -415,7 +397,7 @@ class showState extends State<show> {
                                     ],
                                   ),
                                 ), ),
-                                Expanded(flex : 4 , child: InkWell(
+                                Expanded(flex : 5 , child: InkWell(
                                   onTap: (){
                                     share(context);
                                   },
@@ -469,7 +451,7 @@ class showState extends State<show> {
                           SizedBox(height: 10,),
                           widget.job.job_Info['chanceId']== 0 ? Text("الخبرة الوظيفية :  " + "${widget.job.job_Info['level']}", style: TextStyle(fontSize: 16)) :Text('' , style: TextStyle(fontSize: 1),),
                           widget.job.job_Info['chanceId']== 0 ? SizedBox(height: 10,) : SizedBox(height: 1,),
-                          widget.job.job_Info['chanceId']== 0 && widget.job.job_Info['level'] == "خبير" ? Text("عدد سنوات الخبرة :  " + "${widget.job.job_Info['age']}", style: TextStyle(fontSize: 16)) : Text('' , style: TextStyle(fontSize: 1),),
+                          widget.job.job_Info['chanceId']== 0 && widget.job.job_Info['level'] == "خبير" && widget.job.job_Info['age']!=null? Text("عدد سنوات الخبرة :  " + "${widget.job.job_Info['age']}", style: TextStyle(fontSize: 16)) : Text('' , style: TextStyle(fontSize: 1),),
                           widget.job.job_Info['chanceId']== 0 && widget.job.job_Info['level'] == "خبير" ? SizedBox(height: 10,) : SizedBox(height: 1,),
                           Text("ساعات العمل : " + "${widget.job.job_Info['workTime']}" , style: TextStyle(fontSize: 16)),
                           SizedBox(height: 10,),
